@@ -17,7 +17,7 @@ namespace Sadkah.Backend.Helpers
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public object? Metadata { get; set; }
 
-        public static ApiResponse<T> SuccessResponse(T data, string message = "", object? metadata = null)
+        public static ApiResponse<T> SuccessResponse(string message = "", T? data = default, object? metadata = null)
             => new() { Success = true, Message = message, Data = data, Metadata = metadata };
 
         public static ApiResponse<T> FailResponse(string message, object? errors = null)

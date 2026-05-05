@@ -35,12 +35,12 @@ namespace Sadkah.Backend.Controllers
 
                 if (!result.Succeeded) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
 
-                return Ok(ApiResponse<NewUserDto>.SuccessResponse(new NewUserDto
+                return Ok(ApiResponse<NewUserDto>.SuccessResponse("Login successful.", new NewUserDto
                 {
                     Email = user.Email ?? string.Empty,
                     FullName = user.FirstName + " " + user.LastName,
                     Token = _tokenService.CreateToken(user)
-                }, "Login successful."));
+                }));
                     
             }
             catch (Exception ex)
@@ -70,12 +70,12 @@ namespace Sadkah.Backend.Controllers
                     var addToRole = await _userManager.AddToRoleAsync(user, registerDto.Role.ToString() ?? UserRole.Unassigned.ToString());
                     if (addToRole.Succeeded)
                     {
-                        return Ok(ApiResponse<NewUserDto>.SuccessResponse(new NewUserDto
+                        return Ok(ApiResponse<NewUserDto>.SuccessResponse("User registered successfully.", new NewUserDto
                         {
                             Email = user.Email ?? string.Empty,
                             FullName = user.FirstName + " " + user.LastName,
                             Token = _tokenService.CreateToken(user)
-                        }, "User registered successfully."));
+                        }));
                     }
                     else
                     {

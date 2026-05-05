@@ -38,7 +38,7 @@ namespace Sadkah.Backend.Controllers
                     totalPages = donations.TotalPages
                 }; 
 
-                return Ok(ApiResponse<IEnumerable<DonationDto>>.SuccessResponse(donationDtos, "Donations retrieved successfully.", metadata));
+                return Ok(ApiResponse<IEnumerable<DonationDto>>.SuccessResponse("Donations retrieved successfully.", donationDtos, metadata));
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace Sadkah.Backend.Controllers
             {
                 var donation = await _donationRepository.GetDonationByIdAsync(id);
                 if (donation == null) return NotFound(ApiResponse<object>.FailResponse("Donation not found."));
-                return Ok(ApiResponse<DonationDto>.SuccessResponse(donation.ToDonationDto(), "Donation retrieved successfully."));
+                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation retrieved successfully.", donation.ToDonationDto()));
             }
             catch (Exception ex)
             {
@@ -83,7 +83,7 @@ namespace Sadkah.Backend.Controllers
                 return CreatedAtAction(
                     nameof(GetDonationById),
                     new { id = createdDonation.Id },
-                    ApiResponse<DonationDto>.SuccessResponse(createdDonation.ToDonationDto(), "Donation created successfully.")
+                    ApiResponse<DonationDto>.SuccessResponse("Donation created successfully.", createdDonation.ToDonationDto())
                 ); 
             }
             catch (Exception ex)
@@ -104,7 +104,7 @@ namespace Sadkah.Backend.Controllers
 
                 if (updatedDonation == null) return NotFound(ApiResponse<object>.FailResponse("Donation not found or failed to update."));
 
-                return Ok(ApiResponse<DonationDto>.SuccessResponse(updatedDonation.ToDonationDto(), "Donation anonymous status updated successfully."));
+                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation anonymous status updated successfully.", updatedDonation.ToDonationDto()));
             }
             catch (Exception ex)
             {

@@ -130,11 +130,11 @@ app.UseStatusCodePages(async context =>
 app.MapGet("/", () =>
 {
     return Results.Ok(ApiResponse<object>.SuccessResponse(
+        "API is running",
         new {
             version = "1.0",
             documentation = "/swagger",
-        },
-        "API is running"
+        }
     ));
 });
 

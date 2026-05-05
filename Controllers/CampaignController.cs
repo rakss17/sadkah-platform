@@ -36,7 +36,7 @@ namespace Sadkah.Backend.Controllers
                     totalPages = campaigns.TotalPages
                 }; 
 
-                return Ok(ApiResponse<IEnumerable<CampaignDto>>.SuccessResponse(campaignDtos, "Campaigns retrieved successfully.", metadata));
+                return Ok(ApiResponse<IEnumerable<CampaignDto>>.SuccessResponse("Campaigns retrieved successfully.",campaignDtos, metadata));
             }
             catch (Exception ex)
             {
@@ -53,7 +53,7 @@ namespace Sadkah.Backend.Controllers
             {
                 var campaign = await _campaignRepository.GetCampaignByIdAsync(id);
                 if (campaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
-                return Ok(ApiResponse<CampaignDto>.SuccessResponse(campaign.ToCampaignDto(), "Campaign retrieved successfully."));
+                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign retrieved successfully.", campaign.ToCampaignDto()));
             }
             catch (Exception ex)
             {
@@ -78,7 +78,7 @@ namespace Sadkah.Backend.Controllers
                 return CreatedAtAction(
                     nameof(GetCampaignById),
                     new { id = createdCampaign.Id },
-                    ApiResponse<CampaignDto>.SuccessResponse(createdCampaign.ToCampaignDto(), "Campaign created successfully.")
+                    ApiResponse<CampaignDto>.SuccessResponse("Campaign created successfully.", createdCampaign.ToCampaignDto())
                 );
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace Sadkah.Backend.Controllers
 
                 if (updatedCampaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
 
-                return Ok(ApiResponse<CampaignDto>.SuccessResponse(updatedCampaign.ToCampaignDto(), "Campaign updated successfully."));
+                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign updated successfully.", updatedCampaign.ToCampaignDto()));
             }
             catch (Exception ex)
             {
@@ -119,7 +119,7 @@ namespace Sadkah.Backend.Controllers
             
                 if (deletedCampaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
 
-                return Ok(ApiResponse<CampaignDto>.SuccessResponse(deletedCampaign.ToCampaignDto(), "Campaign deleted successfully."));
+                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign deleted successfully.", deletedCampaign.ToCampaignDto()));
             }
             catch (Exception ex)
             {
