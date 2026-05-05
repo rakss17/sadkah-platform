@@ -27,33 +27,23 @@ namespace Sadkah.Backend.Controllers
             {
                 var donations = await _donationRepository.GetAllDonationsAsync(query);
                 var donationDtos = donations.Items.Select(d => d.ToDonationDto());
-                if (!donationDtos.Any()) return NotFound(new
+
+                if (!donationDtos.Any()) return NotFound(ApiResponse<object>.FailResponse("Donations not found."));
+
+                var metadata = new
                 {
-                    success = false,
-                    message = "No donations found.",
-                });
-                return Ok(new
-                {
-                    success = true,
-                    message = "Donations retrieved successfully.",
-                    data = donationDtos,
-                    metadata = new
-                    {
-                        totalCount = donations.TotalCount,
-                        pageSize = donations.PageSize,
-                        currentPage = donations.CurrentPage,
-                        totalPages = donations.TotalPages
-                    }
-                });
+                    totalCount = donations.TotalCount,
+                    pageSize = donations.PageSize,
+                    currentPage = donations.CurrentPage,
+                    totalPages = donations.TotalPages
+                }; 
+
+                return Ok(ApiResponse<IEnumerable<DonationDto>>.SuccessResponse("Donations retrieved successfully.", donationDtos, metadata));
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error retrieving donations: {ex.Message}");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Internal server error while retrieving donations.",
-                });
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while retrieving donations."));
             }
         }
 
@@ -64,26 +54,13 @@ namespace Sadkah.Backend.Controllers
             try
             {
                 var donation = await _donationRepository.GetDonationByIdAsync(id);
-                if (donation == null) return NotFound(new
-                {
-                    success = false,
-                    message = "Donation not found.",
-                });
-                return Ok(new
-                {
-                    success = true,
-                    message = "Donation retrieved successfully.",
-                    data = donation.ToDonationDto()
-                });
+                if (donation == null) return NotFound(ApiResponse<object>.FailResponse("Donation not found."));
+                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation retrieved successfully.", donation.ToDonationDto()));
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error retrieving donation: {ex.Message}");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Internal server error while retrieving donation.",
-                });
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while retrieving donation."));
             }
             
         }
@@ -96,36 +73,23 @@ namespace Sadkah.Backend.Controllers
             {
                 var isCampaignExisting = await _campaignRepository.IsCampaignExistingAsync(createDto.CampaignId);
 
-                if (!isCampaignExisting) return BadRequest(new { success = false, message = "Campaign does not exist." });
+                if (!isCampaignExisting) return BadRequest(ApiResponse<object>.FailResponse("Campaign does not exist."));
 
                 var donation = createDto.ToDonationFromCreateDto();
                 var createdDonation = await _donationRepository.CreateDonationAsync(donation);
 
-                if (createdDonation == null) return NotFound(new
-                {
-                    success = false,
-                    message = "Failed to create donation.",
-                });
+                if (createdDonation == null) return NotFound(ApiResponse<object>.FailResponse("Failed to create donation."));
 
                 return CreatedAtAction(
                     nameof(GetDonationById),
                     new { id = createdDonation.Id },
-                    new
-                    {
-                        success = true,
-                        message = "Donation created successfully.",
-                        data = createdDonation.ToDonationDto()
-                    }
+                    ApiResponse<DonationDto>.SuccessResponse("Donation created successfully.", createdDonation.ToDonationDto())
                 ); 
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error creating donation: {ex.Message}");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Internal server error while creating donation.",
-                });
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while creating donation."));
             }
             
         }
@@ -138,27 +102,14 @@ namespace Sadkah.Backend.Controllers
             {
                 var updatedDonation = await _donationRepository.UpdateAnonymousDonationAsync(id, updateDto.IsAnonymous!.Value);
 
-                if (updatedDonation == null) return NotFound(new
-                {
-                    success = false,
-                    message = "Donation not found or failed to update.",
-                });
+                if (updatedDonation == null) return NotFound(ApiResponse<object>.FailResponse("Donation not found or failed to update."));
 
-                return Ok(new
-                {
-                    success = true,
-                    message = "Donation anonymous status updated successfully.",
-                    data = updatedDonation.ToDonationDto()
-                });
+                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation anonymous status updated successfully.", updatedDonation.ToDonationDto()));
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating donation: {ex.Message}");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Internal server error while updating the donation.",
-                });
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while updating the donation."));
             }
         }   
     }

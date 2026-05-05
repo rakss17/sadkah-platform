@@ -29,41 +29,24 @@ namespace Sadkah.Backend.Controllers
             try {
                 var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-                if (user == null) return Unauthorized(new
-                {
-                    success = false,
-                    message = "Invalid email or password.",
-                });
+                if (user == null) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
 
                 var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-                if (!result.Succeeded) return Unauthorized(new
-                {
-                    success = false,
-                    message = "Invalid email or password.",
-                });
+                if (!result.Succeeded) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
 
-                return Ok(new
+                return Ok(ApiResponse<NewUserDto>.SuccessResponse("Login successful.", new NewUserDto
                 {
-                    success = true,
-                    message = "Login successful.",
-                    data = new NewUserDto
-                    {
-                        Email = user.Email ?? string.Empty,
-                        FullName = user.FirstName + " " + user.LastName,
-                        Token = _tokenService.CreateToken(user)
-                    }
-                });
+                    Email = user.Email ?? string.Empty,
+                    FullName = user.FirstName + " " + user.LastName,
+                    Token = _tokenService.CreateToken(user)
+                }));
                     
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error during login: {ex.Message}");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Internal server error during login.",
-                });
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error during login."));
             }
         }
 
@@ -87,45 +70,28 @@ namespace Sadkah.Backend.Controllers
                     var addToRole = await _userManager.AddToRoleAsync(user, registerDto.Role.ToString() ?? UserRole.Unassigned.ToString());
                     if (addToRole.Succeeded)
                     {
-                        return Ok(new
+                        return Ok(ApiResponse<NewUserDto>.SuccessResponse("User registered successfully.", new NewUserDto
                         {
-                            success = true,
-                            message = "User registered successfully.",
-                            data = new NewUserDto
-                            {
-                                Email = user.Email ?? string.Empty,
-                                FullName = user.FirstName + " " + user.LastName,
-                                Token = _tokenService.CreateToken(user)
-                            }
-                        });
+                            Email = user.Email ?? string.Empty,
+                            FullName = user.FirstName + " " + user.LastName,
+                            Token = _tokenService.CreateToken(user)
+                        }));
                     }
                     else
                     {
                         Console.WriteLine($"Error adding user to role: {string.Join(", ", addToRole.Errors.Select(e => e.Description))}");
-                        return StatusCode(500, new
-                        {
-                            success = false,
-                            message = "Internal server error while adding user to role.",
-                        });
+                        return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while adding user to role."));
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Error creating user: {string.Join(", ", createdUser.Errors.Select(e => e.Description))}");
-                    return StatusCode(500, new
-                    {
-                        success = false,
-                        message = "Internal server error while creating user.",
-                    });
+                    return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while creating user."));
                 }
 
             } catch (Exception ex) {
                 Console.WriteLine($"Error during registration: {ex.Message}");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Internal server error during registration.",
-                });
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error during registration."));
             }
         }
     }
