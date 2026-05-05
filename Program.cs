@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Sadkah.Backend.Repository;
 using Sadkah.Backend.Services;
 using Sadkah.Backend.Extensions;
@@ -24,22 +23,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
-
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var errors = context.ModelState
-            .Where(x => x.Value?.Errors.Count > 0)
-            .Select(x => new
-            {
-                field = x.Key,
-                messages = x.Value?.Errors.Select(e => e.ErrorMessage)
-            });
-
-        return new BadRequestObjectResult(ApiResponse<object>.FailResponse("Validation failed.", errors.ToArray()));
-    };
-});
+builder.Services.AddCustomValidation();
 
 builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
 builder.Services.AddScoped<IDonationRepository, DonationRepository>();
