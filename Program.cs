@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Sadkah.Backend.Repository;
 using Sadkah.Backend.Services;
 using Sadkah.Backend.Extensions;
@@ -14,14 +13,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<User, IdentityRole>(options => {
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 8;
-}).AddEntityFrameworkStores<ApplicationDBContext>();
-
+builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCustomValidation();
 
