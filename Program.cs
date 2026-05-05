@@ -53,22 +53,14 @@ builder.Services.AddAuthentication(options => {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
 
-            return context.Response.WriteAsJsonAsync(new
-            {
-                success = false,
-                message = "You are not authorized to access this resource, or your token is invalid or has expired. Please log in first."
-            });
+            return context.Response.WriteAsJsonAsync(ApiResponse<object>.FailResponse("You are not authorized to access this resource, or your token is invalid or has expired. Please log in first."));
         },
         OnForbidden = context =>
         {
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             context.Response.ContentType = "application/json";
 
-            return context.Response.WriteAsJsonAsync(new
-            {
-                success = false,
-                message = "You don’t have permission to access this. Please contact the administrator if you think this is a mistake."
-            });
+            return context.Response.WriteAsJsonAsync(ApiResponse<object>.FailResponse("You don’t have permission to access this. Please contact the administrator if you think this is a mistake."));
         }
     };
 });
@@ -85,12 +77,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
                 messages = x.Value?.Errors.Select(e => e.ErrorMessage)
             });
 
-        return new BadRequestObjectResult(new
-        {
-            success = false,
-            message = "Validation failed.",
-            errors = errors.ToArray()
-        });
+        return new BadRequestObjectResult(ApiResponse<object>.FailResponse("Validation failed.", errors.ToArray()));
     };
 });
 
@@ -119,11 +106,7 @@ app.UseStatusCodePages(async context =>
     {
         context.HttpContext.Response.ContentType = "application/json";
 
-        await context.HttpContext.Response.WriteAsJsonAsync(new
-        {
-            success = false,
-            message = "Resource not found."
-        });
+        await context.HttpContext.Response.WriteAsJsonAsync(ApiResponse<object>.FailResponse("The resource you are looking for was not found. Please check the URL and try again."));
     }
 });
 
