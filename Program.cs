@@ -1,5 +1,3 @@
-using Sadkah.Backend.Repository;
-using Sadkah.Backend.Services;
 using Sadkah.Backend.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +14,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 builder.Services.AddIdentityServices();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddCustomValidation();
-
-builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
-builder.Services.AddScoped<IDonationRepository, DonationRepository>();
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 

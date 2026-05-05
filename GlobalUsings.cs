@@ -9,3 +9,5 @@ global using Sadkah.Backend.Enums;
 global using Sadkah.Backend.Dtos.Campaign;
 global using Sadkah.Backend.Dtos.Donation;
 global using Sadkah.Backend.Helpers;
+global using Sadkah.Backend.Repository;
+global using Sadkah.Backend.Services;
