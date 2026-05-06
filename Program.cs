@@ -31,15 +31,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseStatusCodePages(async context =>
-{
-    if (context.HttpContext.Response.StatusCode == 404)
-    {
-        context.HttpContext.Response.ContentType = "application/json";
-
-        await context.HttpContext.Response.WriteAsJsonAsync(ApiResponse<object>.FailResponse("The resource you are looking for was not found. Please check the URL and try again."));
-    }
-});
+app.UseCustomStatusCodes();
 
 app.MapGet("/", () =>
 {
