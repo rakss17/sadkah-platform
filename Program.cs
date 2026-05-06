@@ -33,15 +33,6 @@ app.MapControllers();
 
 app.UseCustomStatusCodes();
 
-app.MapGet("/", () =>
-{
-    return Results.Ok(ApiResponse<object>.SuccessResponse(
-        "API is running",
-        new {
-            version = "1.0",
-            documentation = "/swagger",
-        }
-    ));
-});
+app.MapCustomEndpoints();
 
 app.Run();
