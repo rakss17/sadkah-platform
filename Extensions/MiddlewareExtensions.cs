@@ -14,7 +14,7 @@ namespace Sadkah.Backend.Extensions
                 if (context.HttpContext.Response.StatusCode == 404)
                 {
                     await context.HttpContext.Response.WriteAsJsonAsync(
-                        ApiResponse<object>.FailResponse("Resource not found")
+                        ApiResponse<object>.FailResponse("The resource you are looking for was not found. Please check the URL and try again.")
                     );
                 }
             });
