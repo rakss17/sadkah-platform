@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Sadkah.Backend.Extensions
 {
@@ -66,6 +67,28 @@ namespace Sadkah.Backend.Extensions
                 options.Password.RequiredLength = 8;
             })
             .AddEntityFrameworkStores<ApplicationDBContext>();
+
+            return builder;
+        }
+        public static WebApplicationBuilder AddCustomValidation(this WebApplicationBuilder builder)
+        {
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .Select(x => new
+                        {
+                            field = x.Key,
+                            messages = x.Value!.Errors.Select(e => e.ErrorMessage)
+                        });
+
+                    return new BadRequestObjectResult(
+                        ApiResponse<object>.FailResponse("Validation failed.", errors)
+                    );
+                };
+            });
 
             return builder;
         }
