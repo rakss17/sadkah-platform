@@ -5,14 +5,16 @@ using System.Threading.Tasks;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Sadkah.Backend.Extensions
 {
-    public static class AuthExtensions
+    public static class WebApplicationBuilderExtensions
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+        public static WebApplicationBuilder AddJwtAuthentication(this WebApplicationBuilder builder, IConfiguration config)
         {
-            services.AddAuthentication(options => {
+            builder.Services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = 
                 options.DefaultChallengeScheme = 
                 options.DefaultForbidScheme = 
@@ -52,7 +54,51 @@ namespace Sadkah.Backend.Extensions
                 };
             });
 
-            return services;
+            return builder;
+        }
+        public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 8;
+            })
+            .AddEntityFrameworkStores<ApplicationDBContext>();
+
+            return builder;
+        }
+        public static WebApplicationBuilder AddCustomValidation(this WebApplicationBuilder builder)
+        {
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(x => x.Value?.Errors.Count > 0)
+                        .Select(x => new
+                        {
+                            field = x.Key,
+                            messages = x.Value!.Errors.Select(e => e.ErrorMessage)
+                        });
+
+                    return new BadRequestObjectResult(
+                        ApiResponse<object>.FailResponse("Validation failed.", errors)
+                    );
+                };
+            });
+
+            return builder;
+        }
+        public static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
+            builder.Services.AddScoped<IDonationRepository, DonationRepository>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+
+            return builder;
         }
     }
 }

@@ -11,10 +11,10 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentityServices();
-builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddCustomValidation();
-builder.Services.AddApplicationServices();
+builder.AddJwtAuthentication(builder.Configuration)
+    .AddIdentityServices()
+    .AddCustomValidation()
+    .AddApplicationServices();
 
 var app = builder.Build();
 
