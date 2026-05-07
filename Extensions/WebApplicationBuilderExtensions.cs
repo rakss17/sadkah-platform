@@ -8,11 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Sadkah.Backend.Extensions
 {
-    public static class AuthExtensions
+    public static class WebApplicationBuilderExtensions
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+        public static WebApplicationBuilder AddJwtAuthentication(this WebApplicationBuilder builder, IConfiguration config)
         {
-            services.AddAuthentication(options => {
+            builder.Services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = 
                 options.DefaultChallengeScheme = 
                 options.DefaultForbidScheme = 
@@ -52,7 +52,7 @@ namespace Sadkah.Backend.Extensions
                 };
             });
 
-            return services;
+            return builder;
         }
     }
 }
