@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
 
 namespace Sadkah.Backend.Extensions
 {
@@ -51,6 +52,20 @@ namespace Sadkah.Backend.Extensions
                     }
                 };
             });
+
+            return builder;
+        }
+        public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 8;
+            })
+            .AddEntityFrameworkStores<ApplicationDBContext>();
 
             return builder;
         }
