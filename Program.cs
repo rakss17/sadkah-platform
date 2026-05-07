@@ -13,9 +13,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 
 builder.AddJwtAuthentication(builder.Configuration)
     .AddIdentityServices()
-    .AddCustomValidation();
-
-builder.Services.AddApplicationServices();
+    .AddCustomValidation()
+    .AddApplicationServices();
 
 var app = builder.Build();
 

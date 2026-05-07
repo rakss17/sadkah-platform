@@ -92,5 +92,13 @@ namespace Sadkah.Backend.Extensions
 
             return builder;
         }
+        public static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
+            builder.Services.AddScoped<IDonationRepository, DonationRepository>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+
+            return builder;
+        }
     }
 }
