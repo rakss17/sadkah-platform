@@ -33,6 +33,10 @@ namespace Sadkah.Backend.Repository
                     campaignsQuery = query.IsSortDescending ? campaignsQuery.OrderByDescending(c => c.Deadline) : campaignsQuery.OrderBy(c => c.Deadline);
                 }
             }
+            else
+            {
+                campaignsQuery = campaignsQuery.OrderByDescending(c => c.CreatedAt);
+            }
             
             var totalCount = await campaignsQuery.CountAsync();
 
