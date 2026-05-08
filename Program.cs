@@ -11,8 +11,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.AddJwtAuthentication(builder.Configuration)
-    .AddIdentityServices()
+builder.AddIdentityServices()
+    .AddJwtAuthentication(builder.Configuration)
     .AddCustomValidation()
     .AddApplicationServices();
 
