@@ -20,9 +20,10 @@ namespace Sadkah.Backend.Models
         public DateTime Deadline { get; set; } = DateTime.UtcNow;
         public CampaignStatus Status { get; set; }
         public bool IsVerified { get; set; } = false;
+        public bool IsArchived { get; set; } = false;
         public List<Donation> Donations { get; set; } = new List<Donation>();
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? DeletedAt { get; set; }
+        public DateTime? ArchivedAt { get; set; }
     }
 }
