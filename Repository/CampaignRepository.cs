@@ -15,7 +15,7 @@ namespace Sadkah.Backend.Repository
 
         public async Task<PagedResult<Campaign>> GetAllCampaignsAsync(QueryObject query)
         {
-            var campaignsQuery = _context.Campaigns.Include(c => c.Owner).Include(c => c.Donations).AsQueryable();
+            var campaignsQuery = _context.Campaigns.Where(c => !c.IsArchived).Include(c => c.Owner).Include(c => c.Donations).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.SearchTerm))
             {
@@ -91,12 +91,13 @@ namespace Sadkah.Backend.Repository
             return existingCampaign;
         }
 
-        public async Task<Campaign?> DeleteCampaignAsync(Guid id)
+        public async Task<Campaign?> ArchiveCampaignAsync(Guid id)
         {
             var campaign = await _context.Campaigns.FirstOrDefaultAsync(c => c.Id == id);
             if (campaign == null) return null;
 
-            campaign.DeletedAt = DateTime.UtcNow;
+            campaign.IsArchived = true;
+            campaign.ArchivedAt = DateTime.UtcNow;
             
             await _context.SaveChangesAsync();
 

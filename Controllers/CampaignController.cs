@@ -109,22 +109,22 @@ namespace Sadkah.Backend.Controllers
             
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpPatch("{id:guid}/archive")]
         [Authorize]
-        public async Task<IActionResult> DeleteCampaign([FromRoute] Guid id)
+        public async Task<IActionResult> ArchiveCampaign([FromRoute] Guid id)
         {
             try
             {
-                var deletedCampaign = await _campaignRepository.DeleteCampaignAsync(id);
+                var archivedCampaign = await _campaignRepository.ArchiveCampaignAsync(id);
             
-                if (deletedCampaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
+                if (archivedCampaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
 
-                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign deleted successfully.", deletedCampaign.ToCampaignDto()));
+                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign archived successfully.", archivedCampaign.ToCampaignDto()));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting campaign: {ex.Message}");
-                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while deleting the campaign."));
+                Console.WriteLine($"Error archiving campaign: {ex.Message}");
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while archiving the campaign."));
             }
 
         }
