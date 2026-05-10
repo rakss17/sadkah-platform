@@ -15,7 +15,7 @@ namespace Sadkah.Backend.Repository
 
         public async Task<PagedResult<Campaign>> GetAllCampaignsAsync(QueryObject query)
         {
-            var campaignsQuery = _context.Campaigns.Where(c => !c.IsArchived).Include(c => c.Owner).Include(c => c.Donations).AsQueryable();
+            var campaignsQuery = _context.Campaigns.Where(c => !c.IsArchived).Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.SearchTerm))
             {
@@ -60,7 +60,7 @@ namespace Sadkah.Backend.Repository
 
         public async Task<Campaign?> GetCampaignByIdAsync(Guid id)
         {
-            return await _context.Campaigns.Include(c => c.Owner).Include(c => c.Donations).FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Campaigns.Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Campaign> CreateCampaignAsync(Campaign campaignModel)
