@@ -37,6 +37,10 @@ namespace Sadkah.Backend.Repository
                 {
                     campaignsQuery = query.IsSortDescending ? campaignsQuery.OrderByDescending(c => c.Deadline) : campaignsQuery.OrderBy(c => c.Deadline);
                 }
+                else if (query.SortBy.Equals("createdAt", StringComparison.OrdinalIgnoreCase))
+                {
+                    campaignsQuery = query.IsSortDescending ? campaignsQuery.OrderByDescending(c => c.CreatedAt) : campaignsQuery.OrderBy(c => c.CreatedAt);
+                }
             }
             else
             {
