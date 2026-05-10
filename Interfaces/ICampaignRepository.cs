@@ -11,7 +11,7 @@ namespace Sadkah.Backend.Interfaces
         Task<Campaign?> GetCampaignByIdAsync(Guid id);
         Task<Campaign> CreateCampaignAsync(Campaign campaign);
         Task<Campaign?> UpdateCampaignAsync(Guid id, UpdateCampaignRequestDto updatedCampaign);
-        Task<Campaign?> DeleteCampaignAsync(Guid id);
+        Task<Campaign?> ArchiveCampaignAsync(Guid id);
         Task<bool> IsCampaignExistingAsync(Guid id);
     }
 }
