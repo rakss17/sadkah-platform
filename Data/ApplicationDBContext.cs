@@ -15,6 +15,7 @@ namespace Sadkah.Backend.Data
         }
         public DbSet<Campaign> Campaigns { get; set; }
         public DbSet<Donation> Donations { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
