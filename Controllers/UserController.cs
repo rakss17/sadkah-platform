@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Sadkah.Backend.Dtos.User;
 
 namespace Sadkah.Backend.Controllers
@@ -26,7 +27,8 @@ namespace Sadkah.Backend.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginDto loginDto)
         {
-            try {
+            try
+            {
                 var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
                 if (user == null) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
@@ -35,13 +37,15 @@ namespace Sadkah.Backend.Controllers
 
                 if (!result.Succeeded) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
 
+                var refreshToken = await _tokenService.CreateRefreshTokenAsync(user);
+
                 return Ok(ApiResponse<NewUserDto>.SuccessResponse("Login successful.", new NewUserDto
                 {
                     Email = user.Email ?? string.Empty,
                     FullName = user.FirstName + " " + user.LastName,
-                    Token = _tokenService.CreateToken(user)
+                    Token = _tokenService.CreateToken(user),
+                    RefreshToken = refreshToken.Token
                 }));
-                    
             }
             catch (Exception ex)
             {
@@ -53,7 +57,8 @@ namespace Sadkah.Backend.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto registerDto)
         {
-            try {
+            try
+            {
                 var user = new User
                 {
                     UserName = registerDto.Email,
@@ -70,11 +75,14 @@ namespace Sadkah.Backend.Controllers
                     var addToRole = await _userManager.AddToRoleAsync(user, registerDto.Role.ToString() ?? UserRole.Unassigned.ToString());
                     if (addToRole.Succeeded)
                     {
+                        var refreshToken = await _tokenService.CreateRefreshTokenAsync(user);
+
                         return Ok(ApiResponse<NewUserDto>.SuccessResponse("User registered successfully.", new NewUserDto
                         {
                             Email = user.Email ?? string.Empty,
                             FullName = user.FirstName + " " + user.LastName,
-                            Token = _tokenService.CreateToken(user)
+                            Token = _tokenService.CreateToken(user),
+                            RefreshToken = refreshToken.Token
                         }));
                     }
                     else
@@ -88,10 +96,35 @@ namespace Sadkah.Backend.Controllers
                     Console.WriteLine($"Error creating user: {string.Join(", ", createdUser.Errors.Select(e => e.Description))}");
                     return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while creating user."));
                 }
-
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Error during registration: {ex.Message}");
                 return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error during registration."));
+            }
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        {
+            try
+            {
+                var (accessToken, newRefresh) = await _tokenService.RefreshAsync(refreshToken);
+
+                return Ok(ApiResponse<object>.SuccessResponse("Token refreshed successfully.", new
+                {
+                    Token = accessToken,
+                    RefreshToken = newRefresh.Token
+                }));
+            }
+            catch (SecurityTokenException)
+            {
+                return Unauthorized(ApiResponse<object>.FailResponse("Invalid or expired refresh token."));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during token refresh: {ex.Message}");
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error during token refresh."));
             }
         }
     }
