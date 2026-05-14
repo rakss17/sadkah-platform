@@ -43,7 +43,7 @@ namespace Sadkah.Backend.Controllers
                 {
                     Email = user.Email ?? string.Empty,
                     FullName = user.FirstName + " " + user.LastName,
-                    Token = _tokenService.CreateToken(user),
+                    AccessToken = _tokenService.CreateToken(user),
                     RefreshToken = refreshToken.Token
                 }));
             }
@@ -81,7 +81,7 @@ namespace Sadkah.Backend.Controllers
                         {
                             Email = user.Email ?? string.Empty,
                             FullName = user.FirstName + " " + user.LastName,
-                            Token = _tokenService.CreateToken(user),
+                            AccessToken = _tokenService.CreateToken(user),
                             RefreshToken = refreshToken.Token
                         }));
                     }
@@ -113,7 +113,7 @@ namespace Sadkah.Backend.Controllers
 
                 return Ok(ApiResponse<object>.SuccessResponse("Token refreshed successfully.", new
                 {
-                    Token = accessToken,
+                    AccessToken = accessToken,
                     RefreshToken = newRefresh.Token
                 }));
             }
