@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Sadkah.Backend.Dtos.User;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Sadkah.Backend.Controllers
 {
@@ -25,6 +26,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("auth")]
         public async Task<IActionResult> LoginUser([FromBody] LoginDto loginDto)
         {
             try
@@ -55,6 +57,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPost("register")]
+        [EnableRateLimiting("auth")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto registerDto)
         {
             try
@@ -105,6 +108,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPost("refresh")]
+        [EnableRateLimiting("auth")]
         public async Task<IActionResult> Refresh([FromBody] string refreshToken)
         {
             try
