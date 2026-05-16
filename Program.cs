@@ -34,13 +34,13 @@ app.UseHttpsRedirection();
 
 app.UseSerilogRequestLogging();
 
+app.UseCustomStatusCodes();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 
 app.MapControllers();
-
-app.UseCustomStatusCodes();
 
 app.MapCustomEndpoints();
 

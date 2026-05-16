@@ -17,6 +17,13 @@ namespace Sadkah.Backend.Extensions
                         ApiResponse<object>.FailResponse("The resource you are looking for was not found. Please check the URL and try again.")
                     );
                 }
+
+                if (context.HttpContext.Response.StatusCode == 429)
+                {
+                    await context.HttpContext.Response.WriteAsJsonAsync(
+                        ApiResponse<object>.FailResponse("Too many requests. Please try again later.")
+                    );
+                }
             });
 
             return app;
