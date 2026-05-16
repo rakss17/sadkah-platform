@@ -36,9 +36,10 @@ app.UseSerilogRequestLogging();
 
 app.UseCustomStatusCodes();
 
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRateLimiter();
 
 app.MapControllers();
 

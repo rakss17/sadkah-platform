@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Sadkah.Backend.Controllers
 {
@@ -18,6 +19,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpGet]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> GetAllCampaigns([FromQuery] QueryObject query)
         {
@@ -46,6 +48,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> GetCampaignById([FromRoute] Guid id)
         {
@@ -64,6 +67,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> CreateCampaign([FromBody] CreateCampaignRequestDto createDto)
         {
@@ -90,6 +94,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> UpdateCampaign([FromRoute] Guid id, [FromBody] UpdateCampaignRequestDto updateDto)
         {
@@ -110,6 +115,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPatch("{id:guid}/archive")]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> ArchiveCampaign([FromRoute] Guid id)
         {
