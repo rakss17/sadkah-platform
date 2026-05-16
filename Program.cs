@@ -19,7 +19,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 builder.AddIdentityServices()
     .AddJwtAuthentication(builder.Configuration)
     .AddCustomValidation()
-    .AddApplicationServices();
+    .AddApplicationServices()
+    .AddRateLimiting();
 
 var app = builder.Build();
 
@@ -33,12 +34,14 @@ app.UseHttpsRedirection();
 
 app.UseSerilogRequestLogging();
 
+app.UseCustomStatusCodes();
+
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseCustomStatusCodes();
 
 app.MapCustomEndpoints();
 

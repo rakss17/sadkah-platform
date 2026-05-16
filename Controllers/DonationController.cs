@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Sadkah.Backend.Controllers
 {
@@ -20,6 +21,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpGet]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> GetAllDonations([FromQuery] QueryObject query)
         {
@@ -48,6 +50,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> GetDonationById([FromRoute] Guid id)
         {
@@ -66,6 +69,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> CreateDonation([FromBody] CreateDonationRequestDto createDto)
         {
@@ -95,6 +99,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPut("{id:guid}/anonymous")]
+        [EnableRateLimiting("api")]        
         [Authorize]
         public async Task<IActionResult> UpdateAnonymousDonation([FromRoute] Guid id, [FromBody] UpdateAnonymousDonationRequestDto updateDto)
         {
