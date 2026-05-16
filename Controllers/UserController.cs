@@ -107,13 +107,12 @@ namespace Sadkah.Backend.Controllers
             }
         }
 
-        [HttpPost("refresh")]
-        [EnableRateLimiting("auth")]
-        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDto refreshToken)
         {
             try
             {
-                var (accessToken, newRefresh) = await _tokenService.RefreshAsync(refreshToken);
+                var (accessToken, newRefresh) = await _tokenService.RefreshAsync(refreshToken.RefreshToken);
 
                 return Ok(ApiResponse<object>.SuccessResponse("Token refreshed successfully.", new
                 {
