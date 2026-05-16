@@ -108,6 +108,7 @@ namespace Sadkah.Backend.Controllers
         }
 
         [HttpPost("refresh-token")]
+        [EnableRateLimiting("auth")]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDto refreshToken)
         {
             try
