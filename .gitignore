@@ -1,34 +1,9 @@
-# Build results
-bin/
-obj/
-
-# Visual Studio
-.vs/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
-# Rider
-.idea/
-
-# VS Code
-.vscode/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Certificates
-*.pfx
-
-# Test results
-TestResults/
-
-# Publish output
-publish/
-
-sadkah-backend.csproj.lscache
+.vs
+.vscode
+**/bin
+**/obj
+**/*.csproj.user
+**/PublishProfiles
+**/PublishProfiles/**
+**/Logs
+**/.config/dotnet-tools.json
