@@ -1,0 +1,33 @@
+@inject IJSRuntime JsRuntime
+@inject NavigationManager Navigation
+
+@if (isAuthenticated)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private bool isAuthenticated;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var token = await JsRuntime.InvokeAsync<string?>("localStorage.getItem", "sadkah_access_token");
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            Navigation.NavigateTo("/login", replace: true);
+            return;
+        }
+
+        isAuthenticated = true;
+        StateHasChanged();
+    }
+}

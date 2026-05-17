@@ -1,0 +1,33 @@
+.login-shell {
+    min-height: calc(100vh - 7rem);
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    padding: 2rem 0;
+}
+
+.login-panel {
+    width: min(100%, 28rem);
+    border: 1px solid #d8dde6;
+    border-radius: 8px;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 1rem 2.5rem rgb(15 23 42 / 8%);
+}
+
+.login-heading {
+    margin-bottom: 1.5rem;
+}
+
+.login-heading h1 {
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.eyebrow {
+    margin-bottom: .25rem;
+    color: #64748b;
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
