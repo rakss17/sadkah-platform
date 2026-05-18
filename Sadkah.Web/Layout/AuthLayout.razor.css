@@ -1,7 +1,4 @@
 .auth-layout {
     min-height: 100vh;
-    display: grid;
-    align-items: center;
-    padding: 1.5rem;
-    background: #f6f8fb;
+    background: var(--color-border);
 }

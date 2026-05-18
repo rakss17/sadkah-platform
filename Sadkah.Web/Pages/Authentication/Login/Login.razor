@@ -5,46 +5,62 @@
 
 <PageTitle>Sadkah - Login</PageTitle>
 
-<div class="login-shell">
-    <section class="login-panel">
-        <div class="login-heading">
-            <p class="eyebrow">Welcome Back</p>
-            <h1>Sign in to Sadkah</h1>
-        </div>
+<AuthPanel LabelledBy="login-title">
+    <div class="login-heading">
+        <h1 id="login-title">Welcome <span>Back</span></h1>
+        <p>
+            Login to continue your journey of
+            <strong>making a difference.</strong>
+        </p>
+    </div>
 
-        <EditForm Model="loginModel" OnValidSubmit="HandleLoginAsync" FormName="login">
-            <DataAnnotationsValidator />
+    <EditForm Model="loginModel" OnValidSubmit="HandleLoginAsync" FormName="login">
+        <DataAnnotationsValidator />
 
+        <div class="login-form">
             @if (!string.IsNullOrWhiteSpace(statusMessage))
             {
-                <div class="alert @statusAlertClass" role="alert">
+                <div class="login-alert @statusAlertClass" role="alert">
                     @statusMessage
                 </div>
             }
 
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
+            <AuthFormField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
                 <InputText id="email"
-                           class="form-control"
+                           class="auth-input"
                            type="email"
                            autocomplete="email"
                            @bind-Value="loginModel.Email" />
-                <ValidationMessage For="() => loginModel.Email" />
-            </div>
+            </AuthFormField>
 
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+            <AuthFormField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
                 <InputText id="password"
-                           class="form-control"
+                           class="auth-input"
                            type="password"
                            autocomplete="current-password"
                            @bind-Value="loginModel.Password" />
-                <ValidationMessage For="() => loginModel.Password" />
+            </AuthFormField>
+
+            <div class="login-options">
+                <label class="remember-option">
+                    <input type="checkbox" />
+                    <span>Remember me</span>
+                </label>
+                <a href="/forgot-password">Forgot password?</a>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100" disabled="@isSubmitting">
-                @(isSubmitting ? "Signing in..." : "Sign in")
-            </button>
-        </EditForm>
-    </section>
-</div>
+            <AppButton Type="submit"
+                       Size="sm"
+                       FullWidth="true"
+                       IsLoading="@isSubmitting"
+                       LoadingText="Logging in...">
+                Log in
+            </AppButton>
+
+            <p class="signup-copy">
+                Don't have an account?
+                <a href="/signup">Sign up</a>
+            </p>
+        </div>
+    </EditForm>
+</AuthPanel>

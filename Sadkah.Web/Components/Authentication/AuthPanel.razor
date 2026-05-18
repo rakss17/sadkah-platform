@@ -1,0 +1,15 @@
+<div class="auth-page">
+    <section class="auth-panel" aria-labelledby="@LabelledBy">
+        <div class="auth-content">
+            @ChildContent
+        </div>
+    </section>
+</div>
+
+@code {
+    [Parameter]
+    public string? LabelledBy { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

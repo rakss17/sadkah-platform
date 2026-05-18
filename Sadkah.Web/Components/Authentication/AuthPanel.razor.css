@@ -1,0 +1,39 @@
+.auth-page {
+    min-height: 100vh;
+    background: var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.auth-panel {
+    width: min(58.75vw, 38rem);
+    min-height: 100vh;
+    background: var(--color-surface);
+    border-top-right-radius: clamp(16rem, 26vw, 28rem) clamp(17rem, 32vw, 31rem);
+}
+
+.auth-content {
+    width: min(20.25rem, calc(100vw - 3rem));
+    padding-top: clamp(5rem, 22vh, 8rem);
+    margin-left: clamp(2rem, 6.5vw, 4.5rem);
+}
+
+@media (max-width: 720px) {
+    .auth-page {
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+    }
+
+    .auth-panel {
+        width: min(100%, 28rem);
+        min-height: auto;
+        border-radius: 8px;
+        padding: 2rem 1.5rem;
+    }
+
+    .auth-content {
+        width: 100%;
+        margin-left: 0;
+        padding-top: 0;
+    }
+}
