@@ -1,4 +1,4 @@
-using Sadkah.Web.Components;
+using Sadkah.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 

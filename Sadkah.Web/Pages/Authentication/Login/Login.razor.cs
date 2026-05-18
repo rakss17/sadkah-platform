@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace Sadkah.Web.Components.Pages.Authentication.Login
+namespace Sadkah.Web.Pages.Authentication.Login
 {
     public partial class Login
     {
