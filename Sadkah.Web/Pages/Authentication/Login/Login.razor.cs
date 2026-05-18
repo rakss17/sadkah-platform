@@ -1,7 +1,6 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Sadkah.Web.Models;
 
 namespace Sadkah.Web.Pages.Authentication.Login
 {
@@ -56,31 +55,6 @@ namespace Sadkah.Web.Pages.Authentication.Login
             {
                 isSubmitting = false;
             }
-        }
-
-        private sealed class LoginRequest
-        {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; } = string.Empty;
-
-            [Required]
-            public string Password { get; set; } = string.Empty;
-        }
-
-        private sealed class ApiResponse<T>
-        {
-            public bool Success { get; set; }
-            public string Message { get; set; } = string.Empty;
-            public T? Data { get; set; }
-        }
-
-        private sealed class LoginResult
-        {
-            public string Email { get; set; } = string.Empty;
-            public string FullName { get; set; } = string.Empty;
-            public string AccessToken { get; set; } = string.Empty;
-            public string RefreshToken { get; set; } = string.Empty;
         }
     }
 }
