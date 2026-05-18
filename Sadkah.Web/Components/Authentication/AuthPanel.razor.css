@@ -5,16 +5,18 @@
 }
 
 .auth-panel {
-    width: min(58.75vw, 38rem);
+    display: flex;
+    align-items: center;
+    width: 55vw;
     min-height: 100vh;
     background: var(--color-surface);
     border-top-right-radius: clamp(16rem, 26vw, 28rem) clamp(17rem, 32vw, 31rem);
 }
-
+ 
 .auth-content {
-    width: min(20.25rem, calc(100vw - 3rem));
-    padding-top: clamp(5rem, 22vh, 8rem);
-    margin-left: clamp(2rem, 6.5vw, 4.5rem);
+    width: 100%;
+    max-width: 28rem;
+    margin-left: 10rem;
 }
 
 @media (max-width: 720px) {

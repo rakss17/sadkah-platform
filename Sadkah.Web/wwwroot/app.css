@@ -19,4 +19,10 @@
     /* Text */
     --color-text-primary: #111827;
     --color-text-secondary: #6B7280;
+
+    /* Font Sizes */
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-lg: 30px;
+    --font-size-xl: 36px;
 }

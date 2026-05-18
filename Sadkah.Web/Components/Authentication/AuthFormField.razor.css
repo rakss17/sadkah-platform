@@ -6,7 +6,7 @@
 .auth-form-field label {
     margin: 0;
     color: var(--color-text-primary);
-    font-size: .74rem;
+    font-size: var(--font-size-base);
     font-weight: 600;
 }
 
@@ -17,7 +17,7 @@
     border-radius: 5px;
     background: transparent;
     color: var(--color-text-primary);
-    font-size: .9rem;
+    font-size: var(--font-size-base);
     outline: none;
     padding: .35rem .65rem;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
@@ -35,5 +35,5 @@
 
 .auth-form-field ::deep .validation-message {
     color: var(--color-danger);
-    font-size: .72rem;
+    font-size: var(--font-size-sm);
 }

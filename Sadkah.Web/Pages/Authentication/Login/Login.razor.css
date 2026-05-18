@@ -4,7 +4,7 @@
 
 .login-heading h1 {
     margin: 0 0 .45rem;
-    font-size: 1.55rem;
+    font-size: var(--font-size-xl);
     line-height: 1.15;
     font-weight: 800;
     letter-spacing: 0;
@@ -17,10 +17,9 @@
 }
 
 .login-heading p {
-    width: 13.5rem;
     margin: 0;
     color: var(--color-text-secondary);
-    font-size: .76rem;
+    font-size: var(--font-size-base);
     line-height: 1.45;
 }
 
@@ -39,7 +38,7 @@
     justify-content: space-between;
     gap: 1rem;
     padding: .05rem 0 .25rem;
-    font-size: .76rem;
+    font-size: var(--font-size-base);
 }
 
 .remember-option {
@@ -71,14 +70,14 @@
 .signup-copy {
     margin: .35rem 0 0;
     color: var(--color-text-primary);
-    font-size: .76rem;
+    font-size: var(--font-size-base);
     text-align: center;
 }
 
 .login-alert {
     border-radius: 5px;
     padding: .65rem .75rem;
-    font-size: .76rem;
+    font-size: var(--font-size-base);
     line-height: 1.35;
 }
 
