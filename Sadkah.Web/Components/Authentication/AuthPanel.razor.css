@@ -7,6 +7,7 @@
 }
 
 .auth-panel {
+    position: relative;
     display: flex;
     align-items: center;
     flex: 0 0 55%;
@@ -17,6 +18,14 @@
     z-index: 1;
 }
 
+.auth-logo {
+    position: absolute;
+    top: 1rem;
+    left: 1.5rem;
+    width: 10rem;
+    height: auto;
+    display: block;
+}
 .auth-content {
     width: 100%;
     max-width: 28rem;
@@ -41,6 +50,12 @@
 }
 
 @media (max-width: 900px) {
+    .auth-logo {
+        top: 1.25rem;
+        left: 1.5rem;
+        width: 6.5rem;
+    }
+
     .auth-panel {
         flex-basis: 58%;
         padding: 2.5rem;
