@@ -67,6 +67,10 @@
     text-decoration: underline;
 }
 
+.app-button {
+    margin-top: 20rem;
+}
+
 .signup-copy {
     margin: .35rem 0 0;
     color: var(--color-text-primary);

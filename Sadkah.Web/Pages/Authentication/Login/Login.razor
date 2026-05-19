@@ -30,6 +30,7 @@
                            class="auth-input"
                            type="email"
                            autocomplete="email"
+                           placeholder="Enter your email"
                            @bind-Value="loginModel.Email" />
             </AuthFormField>
 
@@ -38,6 +39,7 @@
                            class="auth-input"
                            type="password"
                            autocomplete="current-password"
+                           placeholder="Enter your password"
                            @bind-Value="loginModel.Password" />
             </AuthFormField>
 
@@ -50,7 +52,7 @@
             </div>
 
             <AppButton Type="submit"
-                       Size="sm"
+                       Size="md"
                        FullWidth="true"
                        IsLoading="@isSubmitting"
                        LoadingText="Logging in...">
