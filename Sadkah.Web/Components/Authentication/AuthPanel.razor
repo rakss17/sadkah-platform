@@ -1,0 +1,22 @@
+<div class="auth-page">
+    <section class="auth-panel" aria-labelledby="@LabelledBy">
+        <img src="/images/sadkah-logo.png" alt="Sadkah Logo" class="auth-logo" aria-hidden="true" />
+        <div class="auth-content">
+            @ChildContent
+        </div>
+    </section>
+    <div class="auth-illustration">
+        <img src="@ImageUrl" alt="Authentication Illustration" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? LabelledBy { get; set; }
+
+    [Parameter]
+    public string? ImageUrl { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

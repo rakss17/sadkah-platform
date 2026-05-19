@@ -1,10 +1,17 @@
-using Sadkah.Web.Components;
+using Sadkah.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddHttpClient("SadkahApi", client =>
+{
+    var apiBaseUrl = builder.Configuration["Api:BaseUrl"]
+        ?? throw new InvalidOperationException("Missing Api:BaseUrl configuration value.");
+
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 
 var app = builder.Build();
 

@@ -1,0 +1,94 @@
+.auth-page {
+    display: flex;
+    min-height: 100vh;
+    background: var(--color-border);
+    color: var(--color-text-primary);
+    overflow: hidden;
+}
+
+.auth-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 0 55%;
+    min-height: 100vh;
+    background: var(--color-surface);
+    border-top-right-radius: clamp(10rem, 22vw, 24rem);
+    padding: 3rem 4rem;
+    z-index: 1;
+}
+
+.auth-logo {
+    position: absolute;
+    top: 1rem;
+    left: 1.5rem;
+    width: 10rem;
+    height: auto;
+    display: block;
+}
+.auth-content {
+    width: 100%;
+    max-width: 28rem;
+    margin-inline: auto;
+}
+
+.auth-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    padding: clamp(2rem, 5vw, 5rem);
+}
+
+.auth-illustration img {
+    display: block;
+    width: min(100%, 34rem);
+    max-height: 76vh;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 900px) {
+    .auth-logo {
+        top: 1.25rem;
+        left: 1.5rem;
+        width: 6.5rem;
+    }
+
+    .auth-panel {
+        flex-basis: 58%;
+        padding: 2.5rem;
+    }
+
+    .auth-illustration {
+        padding: 2rem;
+    }
+
+    .auth-illustration img {
+        width: min(100%, 26rem);
+    }
+}
+
+@media (max-width: 720px) {
+    .auth-page {
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+    }
+
+    .auth-panel {
+        width: min(100%, 28rem);
+        min-height: auto;
+        border-radius: 8px;
+        padding: 2rem 1.5rem;
+    }
+
+    .auth-content {
+        margin: 0;
+    }
+
+    .auth-illustration {
+        display: none;
+    }
+}

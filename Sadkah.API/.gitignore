@@ -31,4 +31,4 @@ TestResults/
 # Publish output
 publish/
 
-sadkah-backend.csproj.lscache
+*.csproj.lscache

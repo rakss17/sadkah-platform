@@ -1,0 +1,94 @@
+.login-heading {
+    margin-bottom: 2.2rem;
+}
+
+.login-heading h1 {
+    margin: 0 0 .45rem;
+    font-size: var(--font-size-xl);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.login-heading h1 span,
+.login-heading strong,
+.login-form a {
+    color: var(--color-primary);
+}
+
+.login-heading p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    line-height: 1.45;
+}
+
+.login-heading strong {
+    font-weight: 700;
+}
+
+.login-form {
+    display: grid;
+    gap: 1.05rem;
+}
+
+.login-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .05rem 0 .25rem;
+    font-size: var(--font-size-base);
+}
+
+.remember-option {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    margin: 0;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.remember-option input {
+    width: .85rem;
+    height: .85rem;
+    margin: 0;
+    accent-color: var(--color-primary);
+}
+
+.login-form a {
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.login-form a:hover,
+.login-form a:focus-visible {
+    text-decoration: underline;
+}
+
+.signup-copy {
+    margin: .35rem 0 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    text-align: center;
+}
+
+.login-alert {
+    border-radius: 5px;
+    padding: .65rem .75rem;
+    font-size: var(--font-size-base);
+    line-height: 1.35;
+}
+
+.login-alert.alert-danger {
+    border: 1px solid color-mix(in srgb, var(--color-danger) 26%, var(--color-bg));
+    background: color-mix(in srgb, var(--color-danger) 8%, var(--color-bg));
+    color: var(--color-danger);
+}
+
+.login-alert.alert-success {
+    border: 1px solid color-mix(in srgb, var(--color-success) 26%, var(--color-bg));
+    background: color-mix(in srgb, var(--color-success) 8%, var(--color-bg));
+    color: var(--color-success);
+}

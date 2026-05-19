@@ -1,0 +1,26 @@
+@typeparam TValue
+@using System.Linq.Expressions
+
+<div class="auth-form-field">
+    <label for="@Id">@Label</label>
+    @ChildContent
+
+    @if (For is not null)
+    {
+        <ValidationMessage For="@For" />
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public Expression<Func<TValue>>? For { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
