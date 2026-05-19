@@ -1,22 +1,58 @@
 .auth-page {
+    display: flex;
     min-height: 100vh;
     background: var(--color-border);
     color: var(--color-text-primary);
+    overflow: hidden;
 }
 
 .auth-panel {
     display: flex;
     align-items: center;
-    width: 55vw;
+    flex: 0 0 55%;
     min-height: 100vh;
     background: var(--color-surface);
-    border-top-right-radius: clamp(16rem, 26vw, 28rem) clamp(17rem, 32vw, 31rem);
+    border-top-right-radius: clamp(10rem, 22vw, 24rem);
+    padding: 3rem 4rem;
+    z-index: 1;
 }
- 
+
 .auth-content {
     width: 100%;
     max-width: 28rem;
-    margin-left: 10rem;
+    margin-inline: auto;
+}
+
+.auth-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    padding: clamp(2rem, 5vw, 5rem);
+}
+
+.auth-illustration img {
+    display: block;
+    width: min(100%, 34rem);
+    max-height: 76vh;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 900px) {
+    .auth-panel {
+        flex-basis: 58%;
+        padding: 2.5rem;
+    }
+
+    .auth-illustration {
+        padding: 2rem;
+    }
+
+    .auth-illustration img {
+        width: min(100%, 26rem);
+    }
 }
 
 @media (max-width: 720px) {
@@ -34,8 +70,10 @@
     }
 
     .auth-content {
-        width: 100%;
-        margin-left: 0;
-        padding-top: 0;
+        margin: 0;
+    }
+
+    .auth-illustration {
+        display: none;
     }
 }
