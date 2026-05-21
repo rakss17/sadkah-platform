@@ -16,7 +16,9 @@ namespace Sadkah.Web.Models
         [EmailAddress]
         public string Email { get; set; } = default!;
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Passwords must be at least 8 characters.")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d).+$",
+            ErrorMessage = "Passwords must have at least one digit ('0'-'9') and one uppercase ('A'-'Z').")]
         public string Password { get; set; } = default!;
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = default!;
