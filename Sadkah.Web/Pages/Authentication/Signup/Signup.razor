@@ -1,0 +1,99 @@
+@page "/signup"
+@layout AuthLayout
+@rendermode InteractiveServer
+
+<PageTitle>Sadkah - Signup</PageTitle>
+
+<AuthPanel LabelledBy="signup-title" ImageUrl="/images/auth/shield-lock.png">
+    <div class="signup-heading">
+        <h1 id="signup-title">Create Your <span>Account</span></h1>
+        <p>
+            Join <strong>Sadkah</strong> and start making an
+            <strong>impact</strong> today.
+        </p>
+    </div>
+
+    <EditForm Model="signupModel" OnValidSubmit="HandleSignupAsync" FormName="signup">
+        <DataAnnotationsValidator />
+
+        <div class="signup-form">
+            @if (!string.IsNullOrWhiteSpace(statusMessage))
+            {
+                <div class="login-alert @statusAlertClass" role="alert">
+                    @statusMessage
+                </div>
+            }
+
+            <div>
+                <AuthFormField TValue="string" Id="firstName" Label="First name" For="() => signupModel.FirstName">
+                    <InputText id="firstName"
+                            class="auth-input"
+                            type="text"
+                            autocomplete="given-name"
+                            placeholder="Enter your first name"
+                            @bind-Value="signupModel.FirstName" />
+                </AuthFormField>
+
+                <AuthFormField TValue="string" Id="lastName" Label="Last name" For="() => signupModel.LastName">
+                    <InputText id="lastName"
+                            class="auth-input"
+                            type="text"
+                            autocomplete="family-name"
+                            placeholder="Enter your last name"
+                            @bind-Value="signupModel.LastName" />
+                </AuthFormField>
+            </div>
+            
+
+            <AuthFormField TValue="string" Id="email" Label="Email address" For="() => signupModel.Email">
+                <InputText id="email"
+                           class="auth-input"
+                           type="email"
+                           autocomplete="email"
+                           placeholder="Enter your email"
+                           @bind-Value="signupModel.Email" />
+            </AuthFormField>
+
+            <AuthFormField TValue="string" Id="password" Label="Password" For="() => signupModel.Password">
+                <InputText id="password"
+                           class="auth-input"
+                           type="password"
+                           autocomplete="current-password"
+                           placeholder="Enter your password"
+                           @bind-Value="signupModel.Password" />
+            </AuthFormField>
+
+            <AuthFormField TValue="string" Id="confirmPassword" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
+                <InputText id="confirmPassword"
+                           class="auth-input"
+                           type="password"
+                           autocomplete="current-password"
+                           placeholder="Confirm your password"
+                           @bind-Value="signupModel.ConfirmPassword" />
+            </AuthFormField>
+
+            <div class="terms-conditions">
+                <input type="checkbox" />
+                <span>
+                    I agree to the
+                    <a href="/terms" target="_blank">Terms and Conditions</a>
+                    and
+                    <a href="/privacy" target="_blank">Privacy Policy</a>.
+                </span>
+            </div>
+
+            <AppButton Type="submit"
+                       Size="md"
+                       FullWidth="true"
+                       IsLoading="@isSubmitting"
+                       LoadingText="Signing up...">
+                Sign up
+            </AppButton>
+
+            <p class="signup-copy">
+                Already have an account?
+                <a href="/login">Log in</a>
+            </p>
+        </div>
+    </EditForm>
+</AuthPanel>
