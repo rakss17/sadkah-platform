@@ -30,7 +30,7 @@ namespace Sadkah.Web.Pages.Authentication.Login
             {
                 var client = HttpClientFactory.CreateClient("SadkahApi");
                 var response = await client.PostAsJsonAsync("api/user/login", loginModel);
-                var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<LoginResult>>();
+                var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResult>>();
 
                 if (!response.IsSuccessStatusCode || apiResponse is not { Success: true, Data: not null })
                 {
