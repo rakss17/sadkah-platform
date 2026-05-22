@@ -6,7 +6,7 @@
 .auth-form-field label {
     margin: 0;
     color: var(--color-text-primary);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     font-weight: 600;
 }
 
@@ -17,7 +17,7 @@
     border-radius: 5px;
     background: transparent;
     color: var(--color-text-primary);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     outline: none;
     padding: .35rem .65rem;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
