@@ -19,14 +19,14 @@
         <div class="signup-form">
             @if (!string.IsNullOrWhiteSpace(statusMessage))
             {
-                <div class="login-alert @statusAlertClass" role="alert">
+                <div class="signup-alert @statusAlertClass" role="alert">
                     @statusMessage
                 </div>
             }
 
             <div>
-                <AuthFormField TValue="string" Id="firstName" Label="First name" For="() => signupModel.FirstName">
-                    <InputText id="firstName"
+                <AuthFormField TValue="string" Id="first-name" Label="First name" For="() => signupModel.FirstName">
+                    <InputText id="first-name"
                             class="auth-input"
                             type="text"
                             autocomplete="given-name"
@@ -34,8 +34,8 @@
                             @bind-Value="signupModel.FirstName" />
                 </AuthFormField>
 
-                <AuthFormField TValue="string" Id="lastName" Label="Last name" For="() => signupModel.LastName">
-                    <InputText id="lastName"
+                <AuthFormField TValue="string" Id="last-name" Label="Last name" For="() => signupModel.LastName">
+                    <InputText id="last-name"
                             class="auth-input"
                             type="text"
                             autocomplete="family-name"
@@ -63,8 +63,8 @@
                            @bind-Value="signupModel.Password" />
             </AuthFormField>
 
-            <AuthFormField TValue="string" Id="confirmPassword" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
-                <InputText id="confirmPassword"
+            <AuthFormField TValue="string" Id="confirm-password" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
+                <InputText id="confirm-password"
                            class="auth-input"
                            type="password"
                            autocomplete="current-password"
@@ -90,7 +90,7 @@
                 Sign up
             </AppButton>
 
-            <p class="signup-copy">
+            <p class="login-copy">  
                 Already have an account?
                 <a href="/login">Log in</a>
             </p>
