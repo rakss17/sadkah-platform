@@ -1,13 +1,9 @@
 <div class="auth-page">
-    @if (isMobile)
-    {
-        <img src="/images/sadkah-logo.png" alt="Sadkah Logo" class="auth-logo" aria-hidden="true" />
-    }
+    <img src="/images/sadkah-logo.png" alt="Sadkah Logo" class="auth-logo auth-logo-mobile" aria-hidden="true" />
+
     <section class="auth-panel" aria-labelledby="@LabelledBy">
-        @if (!isMobile)
-        {
-            <img src="/images/sadkah-logo.png" alt="Sadkah Logo" class="auth-logo" aria-hidden="true" />
-        }
+        <img src="/images/sadkah-logo.png" alt="Sadkah Logo" class="auth-logo auth-logo-desktop" aria-hidden="true" />
+
         <div class="auth-content">
             @ChildContent
         </div>
@@ -26,20 +22,4 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
-    [Inject]
-    private IJSRuntime JsRuntime { get; set; } = default!;
-
-    private bool isMobile;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            return;
-        }
-
-        isMobile = await ScreenSizeUtility.IsMobileAsync(JsRuntime);
-        StateHasChanged();
-    }
 }

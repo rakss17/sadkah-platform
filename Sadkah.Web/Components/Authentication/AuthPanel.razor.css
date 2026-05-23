@@ -26,6 +26,11 @@
     height: auto;
     display: block;
 }
+
+.auth-logo-mobile {
+    display: none;
+}
+
 .auth-content {
     width: 100%;
     max-width: 28rem;
@@ -75,6 +80,14 @@
         display: grid;
         place-items: center;
         padding: 1.5rem;
+    }
+
+    .auth-logo-mobile {
+        display: block;
+    }
+
+    .auth-logo-desktop {
+        display: none;
     }
 
     .auth-panel {
