@@ -1,6 +1,6 @@
 namespace Sadkah.Web.Models
 {
-    public class LoginResult
+    public class AuthResult
     {
         public string Email { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;

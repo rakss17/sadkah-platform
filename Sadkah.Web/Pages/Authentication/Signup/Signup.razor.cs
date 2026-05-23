@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Sadkah.Web.Models;
 
-namespace Sadkah.Web.Pages.Authentication.Login
+namespace Sadkah.Web.Pages.Authentication.Signup
 {
-    public partial class Login
+    public partial class Signup
     {
         [Inject]
         private IHttpClientFactory HttpClientFactory { get; set; } = default!;
@@ -15,12 +15,12 @@ namespace Sadkah.Web.Pages.Authentication.Login
         [Inject]
         private NavigationManager Navigation { get; set; } = default!;
 
-        private readonly LoginRequest loginModel = new();
+        private readonly SignupRequest signupModel = new();
         private bool isSubmitting;
         private string? statusMessage;
         private string statusAlertClass = "alert-danger";
 
-        private async Task HandleLoginAsync()
+        private async Task HandleSignupAsync()
         {
             isSubmitting = true;
             statusMessage = null;
@@ -29,12 +29,12 @@ namespace Sadkah.Web.Pages.Authentication.Login
             try
             {
                 var client = HttpClientFactory.CreateClient("SadkahApi");
-                var response = await client.PostAsJsonAsync("api/user/login", loginModel);
+                var response = await client.PostAsJsonAsync("api/user/register", signupModel);
                 var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResult>>();
 
                 if (!response.IsSuccessStatusCode || apiResponse is not { Success: true, Data: not null })
                 {
-                    statusMessage = apiResponse?.Message ?? "Unable to sign in. Please check your email and password.";
+                    statusMessage = apiResponse?.Message ?? "Unable to sign up. Please check your information and try again.";
                     return;
                 }
 
