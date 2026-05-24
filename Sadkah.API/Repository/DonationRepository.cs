@@ -44,6 +44,11 @@ namespace Sadkah.API.Repository
 
         public async Task<Donation> CreateDonationAsync(Donation donation)
         {
+            var campaign = await _context.Campaigns.FirstOrDefaultAsync(c => c.Id == donation.CampaignId);
+            if (campaign == null) return null!;
+
+            campaign.CurrentAmount += donation.Amount;
+
             await _context.Donations.AddAsync(donation);
             await _context.SaveChangesAsync();
 
