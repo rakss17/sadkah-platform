@@ -1,4 +1,10 @@
-@if (isAuthenticated)
+@if (!hasCheckedAuthentication)
+{
+    <div class="auth-checking" role="status" aria-live="polite">
+        Checking authentication...
+    </div>
+}
+else if (isAuthenticated)
 {
     @ChildContent
 }
