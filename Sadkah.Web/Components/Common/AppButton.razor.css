@@ -46,9 +46,7 @@
 
 .app-button--secondary:hover:not(:disabled),
 .app-button--secondary:focus-visible:not(:disabled) {
-    border-color: var(--color-primary-hover);
-    background: var(--color-surface);
-}
+    background-color: var(--color-secondary-hover);}
 
 .app-button--danger {
     background: var(--color-danger);

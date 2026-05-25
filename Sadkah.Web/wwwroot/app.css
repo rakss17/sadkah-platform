@@ -2,6 +2,7 @@
     /* Brand colors */
     --color-primary: #16A34A;
     --color-primary-hover: #f8f9fa;
+    --color-secondary-hover: #dcdfe2;
     --color-secondary: #15803D;
     --color-accent: #22C55E;
 
@@ -19,6 +20,7 @@
     /* Text */
     --color-text-primary: #111827;
     --color-text-secondary: #6B7280;
+    --color-text-tertiary: #70798F;
 
     /* Font Sizes */
     --font-size-sm: 14px;
