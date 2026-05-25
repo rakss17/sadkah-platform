@@ -3,3 +3,65 @@
 @rendermode InteractiveServer
 
 <PageTitle>Sadkah - Campaigns</PageTitle>
+
+<div class="header-content">
+    <div class="header-text">
+        <h1>Find verified causes</h1>
+        <p>Search, filter, and donate to campaigns that matter to you</p>
+    </div>
+    <div class="header-filters">
+        <input type="text" placeholder="Search campaigns..." />
+        <AppButton Variant="secondary" Size="md">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.33333 4.16669H2.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 15.8333H2.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11.6667 2.5V5.83333" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.3333 14.1667V17.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17.5 10H10" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17.5 15.8333H13.3333" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17.5 4.16669H11.6667" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6.66669 8.33331V11.6666" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6.66667 10H2.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Filters</span>
+        </AppButton>
+
+        <AppButton Class="create-button" Variant="primary" Size="md">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.16669 10H15.8334" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 4.16669V15.8334" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Create Campaign</span>
+        </AppButton>
+    </div>
+</div>
+
+<div class="filter-tab" role="tablist" aria-label="Campaign filters">
+    <AppButton Class="@GetFilterTabClass(CampaignFilter.All)"
+               Variant="secondary"
+               Size="md"
+               aria-pressed="@IsSelected(CampaignFilter.All)"
+               @onclick="@(() => SelectFilter(CampaignFilter.All))">
+        All
+    </AppButton>
+    <AppButton Class="@GetFilterTabClass(CampaignFilter.MyCampaigns)"
+               Variant="secondary"
+               Size="md"
+               aria-pressed="@IsSelected(CampaignFilter.MyCampaigns)"
+               @onclick="@(() => SelectFilter(CampaignFilter.MyCampaigns))">
+        My Campaigns
+    </AppButton>
+</div>
+
+<section class="campaign-list" aria-label="Campaign list">
+    @foreach (var campaign in FilteredCampaigns)
+    {
+        <CampaignCard Title="@campaign.Title"
+                      Category="@campaign.Category"
+                      Location="@campaign.Location"
+                      DaysLeft="@campaign.DaysLeft"
+                      RaisedAmount="@campaign.RaisedAmount"
+                      GoalAmount="@campaign.GoalAmount"
+                      IsVerified="@campaign.IsVerified" />
+    }
+</section>
