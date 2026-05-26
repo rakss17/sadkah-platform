@@ -45,7 +45,7 @@ namespace Sadkah.Web.Pages.Authentication.Login
 
                 statusAlertClass = "alert-success";
                 statusMessage = apiResponse.Message;
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo("/dashboard");
             }
             catch (HttpRequestException)
             {

@@ -1,0 +1,191 @@
+.nav-menu {
+    width: 18rem;
+    min-height: 100vh;
+    flex: 0 0 18rem;
+    background-color: var(--color-bg);
+    border-right: 1px solid var(--color-border);
+    box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+    transition: width 180ms ease, flex-basis 180ms ease;
+}
+
+.nav-header {
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem 0.75rem 1.25rem;
+}
+
+.navbar-brand {
+    width: 8rem;
+    height: auto;
+    display: block;
+    transition: opacity 160ms ease, width 180ms ease;
+    margin-top: 0.5rem;
+}
+
+.navbar-toggler {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    appearance: none;
+    cursor: pointer;
+    color: var(--color-text-primary);
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+
+.bi {
+    display: inline-block;
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0;
+    top: -1px;
+    background-size: cover;
+    flex: 0 0 1.25rem;
+}
+
+.nav.flex-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.nav-scrollable {
+    height: calc(100vh - 4rem);
+    padding: 2.5rem 0.25rem 0;
+    overflow-y: auto;
+}
+
+.nav-item {
+    font-size: 0.95rem;
+    padding-bottom: 0.25rem;
+}
+
+.nav-item ::deep .nav-link {
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    color: var(--color-text-secondary);
+    background: none;
+    border: none;
+    border-radius: 6px;
+    line-height: 1.2;
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+    white-space: nowrap;
+}
+
+.nav-item ::deep .nav-link svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 1.25rem;
+    color: currentColor;
+}
+
+.nav-item ::deep .nav-link svg path {
+    stroke: currentColor;
+    transition: stroke 160ms ease;
+}
+
+.nav-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav-item ::deep a.active {
+    background-color: var(--color-nav-bar-button-active-bg);
+    color: var(--color-secondary);
+    font-weight: 600;
+}
+
+.nav-item ::deep a.active svg path {
+    stroke: var(--color-secondary);
+}
+
+.nav-item ::deep .nav-link:hover {
+    background-color: var(--color-primary-hover);
+    color: var(--color-text-primary);
+}
+
+.nav-item ::deep a.active:hover {
+    background-color: var(--color-nav-bar-button-active-bg);
+    color: var(--color-secondary);
+}
+
+.nav-item ::deep a.active:hover svg path {
+    stroke: var(--color-secondary);
+}
+
+.nav-menu.collapsed {
+    width: 4.5rem;
+    flex-basis: 4.5rem;
+}
+
+.nav-menu.collapsed .nav-header {
+    justify-content: center;
+    padding: 0.75rem;
+}
+
+.nav-menu.collapsed .navbar-brand {
+    display: none;
+}
+
+.nav-menu.collapsed .nav-scrollable {
+    display: block;
+}
+
+.nav-menu.collapsed .nav-item {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+}
+
+.nav-menu.collapsed .nav-item ::deep .nav-link {
+    justify-content: center;
+    gap: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav-menu.collapsed .nav-label {
+    display: none;
+}
+
+@media (max-width: 640.98px) {
+    .nav-menu {
+        width: 100%;
+        min-height: auto;
+        flex-basis: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: none;
+    }
+
+    .nav-menu.collapsed {
+        width: 100%;
+        flex-basis: auto;
+    }
+
+    .nav-menu.collapsed .navbar-brand {
+        display: block;
+    }
+
+    .nav-menu.collapsed .nav-scrollable {
+        display: none;
+    }
+
+    .nav-scrollable {
+        height: auto;
+        max-height: calc(100vh - 4rem);
+    }
+}

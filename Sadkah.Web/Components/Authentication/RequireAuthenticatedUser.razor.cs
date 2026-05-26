@@ -14,6 +14,7 @@ namespace Sadkah.Web.Components.Authentication
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
+        private bool hasCheckedAuthentication;
         private bool isAuthenticated;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -24,6 +25,8 @@ namespace Sadkah.Web.Components.Authentication
             }
 
             var token = await JsRuntime.InvokeAsync<string?>("localStorage.getItem", "sadkah_access_token");
+
+            hasCheckedAuthentication = true;
 
             if (string.IsNullOrWhiteSpace(token))
             {
