@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-
 namespace Sadkah.Web.Components.Authentication
 {
     public partial class RequireAuthenticatedUser
     {
         [Inject]
-        private IJSRuntime JsRuntime { get; set; } = default!;
+        private IAuthSessionService AuthSession { get; set; } = default!;
 
         [Inject]
         private NavigationManager Navigation { get; set; } = default!;
@@ -24,11 +21,9 @@ namespace Sadkah.Web.Components.Authentication
                 return;
             }
 
-            var token = await JsRuntime.InvokeAsync<string?>("localStorage.getItem", "sadkah_access_token");
-
             hasCheckedAuthentication = true;
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (!await AuthSession.IsAuthenticatedAsync())
             {
                 Navigation.NavigateTo("/login", replace: true);
                 return;

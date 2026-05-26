@@ -1,16 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using Sadkah.Web.Models;
-
 namespace Sadkah.Web.Pages.Authentication.Signup
 {
     public partial class Signup
     {
         [Inject]
-        private IHttpClientFactory HttpClientFactory { get; set; } = default!;
-
-        [Inject]
-        private IJSRuntime JsRuntime { get; set; } = default!;
+        private IAuthService AuthService { get; set; } = default!;
 
         [Inject]
         private NavigationManager Navigation { get; set; } = default!;
@@ -28,28 +21,17 @@ namespace Sadkah.Web.Pages.Authentication.Signup
 
             try
             {
-                var client = HttpClientFactory.CreateClient("SadkahApi");
-                var response = await client.PostAsJsonAsync("api/user/register", signupModel);
-                var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<AuthResult>>();
+                var result = await AuthService.SignupAsync(signupModel);
 
-                if (!response.IsSuccessStatusCode || apiResponse is not { Success: true, Data: not null })
+                if (!result.Success)
                 {
-                    statusMessage = apiResponse?.Message ?? "Unable to sign up. Please check your information and try again.";
+                    statusMessage = result.Message;
                     return;
                 }
 
-                await JsRuntime.InvokeVoidAsync("localStorage.setItem", "sadkah_access_token", apiResponse.Data.AccessToken);
-                await JsRuntime.InvokeVoidAsync("localStorage.setItem", "sadkah_refresh_token", apiResponse.Data.RefreshToken);
-                await JsRuntime.InvokeVoidAsync("localStorage.setItem", "sadkah_user_email", apiResponse.Data.Email);
-                await JsRuntime.InvokeVoidAsync("localStorage.setItem", "sadkah_user_full_name", apiResponse.Data.FullName);
-
                 statusAlertClass = "alert-success";
-                statusMessage = apiResponse.Message;
+                statusMessage = result.Message;
                 Navigation.NavigateTo("/");
-            }
-            catch (HttpRequestException)
-            {
-                statusMessage = "Could not reach the Sadkah API. Make sure Sadkah.API is running.";
             }
             finally
             {
