@@ -54,14 +54,29 @@
 </div>
 
 <section class="campaign-list" aria-label="Campaign list">
-    @foreach (var campaign in FilteredCampaigns)
+    @if (isLoading)
     {
-        <CampaignCard Title="@campaign.Title"
-                      Category="@campaign.Category"
-                      Location="@campaign.Location"
-                      DaysLeft="@campaign.DaysLeft"
-                      RaisedAmount="@campaign.RaisedAmount"
-                      GoalAmount="@campaign.GoalAmount"
-                      IsVerified="@campaign.IsVerified" />
+        <p class="campaign-status" role="status">Loading campaigns...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <p class="campaign-status campaign-status--error" role="alert">@statusMessage</p>
+    }
+    else if (!FilteredCampaigns.Any())
+    {
+        <p class="campaign-status" role="status">No campaigns found.</p>
+    }
+    else
+    {
+        @foreach (var campaign in FilteredCampaigns)
+        {
+            <CampaignCard Title="@campaign.Title"
+                          Category="@campaign.Category"
+                          Location="@campaign.Location"
+                          DaysLeft="@campaign.DaysLeft"
+                          RaisedAmount="@campaign.RaisedAmount"
+                          GoalAmount="@campaign.GoalAmount"
+                          IsVerified="@campaign.IsVerified" />
+        }
     }
 </section>
