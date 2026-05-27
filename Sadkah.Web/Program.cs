@@ -1,8 +1,14 @@
+using Microsoft.AspNetCore.DataProtection;
+using Sadkah.Web.Models;
+using Sadkah.Web.Services;
+using System.Text.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient("SadkahApi", client =>
 {
     var apiBaseUrl = builder.Configuration["Api:BaseUrl"]
@@ -28,6 +34,27 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
+
+app.MapPost("/auth/session", (AuthResult authResult, HttpContext httpContext, IDataProtectionProvider dataProtectionProvider) =>
+{
+    if (string.IsNullOrWhiteSpace(authResult.AccessToken))
+    {
+        return Results.BadRequest();
+    }
+
+    var protector = dataProtectionProvider.CreateProtector(AuthSessionService.ProtectorPurpose);
+    var protectedSession = protector.Protect(JsonSerializer.Serialize(authResult));
+
+    httpContext.Response.Cookies.Append(AuthSessionService.CookieName, protectedSession, new CookieOptions
+    {
+        HttpOnly = true,
+        Secure = httpContext.Request.IsHttps,
+        SameSite = SameSiteMode.Strict,
+        Expires = DateTimeOffset.UtcNow.AddDays(7)
+    });
+
+    return Results.NoContent();
+});
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
