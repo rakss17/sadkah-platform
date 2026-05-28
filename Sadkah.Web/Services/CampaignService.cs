@@ -13,14 +13,7 @@ namespace Sadkah.Web.Services
 
         public async Task<ServiceResult<IReadOnlyList<CampaignSummary>>> GetCampaignsAsync(int pageSize = 50)
         {
-            var token = await authSession.GetAccessTokenAsync();
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                return ServiceResult<IReadOnlyList<CampaignSummary>>.AuthenticationRequired();
-            }
-
-            var result = await apiClient.GetAsync<List<CampaignResponse>>($"api/campaigns?pageSize={pageSize}", token);
+            var result = await apiClient.AuthenticatedGetAsync<List<CampaignResponse>>($"api/campaigns?pageSize={pageSize}");
 
             if (!result.Success || result.Data is null)
             {

@@ -24,10 +24,5 @@ namespace Sadkah.Web.Models
         {
             return new ServiceResult<T>(false, default, message, false);
         }
-
-        public static ServiceResult<T> AuthenticationRequired()
-        {
-            return new ServiceResult<T>(false, default, "Please sign in to continue.", true);
-        }
     }
 }

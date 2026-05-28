@@ -15,17 +15,54 @@ namespace Sadkah.Web.Services
             this.authSession = authSession;
         }
 
-        public async Task<ServiceResult<T>> GetAsync<T>(string requestUri, string? bearerToken = null)
+        public async Task<ServiceResult<T>> AuthenticatedGetAsync<T>(string requestUri)
         {
+            var token = await authSession.GetAccessTokenAsync();
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
+            }
+
             return await SendAsync<T>(() =>
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-                AddAuthorizationHeader(request, bearerToken);
+                AddAuthorizationHeader(request, token);
                 return request;
-            }, bearerToken);
+            }, token);
         }
 
-        public async Task<ServiceResult<T>> PostAsync<TRequest, T>(string requestUri, TRequest requestBody, string? bearerToken = null)
+        public async Task<ServiceResult<T>> AuthenticatedPostAsync<TRequest, T>(string requestUri, TRequest requestBody)
+        {
+            var token = await authSession.GetAccessTokenAsync();
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
+            }
+
+            return await SendAsync<T>(() =>
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
+                {
+                    Content = JsonContent.Create(requestBody)
+                };
+                AddAuthorizationHeader(request, token);
+                return request;
+            }, token);
+        }
+
+        public async Task<ServiceResult<T>> UnauthenticatedGetAsync<T>(string requestUri)
+        {
+
+            return await SendAsync<T>(() =>
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+                return request;
+            }, null);
+        }
+
+        public async Task<ServiceResult<T>> UnauthenticatedPostAsync<TRequest, T>(string requestUri, TRequest requestBody)
         {
             return await SendAsync<T>(() =>
             {
@@ -33,9 +70,8 @@ namespace Sadkah.Web.Services
                 {
                     Content = JsonContent.Create(requestBody)
                 };
-                AddAuthorizationHeader(request, bearerToken);
                 return request;
-            }, bearerToken);
+            }, null);
         }
 
         private async Task<ServiceResult<T>> SendAsync<T>(Func<HttpRequestMessage> createRequest, string? bearerToken)
