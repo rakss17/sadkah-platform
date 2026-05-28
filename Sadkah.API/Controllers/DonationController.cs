@@ -98,7 +98,7 @@ namespace Sadkah.API.Controllers
             
         }
 
-        [HttpPut("{id:guid}/anonymous")]
+        [HttpPatch("{id:guid}/anonymous")]
         [EnableRateLimiting("api")]        
         [Authorize]
         public async Task<IActionResult> UpdateAnonymousDonation([FromRoute] Guid id, [FromBody] UpdateAnonymousDonationRequestDto updateDto)

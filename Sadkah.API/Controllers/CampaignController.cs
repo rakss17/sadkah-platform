@@ -93,7 +93,7 @@ namespace Sadkah.API.Controllers
            
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPatch("{id:guid}")]
         [EnableRateLimiting("api")]
         [Authorize]
         public async Task<IActionResult> UpdateCampaign([FromRoute] Guid id, [FromBody] UpdateCampaignRequestDto updateDto)
