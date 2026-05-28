@@ -1,41 +1,102 @@
+using Microsoft.AspNetCore.DataProtection;
+using System.Text.Json;
+
 namespace Sadkah.Web.Services
 {
     public sealed class AuthSessionService : IAuthSessionService
     {
-        private const string AccessTokenKey = "sadkah_access_token";
-        private const string RefreshTokenKey = "sadkah_refresh_token";
-        private const string UserEmailKey = "sadkah_user_email";
-        private const string UserFullNameKey = "sadkah_user_full_name";
+        public const string CookieName = "sadkah_auth_session";
+        public const string ProtectorPurpose = "Sadkah.Web.AuthSession";
 
+        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IJSRuntime jsRuntime;
+        private readonly IDataProtector protector;
+        private AuthResult? currentSession;
 
-        public AuthSessionService(IJSRuntime jsRuntime)
+        public AuthSessionService(
+            IHttpContextAccessor httpContextAccessor,
+            IJSRuntime jsRuntime,
+            IDataProtectionProvider dataProtectionProvider)
         {
+            this.httpContextAccessor = httpContextAccessor;
             this.jsRuntime = jsRuntime;
+            protector = dataProtectionProvider.CreateProtector(ProtectorPurpose);
         }
 
-        public async Task<string?> GetAccessTokenAsync()
+        public Task<string?> GetAccessTokenAsync()
         {
-            return await jsRuntime.InvokeAsync<string?>("localStorage.getItem", AccessTokenKey);
+            return Task.FromResult(GetSession()?.AccessToken);
         }
 
-        public async Task<string?> GetCurrentUserFullNameAsync()
+        public Task<string?> GetRefreshTokenAsync()
         {
-            return await jsRuntime.InvokeAsync<string?>("localStorage.getItem", UserFullNameKey);
+            return Task.FromResult(GetSession()?.RefreshToken);
         }
 
-        public async Task<bool> IsAuthenticatedAsync()
+        public Task<string?> GetCurrentUserFullNameAsync()
         {
-            var token = await GetAccessTokenAsync();
-            return !string.IsNullOrWhiteSpace(token);
+            return Task.FromResult(GetSession()?.FullName);
+        }
+
+        public Task<bool> IsAuthenticatedAsync()
+        {
+            return Task.FromResult(!string.IsNullOrWhiteSpace(GetSession()?.AccessToken));
         }
 
         public async Task SaveAsync(AuthResult authResult)
         {
-            await jsRuntime.InvokeVoidAsync("localStorage.setItem", AccessTokenKey, authResult.AccessToken);
-            await jsRuntime.InvokeVoidAsync("localStorage.setItem", RefreshTokenKey, authResult.RefreshToken);
-            await jsRuntime.InvokeVoidAsync("localStorage.setItem", UserEmailKey, authResult.Email);
-            await jsRuntime.InvokeVoidAsync("localStorage.setItem", UserFullNameKey, authResult.FullName);
+            currentSession = authResult;
+            await PersistAsync(authResult);
+        }
+
+        public async Task SaveTokensAsync(string accessToken, string refreshToken)
+        {
+            var session = GetSession() ?? new AuthResult();
+            session.AccessToken = accessToken;
+            session.RefreshToken = refreshToken;
+            currentSession = session;
+
+            await PersistAsync(session);
+        }
+
+        private async Task PersistAsync(AuthResult authResult)
+        {
+            await jsRuntime.InvokeVoidAsync("fetch", "/auth/session", new
+            {
+                method = "POST",
+                headers = new Dictionary<string, string>
+                {
+                    ["Content-Type"] = "application/json"
+                },
+                body = JsonSerializer.Serialize(authResult),
+                credentials = "same-origin"
+            });
+        }
+
+        private AuthResult? GetSession()
+        {
+            if (currentSession is not null)
+            {
+                return currentSession;
+            }
+
+            var context = httpContextAccessor.HttpContext;
+            if (context is null ||
+                !context.Request.Cookies.TryGetValue(CookieName, out var cookieValue) ||
+                string.IsNullOrWhiteSpace(cookieValue))
+            {
+                return null;
+            }
+
+            try
+            {
+                currentSession = JsonSerializer.Deserialize<AuthResult>(protector.Unprotect(cookieValue));
+                return currentSession;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
