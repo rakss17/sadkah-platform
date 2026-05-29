@@ -98,6 +98,9 @@ namespace Sadkah.API.Extensions
             builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
             builder.Services.AddScoped<IDonationRepository, DonationRepository>();
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<ICampaignService, CampaignService>();
+            builder.Services.AddScoped<IDonationService, DonationService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             return builder;
         }

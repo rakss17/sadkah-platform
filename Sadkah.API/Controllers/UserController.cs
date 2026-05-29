@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Sadkah.API.Dtos.User;
@@ -14,15 +13,11 @@ namespace Sadkah.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
 
-        public UserController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager)
+        public UserController(IUserService userService)
         {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _signInManager = signInManager;
+            _userService = userService;
         }
 
         [HttpPost("login")]
@@ -31,23 +26,11 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(loginDto.Email);
+                var user = await _userService.LoginAsync(loginDto);
 
                 if (user == null) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
 
-                var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-
-                if (!result.Succeeded) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
-
-                var refreshToken = await _tokenService.CreateRefreshTokenAsync(user);
-
-                return Ok(ApiResponse<NewUserDto>.SuccessResponse("Login successful.", new NewUserDto
-                {
-                    Email = user.Email ?? string.Empty,
-                    FullName = user.FirstName + " " + user.LastName,
-                    AccessToken = _tokenService.CreateToken(user),
-                    RefreshToken = refreshToken.Token
-                }));
+                return Ok(ApiResponse<NewUserDto>.SuccessResponse("Login successful.", user));
             }
             catch (Exception ex)
             {
@@ -62,43 +45,15 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var user = new User
+                var result = await _userService.RegisterAsync(registerDto);
+
+                if (!result.Succeeded)
                 {
-                    UserName = registerDto.Email,
-                    Email = registerDto.Email,
-                    FirstName = registerDto.FirstName ?? string.Empty,
-                    LastName = registerDto.LastName ?? string.Empty,
-                    Role = registerDto.Role ?? UserRole.Unassigned
-                };
-
-                var createdUser = await _userManager.CreateAsync(user, registerDto.Password);
-
-                if (createdUser.Succeeded)
-                {
-                    var addToRole = await _userManager.AddToRoleAsync(user, registerDto.Role.ToString() ?? UserRole.Unassigned.ToString());
-                    if (addToRole.Succeeded)
-                    {
-                        var refreshToken = await _tokenService.CreateRefreshTokenAsync(user);
-
-                        return Ok(ApiResponse<NewUserDto>.SuccessResponse("User registered successfully.", new NewUserDto
-                        {
-                            Email = user.Email ?? string.Empty,
-                            FullName = user.FirstName + " " + user.LastName,
-                            AccessToken = _tokenService.CreateToken(user),
-                            RefreshToken = refreshToken.Token
-                        }));
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error adding user to role: {string.Join(", ", addToRole.Errors.Select(e => e.Description))}");
-                        return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while adding user to role."));
-                    }
+                    Console.WriteLine($"Error during registration: {JsonSerializer.Serialize(result.Errors)}");
+                    return StatusCode(500, ApiResponse<object>.FailResponse(result.ErrorMessage));
                 }
-                else
-                {
-                    Console.WriteLine($"Error creating user: {string.Join(", ", createdUser.Errors.Select(e => e.Description))}");
-                    return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while creating user."));
-                }
+
+                return Ok(ApiResponse<NewUserDto>.SuccessResponse("User registered successfully.", result.Data));
             }
             catch (Exception ex)
             {
@@ -113,12 +68,12 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var (accessToken, newRefresh) = await _tokenService.RefreshAsync(refreshToken.RefreshToken);
+                var (accessToken, newRefreshToken) = await _userService.RefreshTokenAsync(refreshToken.RefreshToken);
 
                 return Ok(ApiResponse<object>.SuccessResponse("Token refreshed successfully.", new
                 {
                     AccessToken = accessToken,
-                    RefreshToken = newRefresh.Token
+                    RefreshToken = newRefreshToken
                 }));
             }
             catch (SecurityTokenException)
