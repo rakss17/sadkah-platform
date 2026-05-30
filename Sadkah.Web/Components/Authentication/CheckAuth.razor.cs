@@ -1,6 +1,6 @@
 namespace Sadkah.Web.Components.Authentication
 {
-    public partial class RequireAuthenticatedUser
+    public partial class CheckAuth
     {
         [Inject]
         private IAuthSessionService AuthSession { get; set; } = default!;
@@ -11,8 +11,11 @@ namespace Sadkah.Web.Components.Authentication
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
+        [Parameter]
+        public AuthGuardMode Mode { get; set; } = AuthGuardMode.RequireAuthenticated;
+
         private bool hasCheckedAuthentication;
-        private bool isAuthenticated;
+        private bool shouldRenderChildContent;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -21,15 +24,22 @@ namespace Sadkah.Web.Components.Authentication
                 return;
             }
 
-            hasCheckedAuthentication = true;
+            var isAuthenticated = await AuthSession.IsAuthenticatedAsync();
 
-            if (!await AuthSession.IsAuthenticatedAsync())
+            if (Mode == AuthGuardMode.RequireAuthenticated && !isAuthenticated)
             {
                 Navigation.NavigateTo("/login", replace: true);
                 return;
             }
 
-            isAuthenticated = true;
+            if (Mode == AuthGuardMode.RedirectAuthenticated && isAuthenticated)
+            {
+                Navigation.NavigateTo("/dashboard", replace: true);
+                return;
+            }
+
+            hasCheckedAuthentication = true;
+            shouldRenderChildContent = true;
             StateHasChanged();
         }
     }
