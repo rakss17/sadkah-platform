@@ -1,5 +1,8 @@
 @inherits LayoutComponentBase
 
-<main class="public-layout">
-    @Body
-</main>
+<CheckAuth Mode="AuthGuardMode.RedirectAuthenticated">
+    <main class="public-layout">
+        @Body
+    </main>
+</CheckAuth>
+
