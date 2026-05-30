@@ -15,30 +15,34 @@ namespace Sadkah.Web.Services
             this.authSession = authSession;
         }
 
-        public async Task<ServiceResult<T>> AuthenticatedGetAsync<T>(string requestUri)
+        public async Task<ServiceResult<T>> GetAsync<T>(string requestUri, bool requiresAuthentication = true)
         {
-            var token = await authSession.GetAccessTokenAsync();
+            string? accessToken = null;
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (requiresAuthentication)
             {
-                throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
+                accessToken = await authSession.GetAccessTokenAsync();
+
+                if (string.IsNullOrWhiteSpace(accessToken)) throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
             }
 
             return await SendAsync<T>(() =>
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-                AddAuthorizationHeader(request, token);
+                AddAuthorizationHeader(request, accessToken);
                 return request;
-            }, token);
+            }, accessToken);
         }
 
-        public async Task<ServiceResult<T>> AuthenticatedPostAsync<TRequest, T>(string requestUri, TRequest requestBody)
+        public async Task<ServiceResult<T>> PostAsync<TRequest, T>(string requestUri, TRequest requestBody, bool requiresAuthentication = true)
         {
-            var token = await authSession.GetAccessTokenAsync();
+            string? accessToken = null;
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (requiresAuthentication)
             {
-                throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
+                accessToken = await authSession.GetAccessTokenAsync();
+
+                if (string.IsNullOrWhiteSpace(accessToken)) throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
             }
 
             return await SendAsync<T>(() =>
@@ -47,31 +51,9 @@ namespace Sadkah.Web.Services
                 {
                     Content = JsonContent.Create(requestBody)
                 };
-                AddAuthorizationHeader(request, token);
+                AddAuthorizationHeader(request, accessToken);
                 return request;
-            }, token);
-        }
-
-        public async Task<ServiceResult<T>> UnauthenticatedGetAsync<T>(string requestUri)
-        {
-
-            return await SendAsync<T>(() =>
-            {
-                var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-                return request;
-            }, null);
-        }
-
-        public async Task<ServiceResult<T>> UnauthenticatedPostAsync<TRequest, T>(string requestUri, TRequest requestBody)
-        {
-            return await SendAsync<T>(() =>
-            {
-                var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
-                {
-                    Content = JsonContent.Create(requestBody)
-                };
-                return request;
-            }, null);
+            }, accessToken);
         }
 
         private async Task<ServiceResult<T>> SendAsync<T>(Func<HttpRequestMessage> createRequest, string? bearerToken)

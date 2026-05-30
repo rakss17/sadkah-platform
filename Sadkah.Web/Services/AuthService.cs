@@ -13,7 +13,7 @@ namespace Sadkah.Web.Services
 
         public async Task<ServiceResult<AuthResult>> LoginAsync(LoginRequest request)
         {
-            var result = await apiClient.UnauthenticatedPostAsync<LoginRequest, AuthResult>("api/user/login", request);
+            var result = await apiClient.PostAsync<LoginRequest, AuthResult>("api/user/login", request, requiresAuthentication: false);
             await SaveSessionOnSuccessAsync(result);
 
             return result;
@@ -21,7 +21,7 @@ namespace Sadkah.Web.Services
 
         public async Task<ServiceResult<AuthResult>> SignupAsync(SignupRequest request)
         {
-            var result = await apiClient.UnauthenticatedPostAsync<SignupRequest, AuthResult>("api/user/register", request);
+            var result = await apiClient.PostAsync<SignupRequest, AuthResult>("api/user/register", request, requiresAuthentication: false);
             await SaveSessionOnSuccessAsync(result);
 
             return result;
