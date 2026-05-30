@@ -12,10 +12,10 @@ namespace Sadkah.API.Controllers
     [ApiController]
     public class CampaignsController : ControllerBase
     {
-        private readonly ICampaignRepository _campaignRepository;
-        public CampaignsController(ICampaignRepository campaignRepository)
+        private readonly ICampaignService _campaignService;
+        public CampaignsController(ICampaignService campaignService)
         {
-            _campaignRepository = campaignRepository;
+            _campaignService = campaignService;
         }
 
         [HttpGet]
@@ -25,10 +25,9 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var campaigns = await _campaignRepository.GetAllCampaignsAsync(query);
-                var campaignDtos = campaigns.Items.Select(c => c.ToCampaignDto());
+                var campaigns = await _campaignService.GetAllCampaignsAsync(query);
                 
-                if (!campaignDtos.Any()) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
+                if (!campaigns.Items.Any()) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
 
                 var metadata = new
                 {
@@ -38,7 +37,7 @@ namespace Sadkah.API.Controllers
                     totalPages = campaigns.TotalPages
                 }; 
 
-                return Ok(ApiResponse<IEnumerable<CampaignDto>>.SuccessResponse("Campaigns retrieved successfully.",campaignDtos, metadata));
+                return Ok(ApiResponse<IEnumerable<CampaignDto>>.SuccessResponse("Campaigns retrieved successfully.",campaigns.Items, metadata));
             }
             catch (Exception ex)
             {
@@ -54,9 +53,9 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var campaign = await _campaignRepository.GetCampaignByIdAsync(id);
+                var campaign = await _campaignService.GetCampaignByIdAsync(id);
                 if (campaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
-                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign retrieved successfully.", campaign.ToCampaignDto()));
+                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign retrieved successfully.", campaign));
             }
             catch (Exception ex)
             {
@@ -73,16 +72,14 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var campaign = createDto.ToCampaignFromCreateDto();
-            
-                var createdCampaign = await _campaignRepository.CreateCampaignAsync(campaign);
+                var createdCampaign = await _campaignService.CreateCampaignAsync(createDto);
 
                 if (createdCampaign == null) return NotFound(ApiResponse<object>.FailResponse("Failed to create campaign."));
 
                 return CreatedAtAction(
                     nameof(GetCampaignById),
                     new { id = createdCampaign.Id },
-                    ApiResponse<CampaignDto>.SuccessResponse("Campaign created successfully.", createdCampaign.ToCampaignDto())
+                    ApiResponse<CampaignDto>.SuccessResponse("Campaign created successfully.", createdCampaign)
                 );
             }
             catch (Exception ex)
@@ -100,11 +97,11 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var updatedCampaign = await _campaignRepository.UpdateCampaignAsync(id, updateDto);
+                var updatedCampaign = await _campaignService.UpdateCampaignAsync(id, updateDto);
 
                 if (updatedCampaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
 
-                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign updated successfully.", updatedCampaign.ToCampaignDto()));
+                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign updated successfully.", updatedCampaign));
             }
             catch (Exception ex)
             {
@@ -121,11 +118,11 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var archivedCampaign = await _campaignRepository.ArchiveCampaignAsync(id);
+                var archivedCampaign = await _campaignService.ArchiveCampaignAsync(id);
             
                 if (archivedCampaign == null) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
 
-                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign archived successfully.", archivedCampaign.ToCampaignDto()));
+                return Ok(ApiResponse<CampaignDto>.SuccessResponse("Campaign archived successfully.", archivedCampaign));
             }
             catch (Exception ex)
             {

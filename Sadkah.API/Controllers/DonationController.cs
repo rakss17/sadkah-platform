@@ -12,12 +12,10 @@ namespace Sadkah.API.Controllers
     [ApiController]
     public class DonationsController : ControllerBase
     {
-        private readonly IDonationRepository _donationRepository;
-        private readonly ICampaignRepository _campaignRepository;
-        public DonationsController(IDonationRepository donationRepository, ICampaignRepository campaignRepository)
+        private readonly IDonationService _donationService;
+        public DonationsController(IDonationService donationService)
         {
-            _donationRepository = donationRepository;
-            _campaignRepository = campaignRepository;
+            _donationService = donationService;
         }
 
         [HttpGet]
@@ -27,10 +25,9 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var donations = await _donationRepository.GetAllDonationsAsync(query);
-                var donationDtos = donations.Items.Select(d => d.ToDonationDto());
+                var donations = await _donationService.GetAllDonationsAsync(query);
 
-                if (!donationDtos.Any()) return NotFound(ApiResponse<object>.FailResponse("Donations not found."));
+                if (!donations.Items.Any()) return NotFound(ApiResponse<object>.FailResponse("Donations not found."));
 
                 var metadata = new
                 {
@@ -40,7 +37,7 @@ namespace Sadkah.API.Controllers
                     totalPages = donations.TotalPages
                 }; 
 
-                return Ok(ApiResponse<IEnumerable<DonationDto>>.SuccessResponse("Donations retrieved successfully.", donationDtos, metadata));
+                return Ok(ApiResponse<IEnumerable<DonationDto>>.SuccessResponse("Donations retrieved successfully.", donations.Items, metadata));
             }
             catch (Exception ex)
             {
@@ -56,9 +53,9 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var donation = await _donationRepository.GetDonationByIdAsync(id);
+                var donation = await _donationService.GetDonationByIdAsync(id);
                 if (donation == null) return NotFound(ApiResponse<object>.FailResponse("Donation not found."));
-                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation retrieved successfully.", donation.ToDonationDto()));
+                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation retrieved successfully.", donation));
             }
             catch (Exception ex)
             {
@@ -75,19 +72,18 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var isCampaignExisting = await _campaignRepository.IsCampaignExistingAsync(createDto.CampaignId);
+                var result = await _donationService.CreateDonationAsync(createDto);
 
-                if (!isCampaignExisting) return BadRequest(ApiResponse<object>.FailResponse("Campaign does not exist."));
-
-                var donation = createDto.ToDonationFromCreateDto();
-                var createdDonation = await _donationRepository.CreateDonationAsync(donation);
-
-                if (createdDonation == null) return NotFound(ApiResponse<object>.FailResponse("Failed to create donation."));
+                if (!result.Succeeded && result.ErrorMessage == "Campaign does not exist.")
+                    return BadRequest(ApiResponse<object>.FailResponse(result.ErrorMessage));
+                
+                if (!result.Succeeded || result.Data == null)
+                    return NotFound(ApiResponse<object>.FailResponse(result.ErrorMessage));
 
                 return CreatedAtAction(
                     nameof(GetDonationById),
-                    new { id = createdDonation.Id },
-                    ApiResponse<DonationDto>.SuccessResponse("Donation created successfully.", createdDonation.ToDonationDto())
+                    new { id = result.Data.Id },
+                    ApiResponse<DonationDto>.SuccessResponse("Donation created successfully.", result.Data)
                 ); 
             }
             catch (Exception ex)
@@ -105,11 +101,11 @@ namespace Sadkah.API.Controllers
         {
             try
             {
-                var updatedDonation = await _donationRepository.UpdateAnonymousDonationAsync(id, updateDto.IsAnonymous!.Value);
+                var updatedDonation = await _donationService.UpdateAnonymousDonationAsync(id, updateDto);
 
                 if (updatedDonation == null) return NotFound(ApiResponse<object>.FailResponse("Donation not found or failed to update."));
 
-                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation anonymous status updated successfully.", updatedDonation.ToDonationDto()));
+                return Ok(ApiResponse<DonationDto>.SuccessResponse("Donation anonymous status updated successfully.", updatedDonation));
             }
             catch (Exception ex)
             {
