@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Sadkah.API.Dtos.User
+﻿namespace Sadkah.API.Dtos.User
 {
-    public class NewUserDto
+    public class AuthResponseDto
     {
         public string Email { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;

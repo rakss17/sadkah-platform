@@ -16,7 +16,7 @@ namespace Sadkah.API.Services
             _signInManager = signInManager;
         }
 
-        public async Task<NewUserDto?> LoginAsync(LoginDto loginDto)
+        public async Task<AuthResponseDto?> LoginAsync(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
@@ -26,10 +26,10 @@ namespace Sadkah.API.Services
 
             if (!result.Succeeded) return null;
 
-            return await CreateNewUserDtoAsync(user);
+            return await CreateAuthResponseDtoAsync(user);
         }
 
-        public async Task<ServiceResult<NewUserDto>> RegisterAsync(RegisterDto registerDto)
+        public async Task<ServiceResult<AuthResponseDto>> RegisterAsync(RegisterDto registerDto)
         {
             var user = new User
             {
@@ -45,7 +45,7 @@ namespace Sadkah.API.Services
             if (!createdUser.Succeeded)
             {
                 var errors = createdUser.Errors.Select(e => e.Description);
-                return ServiceResult<NewUserDto>.Failure("Internal server error while creating user.", errors);
+                return ServiceResult<AuthResponseDto>.Failure("Internal server error while creating user.", errors);
             }
 
             var roleName = (registerDto.Role ?? UserRole.Unassigned).ToString();
@@ -54,10 +54,10 @@ namespace Sadkah.API.Services
             if (!addToRole.Succeeded)
             {
                 var errors = addToRole.Errors.Select(e => e.Description);
-                return ServiceResult<NewUserDto>.Failure("Internal server error while adding user to role.", errors);
+                return ServiceResult<AuthResponseDto>.Failure("Internal server error while adding user to role.", errors);
             }
 
-            return ServiceResult<NewUserDto>.Success(await CreateNewUserDtoAsync(user));
+            return ServiceResult<AuthResponseDto>.Success(await CreateAuthResponseDtoAsync(user));
         }
 
         public async Task<(string AccessToken, string RefreshToken)> RefreshTokenAsync(string refreshToken)
@@ -66,11 +66,11 @@ namespace Sadkah.API.Services
             return (accessToken, newRefresh.Token);
         }
 
-        private async Task<NewUserDto> CreateNewUserDtoAsync(User user)
+        private async Task<AuthResponseDto> CreateAuthResponseDtoAsync(User user)
         {
             var refreshToken = await _tokenService.CreateRefreshTokenAsync(user);
 
-            return new NewUserDto
+            return new AuthResponseDto
             {
                 Email = user.Email ?? string.Empty,
                 FullName = user.FirstName + " " + user.LastName,

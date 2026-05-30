@@ -30,7 +30,7 @@ namespace Sadkah.API.Controllers
 
                 if (user == null) return Unauthorized(ApiResponse<object>.FailResponse("Invalid email or password."));
 
-                return Ok(ApiResponse<NewUserDto>.SuccessResponse("Login successful.", user));
+                return Ok(ApiResponse<AuthResponseDto>.SuccessResponse("Login successful.", user));
             }
             catch (Exception ex)
             {
@@ -53,7 +53,7 @@ namespace Sadkah.API.Controllers
                     return StatusCode(500, ApiResponse<object>.FailResponse(result.ErrorMessage));
                 }
 
-                return Ok(ApiResponse<NewUserDto>.SuccessResponse("User registered successfully.", result.Data));
+                return Ok(ApiResponse<AuthResponseDto>.SuccessResponse("User registered successfully.", result.Data));
             }
             catch (Exception ex)
             {
