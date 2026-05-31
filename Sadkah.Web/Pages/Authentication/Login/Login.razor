@@ -26,21 +26,19 @@
             }
 
             <AuthFormField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
-                <InputText id="email"
-                           class="auth-input"
-                           type="email"
-                           autocomplete="email"
-                           placeholder="Enter your email"
-                           @bind-Value="loginModel.Email" />
+                <AppInput Id="email"
+                          Type="email"
+                          Autocomplete="email"
+                          Placeholder="Enter your email"
+                          @bind-Value="loginModel.Email" />
             </AuthFormField>
 
             <AuthFormField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
-                <InputText id="password"
-                           class="auth-input"
-                           type="password"
-                           autocomplete="current-password"
-                           placeholder="Enter your password"
-                           @bind-Value="loginModel.Password" />
+                <AppInput Id="password"
+                          Type="password"
+                          Autocomplete="current-password"
+                          Placeholder="Enter your password"
+                          @bind-Value="loginModel.Password" />
             </AuthFormField>
 
             <div class="login-options">

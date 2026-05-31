@@ -26,50 +26,45 @@
 
             <div class="signup-field-row">
                 <AuthFormField TValue="string" Id="first-name" Label="First name" For="() => signupModel.FirstName">
-                    <InputText id="first-name"
-                            class="auth-input"
-                            type="text"
-                            autocomplete="given-name"
-                            placeholder="Enter your first name"
-                            @bind-Value="signupModel.FirstName" />
+                    <AppInput Id="first-name"
+                              Type="text"
+                              Autocomplete="given-name"
+                              Placeholder="Enter your first name"
+                              @bind-Value="signupModel.FirstName" />
                 </AuthFormField>
 
                 <AuthFormField TValue="string" Id="last-name" Label="Last name" For="() => signupModel.LastName">
-                    <InputText id="last-name"
-                            class="auth-input"
-                            type="text"
-                            autocomplete="family-name"
-                            placeholder="Enter your last name"
-                            @bind-Value="signupModel.LastName" />
+                    <AppInput Id="last-name"
+                              Type="text"
+                              Autocomplete="family-name"
+                              Placeholder="Enter your last name"
+                              @bind-Value="signupModel.LastName" />
                 </AuthFormField>
             </div>
             
 
             <AuthFormField TValue="string" Id="email" Label="Email address" For="() => signupModel.Email">
-                <InputText id="email"
-                           class="auth-input"
-                           type="email"
-                           autocomplete="email"
-                           placeholder="Enter your email"
-                           @bind-Value="signupModel.Email" />
+                <AppInput Id="email"
+                          Type="email"
+                          Autocomplete="email"
+                          Placeholder="Enter your email"
+                          @bind-Value="signupModel.Email" />
             </AuthFormField>
 
             <AuthFormField TValue="string" Id="password" Label="Password" For="() => signupModel.Password">
-                <InputText id="password"
-                           class="auth-input"
-                           type="password"
-                           autocomplete="current-password"
-                           placeholder="Enter your password"
-                           @bind-Value="signupModel.Password" />
+                <AppInput Id="password"
+                          Type="password"
+                          Autocomplete="current-password"
+                          Placeholder="Enter your password"
+                          @bind-Value="signupModel.Password" />
             </AuthFormField>
 
             <AuthFormField TValue="string" Id="confirm-password" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
-                <InputText id="confirm-password"
-                           class="auth-input"
-                           type="password"
-                           autocomplete="current-password"
-                           placeholder="Confirm your password"
-                           @bind-Value="signupModel.ConfirmPassword" />
+                <AppInput Id="confirm-password"
+                          Type="password"
+                          Autocomplete="current-password"
+                          Placeholder="Confirm your password"
+                          @bind-Value="signupModel.ConfirmPassword" />
             </AuthFormField>
 
             <div class="terms-conditions">

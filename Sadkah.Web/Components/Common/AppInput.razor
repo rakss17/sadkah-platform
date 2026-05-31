@@ -1,0 +1,39 @@
+@inherits InputText
+
+<input @attributes="AdditionalAttributes"
+       id="@Id"
+       class="@InputClass"
+       type="@Type"
+       autocomplete="@Autocomplete"
+       placeholder="@Placeholder"
+       @bind="CurrentValueAsString"
+       @bind:event="onchange" />
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Type { get; set; } = "text";
+
+    [Parameter]
+    public string? Autocomplete { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    private string InputClass
+    {
+        get
+        {
+            var classes = new List<string> { "app-input" };
+
+            if (!string.IsNullOrWhiteSpace(CssClass))
+            {
+                classes.Add(CssClass);
+            }
+
+            return string.Join(" ", classes);
+        }
+    }
+}
