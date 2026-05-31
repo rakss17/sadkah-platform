@@ -25,23 +25,29 @@
                 </div>
             }
 
-            <AuthFormField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
-                <InputText id="email"
-                           class="auth-input"
-                           type="email"
-                           autocomplete="email"
-                           placeholder="Enter your email"
-                           @bind-Value="loginModel.Email" />
-            </AuthFormField>
+            <AppFormField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
+                <AppInput Id="email"
+                          Type="email"
+                          Autocomplete="email"
+                          Placeholder="Enter your email"
+                          @bind-Value="loginModel.Email">
+                    <LeftIcon>
+                        <MailIcon />
+                    </LeftIcon>
+                </AppInput>
+            </AppFormField>
 
-            <AuthFormField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
-                <InputText id="password"
-                           class="auth-input"
-                           type="password"
-                           autocomplete="current-password"
-                           placeholder="Enter your password"
-                           @bind-Value="loginModel.Password" />
-            </AuthFormField>
+            <AppFormField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
+                <AppInput Id="password"
+                          Type="password"
+                          Autocomplete="current-password"
+                          Placeholder="Enter your password"
+                          @bind-Value="loginModel.Password">
+                    <LeftIcon>
+                        <LockIcon />
+                    </LeftIcon>
+                </AppInput>
+            </AppFormField>
 
             <div class="login-options">
                 <label class="remember-option">

@@ -1,0 +1,120 @@
+@inherits InputText
+
+<div class="@WrapperClass">
+    @if (LeftIcon is not null)
+    {
+        <span class="app-input__icon" aria-hidden="true">
+            @LeftIcon
+        </span>
+    }
+    
+    <input @attributes="AdditionalAttributes"
+           id="@Id"
+           class="@InputClass"
+           type="@CurrentType"
+           autocomplete="@Autocomplete"
+           placeholder="@Placeholder"
+           @bind="CurrentValueAsString"
+           @bind:event="onchange" />
+
+    @if (HasPasswordToggle)
+    {
+        <button class="app-input__icon-button"
+                type="button"
+                aria-label="@PasswordToggleLabel"
+                title="@PasswordToggleLabel"
+                @onclick="TogglePasswordVisibility">
+            @if (isPasswordVisible)
+            {
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3l18 18" />
+                    <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                    <path d="M9.9 4.2A10.7 10.7 0 0 1 12 4c5 0 8.7 4.1 10 8a12.3 12.3 0 0 1-3.1 4.8" />
+                    <path d="M6.1 6.1A12.4 12.4 0 0 0 2 12c1.3 3.9 5 8 10 8a10.8 10.8 0 0 0 5.9-1.8" />
+                </svg>
+            }
+            else
+            {
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3.7-8 10-8 10 8 10 8-3.7 8-10 8S2 12 2 12z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+            }
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Type { get; set; } = "text";
+
+    [Parameter]
+    public string? Autocomplete { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeftIcon { get; set; }
+
+    [Parameter]
+    public bool EnablePasswordToggle { get; set; } = true;
+
+    private bool isPasswordVisible;
+
+    private bool IsPassword => string.Equals(Type, "password", StringComparison.OrdinalIgnoreCase);
+
+    private bool HasPasswordToggle => IsPassword && EnablePasswordToggle;
+
+    private string CurrentType => HasPasswordToggle && isPasswordVisible ? "text" : Type;
+
+    private string PasswordToggleLabel => isPasswordVisible ? "Hide password" : "Show password";
+
+    private string WrapperClass
+    {
+        get
+        {
+            var classes = new List<string> { "app-input" };
+
+            if (!string.IsNullOrWhiteSpace(CssClass))
+            {
+                classes.Add(CssClass);
+            }
+
+            if (LeftIcon is not null)
+            {
+                classes.Add("app-input--with-left-icon");
+            }
+
+            if (HasPasswordToggle)
+            {
+                classes.Add("app-input--with-right-icon");
+            }
+
+            return string.Join(" ", classes);
+        }
+    }
+
+    private string InputClass
+    {
+        get
+        {
+            var classes = new List<string> { "app-input__control" };
+
+            if (!string.IsNullOrWhiteSpace(CssClass))
+            {
+                classes.Add(CssClass);
+            }
+
+            return string.Join(" ", classes);
+        }
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        isPasswordVisible = !isPasswordVisible;
+    }
+}
