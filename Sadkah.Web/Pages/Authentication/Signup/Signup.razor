@@ -25,52 +25,52 @@
             }
 
             <div class="signup-field-row">
-                <AuthFormField TValue="string" Id="first-name" Label="First name" For="() => signupModel.FirstName">
+                <AppFormField TValue="string" Id="first-name" Label="First name" For="() => signupModel.FirstName">
                     <AppInput Id="first-name"
                               Type="text"
                               Icon="user"
                               Autocomplete="given-name"
                               Placeholder="Enter your first name"
                               @bind-Value="signupModel.FirstName" />
-                </AuthFormField>
+                </AppFormField>
 
-                <AuthFormField TValue="string" Id="last-name" Label="Last name" For="() => signupModel.LastName">
+                <AppFormField TValue="string" Id="last-name" Label="Last name" For="() => signupModel.LastName">
                     <AppInput Id="last-name"
                               Type="text"
                               Icon="user"
                               Autocomplete="family-name"
                               Placeholder="Enter your last name"
                               @bind-Value="signupModel.LastName" />
-                </AuthFormField>
+                </AppFormField>
             </div>
             
 
-            <AuthFormField TValue="string" Id="email" Label="Email address" For="() => signupModel.Email">
+            <AppFormField TValue="string" Id="email" Label="Email address" For="() => signupModel.Email">
                 <AppInput Id="email"
                           Type="email"
                           Icon="mail"
                           Autocomplete="email"
                           Placeholder="Enter your email"
                           @bind-Value="signupModel.Email" />
-            </AuthFormField>
+            </AppFormField>
 
-            <AuthFormField TValue="string" Id="password" Label="Password" For="() => signupModel.Password">
+            <AppFormField TValue="string" Id="password" Label="Password" For="() => signupModel.Password">
                 <AppInput Id="password"
                           Type="password"
                           Icon="lock"
                           Autocomplete="current-password"
                           Placeholder="Enter your password"
                           @bind-Value="signupModel.Password" />
-            </AuthFormField>
+            </AppFormField>
 
-            <AuthFormField TValue="string" Id="confirm-password" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
+            <AppFormField TValue="string" Id="confirm-password" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
                 <AppInput Id="confirm-password"
                           Type="password"
                           Icon="lock"
                           Autocomplete="current-password"
                           Placeholder="Confirm your password"
                           @bind-Value="signupModel.ConfirmPassword" />
-            </AuthFormField>
+            </AppFormField>
 
             <div class="terms-conditions">
                 <input type="checkbox" />

@@ -25,23 +25,23 @@
                 </div>
             }
 
-            <AuthFormField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
+            <AppFormField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
                 <AppInput Id="email"
                           Type="email"
                           Icon="mail"
                           Autocomplete="email"
                           Placeholder="Enter your email"
                           @bind-Value="loginModel.Email" />
-            </AuthFormField>
+            </AppFormField>
 
-            <AuthFormField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
+            <AppFormField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
                 <AppInput Id="password"
                           Type="password"
                           Icon="lock"
                           Autocomplete="current-password"
                           Placeholder="Enter your password"
                           @bind-Value="loginModel.Password" />
-            </AuthFormField>
+            </AppFormField>
 
             <div class="login-options">
                 <label class="remember-option">
