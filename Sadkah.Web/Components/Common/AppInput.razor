@@ -1,33 +1,10 @@
 @inherits InputText
 
 <div class="@WrapperClass">
-    @if (!string.IsNullOrWhiteSpace(Icon))
+    @if (LeftIcon is not null)
     {
         <span class="app-input__icon" aria-hidden="true">
-            @switch (Icon.Trim().ToLowerInvariant())
-            {
-                case "email":
-                case "mail":
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="20" height="16" x="2" y="4" rx="2" />
-                        <path d="m22 7-10 6L2 7" />
-                    </svg>
-                    break;
-                case "lock":
-                case "password":
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="18" height="11" x="3" y="11" rx="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                    break;
-                case "user":
-                case "person":
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21a8 8 0 0 0-16 0" />
-                        <circle cx="12" cy="7" r="4" />
-                    </svg>
-                    break;
-            }
+            @LeftIcon
         </span>
     }
     
@@ -81,7 +58,7 @@
     public string? Placeholder { get; set; }
 
     [Parameter]
-    public string? Icon { get; set; }
+    public RenderFragment? LeftIcon { get; set; }
 
     [Parameter]
     public bool EnablePasswordToggle { get; set; } = true;
@@ -107,7 +84,7 @@
                 classes.Add(CssClass);
             }
 
-            if (!string.IsNullOrWhiteSpace(Icon))
+            if (LeftIcon is not null)
             {
                 classes.Add("app-input--with-left-icon");
             }
