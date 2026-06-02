@@ -50,24 +50,10 @@ namespace Sadkah.API.Data
                 },
                 new IdentityRole 
                 {
-                    Id = "ROLE_CAMPAIGN_OWNER", 
-                    Name = UserRole.CampaignOwner.ToString(), 
-                    NormalizedName = UserRole.CampaignOwner.ToString().ToUpper(),
-                    ConcurrencyStamp = "ROLE_CAMPAIGN_OWNER"
-                },
-                new IdentityRole 
-                { 
-                    Id = "ROLE_DONOR",
-                    Name = UserRole.Donor.ToString(), 
-                    NormalizedName = UserRole.Donor.ToString().ToUpper(),
-                    ConcurrencyStamp = "ROLE_DONOR"
-                },
-                new IdentityRole 
-                { 
-                    Id = "ROLE_UNASSIGNED",
-                    Name = UserRole.Unassigned.ToString(), 
-                    NormalizedName = UserRole.Unassigned.ToString().ToUpper(),
-                    ConcurrencyStamp = "ROLE_UNASSIGNED"
+                    Id = "ROLE_USER",
+                    Name = UserRole.User.ToString(),
+                    NormalizedName = UserRole.User.ToString().ToUpper(),
+                    ConcurrencyStamp = "ROLE_USER"
                 }
             };
             modelBuilder.Entity<IdentityRole>().HasData(roles);
