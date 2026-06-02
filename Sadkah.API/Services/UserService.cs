@@ -37,7 +37,7 @@ namespace Sadkah.API.Services
                 Email = registerDto.Email,
                 FirstName = registerDto.FirstName ?? string.Empty,
                 LastName = registerDto.LastName ?? string.Empty,
-                Role = registerDto.Role ?? UserRole.Unassigned
+                Role = registerDto.Role ?? UserRole.User
             };
 
             var createdUser = await _userManager.CreateAsync(user, registerDto.Password);
@@ -48,7 +48,7 @@ namespace Sadkah.API.Services
                 return ServiceResult<AuthResponseDto>.Failure("Internal server error while creating user.", errors);
             }
 
-            var roleName = (registerDto.Role ?? UserRole.Unassigned).ToString();
+            var roleName = (registerDto.Role ?? UserRole.User).ToString();
             var addToRole = await _userManager.AddToRoleAsync(user, roleName);
 
             if (!addToRole.Succeeded)
