@@ -3,8 +3,6 @@
     public enum UserRole
     {
         Admin,
-        Donor,
-        CampaignOwner,
-        Unassigned
+        User
     }
 }
