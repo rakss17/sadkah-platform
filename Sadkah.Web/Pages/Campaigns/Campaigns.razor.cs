@@ -19,15 +19,9 @@ namespace Sadkah.Web.Pages.Campaigns
             _ => campaigns
         };
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnInitializedAsync()
         {
-            if (!firstRender)
-            {
-                return;
-            }
-
             await LoadCampaignsAsync();
-            StateHasChanged();
         }
 
         private async Task LoadCampaignsAsync()
