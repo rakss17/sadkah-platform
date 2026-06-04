@@ -66,11 +66,5 @@ namespace Sadkah.Web.Pages.Campaigns
                 ? "filter-tab-button filter-tab-button--active"
                 : "filter-tab-button";
         }
-
-        private enum CampaignFilter
-        {
-            All,
-            MyCampaigns
-        }
     }
 }
