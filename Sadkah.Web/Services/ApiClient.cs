@@ -23,7 +23,10 @@ namespace Sadkah.Web.Services
             {
                 accessToken = await authSession.GetAccessTokenAsync();
 
-                if (string.IsNullOrWhiteSpace(accessToken)) throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
+                if (string.IsNullOrWhiteSpace(accessToken))
+                {
+                    return ServiceResult<T>.AuthenticationRequired();
+                }
             }
 
             return await SendAsync<T>(() =>
@@ -42,7 +45,10 @@ namespace Sadkah.Web.Services
             {
                 accessToken = await authSession.GetAccessTokenAsync();
 
-                if (string.IsNullOrWhiteSpace(accessToken)) throw new InvalidOperationException("An access token is required to make API requests. Ensure the user is authenticated.");
+                if (string.IsNullOrWhiteSpace(accessToken))
+                {
+                    return ServiceResult<T>.AuthenticationRequired();
+                }
             }
 
             return await SendAsync<T>(() =>
