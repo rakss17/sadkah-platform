@@ -1,6 +1,7 @@
 @inherits InputText
+@implements IDisposable
 
-<div class="@WrapperClass">
+<div class="@WrapperClass" style="@WrapperStyle">
     @if (LeftIcon is not null)
     {
         <span class="app-input__icon" aria-hidden="true">
@@ -14,8 +15,8 @@
            type="@CurrentType"
            autocomplete="@Autocomplete"
            placeholder="@Placeholder"
-           @bind="CurrentValueAsString"
-           @bind:event="onchange" />
+           value="@CurrentValueAsString"
+           @oninput="HandleInputAsync" />
 
     @if (HasPasswordToggle)
     {
@@ -61,9 +62,19 @@
     public RenderFragment? LeftIcon { get; set; }
 
     [Parameter]
+    public string? Width { get; set; }
+
+    [Parameter]
+    public int Debounce { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> DebouncedValueChanged { get; set; }
+
+    [Parameter]
     public bool EnablePasswordToggle { get; set; } = true;
 
     private bool isPasswordVisible;
+    private CancellationTokenSource? debounceCts;
 
     private bool IsPassword => string.Equals(Type, "password", StringComparison.OrdinalIgnoreCase);
 
@@ -72,6 +83,48 @@
     private string CurrentType => HasPasswordToggle && isPasswordVisible ? "text" : Type;
 
     private string PasswordToggleLabel => isPasswordVisible ? "Hide password" : "Show password";
+
+    private string? WrapperStyle => string.IsNullOrWhiteSpace(Width) ? null : $"width: {Width};";
+
+    private Task HandleInputAsync(ChangeEventArgs args)
+    {
+        var value = args.Value?.ToString();
+        CurrentValueAsString = value;
+        return NotifyDebouncedValueChangedAsync(value);
+    }
+
+    private Task NotifyDebouncedValueChangedAsync(string? value)
+    {
+        if (!DebouncedValueChanged.HasDelegate)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (Debounce <= 0)
+        {
+            return DebouncedValueChanged.InvokeAsync(value);
+        }
+
+        debounceCts?.Cancel();
+        debounceCts?.Dispose();
+        debounceCts = new CancellationTokenSource();
+
+        _ = NotifyDebouncedValueChangedAfterDelayAsync(value, debounceCts.Token);
+
+        return Task.CompletedTask;
+    }
+
+    private async Task NotifyDebouncedValueChangedAfterDelayAsync(string? value, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await Task.Delay(Debounce, cancellationToken);
+            await InvokeAsync(() => DebouncedValueChanged.InvokeAsync(value));
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
 
     private string WrapperClass
     {
@@ -116,5 +169,11 @@
     private void TogglePasswordVisibility()
     {
         isPasswordVisible = !isPasswordVisible;
+    }
+
+    public void Dispose()
+    {
+        debounceCts?.Cancel();
+        debounceCts?.Dispose();
     }
 }
