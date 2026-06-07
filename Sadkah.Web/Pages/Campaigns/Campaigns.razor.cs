@@ -12,6 +12,7 @@ namespace Sadkah.Web.Pages.Campaigns
         private IReadOnlyList<CampaignSummary> campaigns = [];
         private bool isLoading = true;
         private string? statusMessage;
+        private string searchTerm = string.Empty;
 
         private IEnumerable<CampaignSummary> FilteredCampaigns => selectedFilter switch
         {
@@ -19,7 +20,7 @@ namespace Sadkah.Web.Pages.Campaigns
             _ => campaigns
         };
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
             await LoadCampaignsAsync();
         }
@@ -31,7 +32,7 @@ namespace Sadkah.Web.Pages.Campaigns
 
             try
             {
-                var result = await CampaignService.GetCampaignsAsync();
+                var result = await CampaignService.GetCampaignsAsync(searchTerm: searchTerm);
 
                 if (result.RequiresAuthentication)
                 {
@@ -58,6 +59,12 @@ namespace Sadkah.Web.Pages.Campaigns
         private void SelectFilter(CampaignFilter filter)
         {
             selectedFilter = filter;
+        }
+
+        private async Task SearchCampaignsAsync(string? value)
+        {
+            searchTerm = value ?? string.Empty;
+            await LoadCampaignsAsync();
         }
 
         private string GetFilterTabClass(CampaignFilter filter)
