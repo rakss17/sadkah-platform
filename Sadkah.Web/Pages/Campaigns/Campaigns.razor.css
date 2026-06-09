@@ -42,7 +42,7 @@ input:focus {
 
 .header-filters ::deep .app-button.create-button {
     gap: .45rem;
-    width: 100% !important;
+    width: 20rem;
 }
 
 .filter-tab {

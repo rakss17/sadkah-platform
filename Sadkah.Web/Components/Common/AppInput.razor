@@ -1,7 +1,7 @@
 @inherits InputText
 @implements IDisposable
 
-<div class="@WrapperClass" style="@WrapperStyle">
+<div class="@WrapperClass">
     @if (LeftIcon is not null)
     {
         <span class="app-input__icon" aria-hidden="true">
@@ -83,8 +83,6 @@
     private string CurrentType => HasPasswordToggle && isPasswordVisible ? "text" : Type;
 
     private string PasswordToggleLabel => isPasswordVisible ? "Hide password" : "Show password";
-
-    private string? WrapperStyle => string.IsNullOrWhiteSpace(Width) ? null : $"width: {Width};";
 
     private Task HandleInputAsync(ChangeEventArgs args)
     {
