@@ -20,7 +20,7 @@ namespace Sadkah.Web.Pages.Campaigns
             _ => campaigns
         };
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task OnInitializedAsync()
         {
             await LoadCampaignsAsync();
         }

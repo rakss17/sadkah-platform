@@ -74,7 +74,7 @@
     public bool EnablePasswordToggle { get; set; } = true;
 
     private bool isPasswordVisible;
-    private CancellationTokenSource? debounceCts;
+    private Debouncer? debouncer;
 
     private bool IsPassword => string.Equals(Type, "password", StringComparison.OrdinalIgnoreCase);
 
@@ -103,25 +103,10 @@
             return DebouncedValueChanged.InvokeAsync(value);
         }
 
-        debounceCts?.Cancel();
-        debounceCts?.Dispose();
-        debounceCts = new CancellationTokenSource();
-
-        _ = NotifyDebouncedValueChangedAfterDelayAsync(value, debounceCts.Token);
+        debouncer ??= new Debouncer(Debounce);
+        debouncer.Debounce(() => InvokeAsync(() => DebouncedValueChanged.InvokeAsync(value)));
 
         return Task.CompletedTask;
-    }
-
-    private async Task NotifyDebouncedValueChangedAfterDelayAsync(string? value, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await Task.Delay(Debounce, cancellationToken);
-            await InvokeAsync(() => DebouncedValueChanged.InvokeAsync(value));
-        }
-        catch (TaskCanceledException)
-        {
-        }
     }
 
     private string WrapperClass
@@ -171,7 +156,6 @@
 
     public void Dispose()
     {
-        debounceCts?.Cancel();
-        debounceCts?.Dispose();
+        debouncer?.Dispose();
     }
 }
