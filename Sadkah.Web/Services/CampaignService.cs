@@ -11,9 +11,15 @@ namespace Sadkah.Web.Services
             this.authSession = authSession;
         }
 
-        public async Task<ServiceResult<IReadOnlyList<CampaignSummary>>> GetCampaignsAsync(int pageSize = 50)
+        public async Task<ServiceResult<IReadOnlyList<CampaignSummary>>> GetCampaignsAsync(int pageSize = 50, string? searchTerm = null)
         {
-            var result = await apiClient.GetAsync<List<CampaignModel>>($"api/campaigns?pageSize={pageSize}", requiresAuthentication: true);
+            var url = $"api/campaigns?pageSize={pageSize}";
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                url += $"&searchTerm={Uri.EscapeDataString(searchTerm)}";
+            }
+
+            var result = await apiClient.GetAsync<List<CampaignModel>>(url, requiresAuthentication: true);
 
             if (!result.Success || result.Data is null)
             {

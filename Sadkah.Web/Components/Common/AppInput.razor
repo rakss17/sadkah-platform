@@ -1,4 +1,5 @@
 @inherits InputText
+@implements IDisposable
 
 <div class="@WrapperClass">
     @if (LeftIcon is not null)
@@ -14,8 +15,8 @@
            type="@CurrentType"
            autocomplete="@Autocomplete"
            placeholder="@Placeholder"
-           @bind="CurrentValueAsString"
-           @bind:event="onchange" />
+           value="@CurrentValueAsString"
+           @oninput="HandleInputAsync" />
 
     @if (HasPasswordToggle)
     {
@@ -61,9 +62,19 @@
     public RenderFragment? LeftIcon { get; set; }
 
     [Parameter]
+    public string? Width { get; set; }
+
+    [Parameter]
+    public int Debounce { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> DebouncedValueChanged { get; set; }
+
+    [Parameter]
     public bool EnablePasswordToggle { get; set; } = true;
 
     private bool isPasswordVisible;
+    private Debouncer? debouncer;
 
     private bool IsPassword => string.Equals(Type, "password", StringComparison.OrdinalIgnoreCase);
 
@@ -72,6 +83,31 @@
     private string CurrentType => HasPasswordToggle && isPasswordVisible ? "text" : Type;
 
     private string PasswordToggleLabel => isPasswordVisible ? "Hide password" : "Show password";
+
+    private Task HandleInputAsync(ChangeEventArgs args)
+    {
+        var value = args.Value?.ToString();
+        CurrentValueAsString = value;
+        return NotifyDebouncedValueChangedAsync(value);
+    }
+
+    private Task NotifyDebouncedValueChangedAsync(string? value)
+    {
+        if (!DebouncedValueChanged.HasDelegate)
+        {
+            return Task.CompletedTask;
+        }
+
+        if (Debounce <= 0)
+        {
+            return DebouncedValueChanged.InvokeAsync(value);
+        }
+
+        debouncer ??= new Debouncer(Debounce);
+        debouncer.Debounce(() => InvokeAsync(() => DebouncedValueChanged.InvokeAsync(value)));
+
+        return Task.CompletedTask;
+    }
 
     private string WrapperClass
     {
@@ -116,5 +152,10 @@
     private void TogglePasswordVisibility()
     {
         isPasswordVisible = !isPasswordVisible;
+    }
+
+    public void Dispose()
+    {
+        debouncer?.Dispose();
     }
 }
