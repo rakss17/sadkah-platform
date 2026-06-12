@@ -21,9 +21,19 @@
                 <SearchIcon />
             </LeftIcon>
         </AppInput>    
-        <AppButton Variant="secondary" Size="md">
+        <AppButton Class="filter-button" Variant="secondary"
+                   Size="md"
+                   aria-expanded="@showFilters"
+                   @onclick="ToggleFilters">
             <FilterIcon Width="20" Height="20" />
-            <span>Filters</span>
+            <span>
+                Filters
+
+                @if (ActiveFilterCount > 0)
+                {
+                    <span class="filter-count">@ActiveFilterCount</span>
+                }
+            </span>
         </AppButton>
 
         <AppButton Class="create-button" Variant="primary" Size="md">
@@ -32,6 +42,51 @@
         </AppButton>
     </div>
 </div>
+
+@if (showFilters)
+{
+    <section class="filter-panel" aria-label="Campaign filter options">
+        <div class="filter-field">
+            <label for="campaign-category-filter">Category</label>
+            <select id="campaign-category-filter" @bind="selectedCategory">
+                <option value="">All categories</option>
+                @foreach (var category in AvailableCategories)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="campaign-location-filter">Location</label>
+            <select id="campaign-location-filter" @bind="selectedLocation">
+                <option value="">All locations</option>
+                @foreach (var location in AvailableLocations)
+                {
+                    <option value="@location">@location</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="campaign-verification-filter">Verification</label>
+            <select id="campaign-verification-filter" @bind="verificationFilter">
+                <option value="">Any status</option>
+                <option value="@VerifiedFilterValue">Verified only</option>
+                <option value="@UnverifiedFilterValue">Unverified only</option>
+            </select>
+        </div>
+
+        <div class="filter-actions">
+            <AppButton Variant="secondary"
+                       Size="md"
+                       Disabled="@(!HasAdvancedFilters)"
+                       @onclick="ClearFilters">
+                Clear
+            </AppButton>
+        </div>
+    </section>
+}
 
 <div class="filter-tab" role="tablist" aria-label="Campaign filters">
     <AppButton Class="@GetFilterTabClass(CampaignFilter.All)"

@@ -13,12 +13,61 @@ namespace Sadkah.Web.Pages.Campaigns
         private bool isLoading = true;
         private string? statusMessage;
         private string searchTerm = string.Empty;
+        private bool showFilters;
+        private string selectedCategory = string.Empty;
+        private string selectedLocation = string.Empty;
+        private string verificationFilter = string.Empty;
+
+        private const string VerifiedFilterValue = "verified";
+        private const string UnverifiedFilterValue = "unverified";
 
         private IEnumerable<CampaignSummary> FilteredCampaigns => selectedFilter switch
         {
-            CampaignFilter.MyCampaigns => campaigns.Where(campaign => campaign.IsMine),
-            _ => campaigns
+            CampaignFilter.MyCampaigns => ApplyAdvancedFilters(campaigns.Where(campaign => campaign.IsMine)),
+            _ => ApplyAdvancedFilters(campaigns)
         };
+
+        private IEnumerable<string> AvailableCategories => campaigns
+            .Select(campaign => campaign.Category)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(value => value, StringComparer.OrdinalIgnoreCase);
+
+        private IEnumerable<string> AvailableLocations => campaigns
+            .Select(campaign => campaign.Location)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(value => value, StringComparer.OrdinalIgnoreCase);
+
+        private bool HasAdvancedFilters =>
+            !string.IsNullOrWhiteSpace(selectedCategory)
+            || !string.IsNullOrWhiteSpace(selectedLocation)
+            || !string.IsNullOrWhiteSpace(verificationFilter);
+
+        private int ActiveFilterCount
+        {
+            get
+            {
+                var count = 0;
+
+                if (!string.IsNullOrWhiteSpace(selectedCategory))
+                {
+                    count++;
+                }
+
+                if (!string.IsNullOrWhiteSpace(selectedLocation))
+                {
+                    count++;
+                }
+
+                if (!string.IsNullOrWhiteSpace(verificationFilter))
+                {
+                    count++;
+                }
+
+                return count;
+            }
+        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -61,6 +110,18 @@ namespace Sadkah.Web.Pages.Campaigns
             selectedFilter = filter;
         }
 
+        private void ToggleFilters()
+        {
+            showFilters = !showFilters;
+        }
+
+        private void ClearFilters()
+        {
+            selectedCategory = string.Empty;
+            selectedLocation = string.Empty;
+            verificationFilter = string.Empty;
+        }
+
         private async Task SearchCampaignsAsync(string? value)
         {
             searchTerm = value ?? string.Empty;
@@ -72,6 +133,32 @@ namespace Sadkah.Web.Pages.Campaigns
             return IsSelected(filter)
                 ? "filter-tab-button filter-tab-button--active"
                 : "filter-tab-button";
+        }
+
+        private IEnumerable<CampaignSummary> ApplyAdvancedFilters(IEnumerable<CampaignSummary> source)
+        {
+            var filteredCampaigns = source;
+
+            if (!string.IsNullOrWhiteSpace(selectedCategory))
+            {
+                filteredCampaigns = filteredCampaigns.Where(campaign =>
+                    string.Equals(campaign.Category, selectedCategory, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectedLocation))
+            {
+                filteredCampaigns = filteredCampaigns.Where(campaign =>
+                    string.Equals(campaign.Location, selectedLocation, StringComparison.OrdinalIgnoreCase));
+            }
+
+            filteredCampaigns = verificationFilter switch
+            {
+                VerifiedFilterValue => filteredCampaigns.Where(campaign => campaign.IsVerified),
+                UnverifiedFilterValue => filteredCampaigns.Where(campaign => !campaign.IsVerified),
+                _ => filteredCampaigns
+            };
+
+            return filteredCampaigns;
         }
     }
 }
