@@ -48,33 +48,31 @@
     <section class="filter-panel" aria-label="Campaign filter options">
         <div class="filter-field">
             <label for="campaign-category-filter">Category</label>
-            <select id="campaign-category-filter" @bind="selectedCategory">
-                <option value="">All categories</option>
-                @foreach (var category in AvailableCategories)
-                {
-                    <option value="@category">@category</option>
-                }
-            </select>
+            <AppSelect TValue="string"
+                       Id="campaign-category-filter"
+                       Placeholder="All categories"
+                       Items="AvailableCategories"
+                       @bind-Value="selectedCategory" />
         </div>
 
         <div class="filter-field">
             <label for="campaign-location-filter">Location</label>
-            <select id="campaign-location-filter" @bind="selectedLocation">
-                <option value="">All locations</option>
-                @foreach (var location in AvailableLocations)
-                {
-                    <option value="@location">@location</option>
-                }
-            </select>
+            <AppSelect TValue="string"
+                       Id="campaign-location-filter"
+                       Placeholder="All locations"
+                       Items="AvailableLocations"
+                       @bind-Value="selectedLocation" />
         </div>
 
         <div class="filter-field">
             <label for="campaign-verification-filter">Verification</label>
-            <select id="campaign-verification-filter" @bind="verificationFilter">
-                <option value="">Any status</option>
+            <AppSelect TValue="string"
+                       Id="campaign-verification-filter"
+                       Placeholder="Any status"
+                       @bind-Value="verificationFilter">
                 <option value="@VerifiedFilterValue">Verified only</option>
                 <option value="@UnverifiedFilterValue">Unverified only</option>
-            </select>
+            </AppSelect>
         </div>
 
         <div class="filter-actions">
