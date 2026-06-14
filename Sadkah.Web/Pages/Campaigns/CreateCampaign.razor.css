@@ -171,6 +171,13 @@
     box-shadow: 0 0 0 .16rem color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
+.field .validation-message {
+    color: var(--color-danger);
+    font-size: .72rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
 .section-heading {
     display: flex;
     align-items: center;

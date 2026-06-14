@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components.Forms;
+
 namespace Sadkah.Web.Pages.Campaigns
 {
     public partial class CreateCampaign
@@ -12,6 +14,12 @@ namespace Sadkah.Web.Pages.Campaigns
         private bool isPublishing;
         private string? statusMessage;
         private string statusAlertClass = "create-alert--error";
+
+        private void HandleInvalidSubmit(EditContext editContext)
+        {
+            statusMessage = "Please fix the highlighted fields before publishing.";
+            statusAlertClass = "create-alert--error";
+        }
 
         private async Task HandlePublishCampaignAsync()
         {
