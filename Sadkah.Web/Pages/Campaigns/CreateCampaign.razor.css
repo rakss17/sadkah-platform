@@ -56,6 +56,20 @@
     white-space: nowrap;
 }
 
+.create-alert {
+    margin: 0 0 1rem;
+    padding: .85rem 1rem;
+    border-radius: 8px;
+    font-size: .84rem;
+    font-weight: 700;
+}
+
+.create-alert--error {
+    border: 1px solid color-mix(in srgb, var(--color-danger) 28%, transparent);
+    background: color-mix(in srgb, var(--color-danger) 9%, var(--color-bg));
+    color: var(--color-danger);
+}
+
 .create-campaign-page svg {
     width: 1.1rem;
     height: 1.1rem;

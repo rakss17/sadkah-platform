@@ -33,5 +33,69 @@ namespace Sadkah.Web.Services
 
             return ServiceResult<IReadOnlyList<CampaignSummary>>.Ok(campaigns, result.Message);
         }
+
+        public async Task<ServiceResult<CampaignModel>> CreateCampaignAsync(CampaignModel campaign)
+        {
+            var accessToken = await authSession.GetAccessTokenAsync();
+            var ownerId = GetOwnerId(accessToken);
+
+            if (string.IsNullOrWhiteSpace(ownerId))
+            {
+                return ServiceResult<CampaignModel>.AuthenticationRequired();
+            }
+
+            var request = new CreateCampaignRequest(
+                ownerId,
+                campaign.Title,
+                campaign.Description,
+                campaign.TargetAmount,
+                campaign.Deadline);
+
+            return await apiClient.PostAsync<CreateCampaignRequest, CampaignModel>(
+                "api/campaigns",
+                request,
+                requiresAuthentication: true);
+        }
+
+        private static string? GetOwnerId(string? accessToken)
+        {
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                return null;
+            }
+
+            var tokenParts = accessToken.Split('.');
+            if (tokenParts.Length < 2)
+            {
+                return null;
+            }
+
+            try
+            {
+                var payload = tokenParts[1]
+                    .Replace('-', '+')
+                    .Replace('_', '/');
+                payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+
+                using var document = System.Text.Json.JsonDocument.Parse(Convert.FromBase64String(payload));
+                if (document.RootElement.TryGetProperty("sub", out var subjectClaim))
+                {
+                    return subjectClaim.GetString();
+                }
+            }
+            catch
+            {
+                return null;
+            }
+
+            return null;
+        }
+
+        private sealed record CreateCampaignRequest(
+            string OwnerId,
+            string Title,
+            string Description,
+            decimal TargetAmount,
+            DateTime Deadline);
     }
 }

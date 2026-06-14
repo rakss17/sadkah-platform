@@ -29,7 +29,11 @@
                 <span>Save Draft</span>
             </AppButton>
 
-            <AppButton Variant="primary" Size="md">
+            <AppButton Variant="primary"
+                       Size="md"
+                       IsLoading="@isPublishing"
+                       LoadingText="Publishing..."
+                       @onclick="HandlePublishCampaignAsync">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="m22 2-7 20-4-9-9-4Z" />
                     <path d="M22 2 11 13" />
@@ -38,6 +42,13 @@
             </AppButton>
         </div>
     </header>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="create-alert @statusAlertClass" role="alert">
+            @statusMessage
+        </div>
+    }
 
     <div class="create-layout">
         <form class="campaign-form">
@@ -55,27 +66,50 @@
                 <div class="field-grid">
                     <label class="field">
                         <span>Campaign Title <strong>*</strong></span>
-                        <input type="text" />
+                        <AppInput Id="campaign-title"
+                              Type="text"
+                              Autocomplete="campaign-title"
+                              Placeholder="Enter campaign title"
+                              @bind-Value="campaignModel.Title">
+                        </AppInput>
                     </label>
 
                     <label class="field">
                         <span>Category <strong>*</strong></span>
-                        <input type="text" />
+                        <AppSelect Tvalue="string"
+                                   Id="campaign-category"
+                                   Placeholder="Select category"
+                                   @bind-Value="campaignModel.Category">
+                            @* TODO: Replace with dynamic categories from database *@
+                            <option value="Medical">Medical</option> 
+                            <option value="Mental Health">Mental Health</option>
+                            <option value="Disability">Disability</option>
+                        </AppSelect>
                     </label>
 
                     <label class="field">
                         <span>Fundraising Goal <strong>*</strong></span>
-                        <input type="text" />
+                        @* TODO: Use AppInput later after AppInput is fixed for numeric inputs *@
+                        <input id="fundraising-goal"
+                            class="app-input__control"
+                            type="number"
+                            min="0.01"
+                            step="0.01"
+                            placeholder="Enter fundraising goal"
+                            @bind="campaignModel.TargetAmount" />
                     </label>
 
                     <label class="field">
                         <span>Campaign End Date <strong>*</strong></span>
-                        <input type="text" />
+                        <input id="campaign-end-date"
+                            class="app-input__control"
+                            type="date"
+                            @bind="campaignModel.Deadline" />
                     </label>
 
                     <label class="field field--full">
                         <span>Campaign Description <strong>*</strong></span>
-                        <textarea rows="5"></textarea>
+                        <textarea rows="5" @bind="campaignModel.Description"></textarea>
                     </label>
                 </div>
 

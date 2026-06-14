@@ -4,6 +4,8 @@ namespace Sadkah.Web.Models
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
         public decimal TargetAmount { get; set; }
         public decimal CurrentAmount { get; set; }
         public DateTime Deadline { get; set; }
