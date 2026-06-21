@@ -25,7 +25,7 @@
                 </div>
             }
 
-            <AppFormField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
+            <AppField TValue="string" Id="email" Label="Email address" For="() => loginModel.Email">
                 <AppInput Id="email"
                           Type="email"
                           Autocomplete="email"
@@ -35,9 +35,9 @@
                         <MailIcon />
                     </LeftIcon>
                 </AppInput>
-            </AppFormField>
+            </AppField>
 
-            <AppFormField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
+            <AppField TValue="string" Id="password" Label="Password" For="() => loginModel.Password">
                 <AppInput Id="password"
                           Type="password"
                           Autocomplete="current-password"
@@ -47,7 +47,7 @@
                         <LockIcon />
                     </LeftIcon>
                 </AppInput>
-            </AppFormField>
+            </AppField>
 
             <div class="login-options">
                 <label class="remember-option">
