@@ -1,0 +1,64 @@
+@implements IDisposable
+
+<div class="@WrapperClass">
+    @if (LeftIcon is not null)
+    {
+        <span class="app-input__icon" aria-hidden="true">
+            @LeftIcon
+        </span>
+    }
+
+    <input id="@Id"
+           class="app-input__control"
+           type="search"
+           placeholder="@Placeholder"
+           value="@Value"
+           @oninput="OnInput" />
+</div>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
+
+    [Parameter]
+    public int Debounce { get; set; } = 300;
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeftIcon { get; set; }
+
+    private CancellationTokenSource? _cts;
+
+    private string WrapperClass =>
+        LeftIcon is not null
+            ? "app-input app-input--with-left-icon"
+            : "app-input";
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+
+        try
+        {
+            await Task.Delay(Debounce, _cts.Token);
+            await ValueChanged.InvokeAsync(e.Value?.ToString());
+        }
+        catch (TaskCanceledException) { }
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+}
