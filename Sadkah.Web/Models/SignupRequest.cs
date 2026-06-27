@@ -22,5 +22,6 @@ namespace Sadkah.Web.Models
         public string Password { get; set; } = default!;
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = default!;
+        public int Role { get; set; } = 1; 
     }
 }

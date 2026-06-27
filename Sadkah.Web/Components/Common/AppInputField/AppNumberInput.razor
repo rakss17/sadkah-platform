@@ -1,0 +1,23 @@
+@inherits InputNumber<TValue>
+@typeparam TValue
+
+<AppInputWrapper Class="@CssClass" LeftIcon="@LeftIcon">
+    <input @attributes="AdditionalAttributes"
+           id="@Id"
+           class="app-input__control"
+           type="number"
+           placeholder="@Placeholder"
+           @bind="CurrentValueAsString"
+           @bind:event="onchange" />
+</AppInputWrapper>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeftIcon { get; set; }
+}

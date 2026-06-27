@@ -121,61 +121,18 @@
     margin-top: 1rem;
 }
 
-.field {
-    display: grid;
-    gap: .45rem;
-}
-
-.field--full {
+::deep .app-field--full {
     grid-column: 1 / -1;
 }
 
-.field span,
 .section-heading,
 .document-card strong {
     font-size: .78rem;
     font-weight: 800;
 }
 
-.field strong,
 .document-card span {
     color: var(--color-danger);
-}
-
-.field input,
-.field textarea {
-    width: 100%;
-    border: 1px solid var(--color-border);
-    border-radius: 7px;
-    background: var(--color-bg);
-    color: var(--color-text-primary);
-    font: inherit;
-    outline: none;
-    transition: border-color .15s ease, box-shadow .15s ease;
-}
-
-.field input {
-    min-height: 2.85rem;
-    padding: .45rem .7rem;
-}
-
-.field textarea {
-    min-height: 5.6rem;
-    resize: vertical;
-    padding: .65rem .7rem;
-}
-
-.field input:focus,
-.field textarea:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 .16rem color-mix(in srgb, var(--color-primary) 14%, transparent);
-}
-
-.field .validation-message {
-    color: var(--color-danger);
-    font-size: .72rem;
-    font-weight: 700;
-    line-height: 1.35;
 }
 
 .section-heading {

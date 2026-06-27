@@ -1,8 +1,14 @@
 @typeparam TValue
 @using System.Linq.Expressions
 
-<div class="app-field">
-    <label for="@Id">@Label</label>
+<div class="app-field @Class">
+    <label for="@Id">
+        @Label 
+        @if (IsRequired)
+        {
+            <span> * </span>
+        }
+    </label>
     @ChildContent
 
     @if (For is not null)
@@ -23,4 +29,10 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool IsRequired { get; set; } = false;
+
+    [Parameter]
+    public string? Class { get; set; }
 }
