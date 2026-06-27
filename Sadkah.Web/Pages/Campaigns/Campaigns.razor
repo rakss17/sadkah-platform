@@ -10,17 +10,14 @@
         <p>Search, filter, and donate to campaigns that matter to you</p>
     </div>
     <div class="header-filters">
-        <AppInput Id="search-campaigns"
-                  Type="search"
-                  Placeholder="Search campaigns..."
-                  @bind-Value="searchTerm"
-                  Debounce="300"
-                  DebouncedValueChanged="SearchCampaignsAsync"
-                  >
+        <AppSearchInput Id="search-campaigns"
+                        Placeholder="Search campaigns..."
+                        Debounce="300"
+                        ValueChanged="SearchCampaignsAsync">
             <LeftIcon>
                 <SearchIcon />
             </LeftIcon>
-        </AppInput>    
+        </AppSearchInput>
         <AppButton Class="filter-button" Variant="secondary"
                    Size="md"
                    aria-expanded="@showFilters"

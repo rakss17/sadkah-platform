@@ -25,7 +25,7 @@
             }
 
             <div class="signup-field-row">
-                <AppFormField TValue="string" Id="first-name" Label="First name" For="() => signupModel.FirstName">
+                <AppField TValue="string" Id="first-name" Label="First name" For="() => signupModel.FirstName">
                     <AppInput Id="first-name"
                               Type="text"
                               Autocomplete="given-name"
@@ -35,9 +35,9 @@
                             <UserIcon />
                         </LeftIcon>
                     </AppInput>
-                </AppFormField>
+                </AppField>
 
-                <AppFormField TValue="string" Id="last-name" Label="Last name" For="() => signupModel.LastName">
+                <AppField TValue="string" Id="last-name" Label="Last name" For="() => signupModel.LastName">
                     <AppInput Id="last-name"
                               Type="text"
                               Autocomplete="family-name"
@@ -47,11 +47,11 @@
                             <UserIcon />
                         </LeftIcon>
                     </AppInput>
-                </AppFormField>
+                </AppField>
             </div>
             
 
-            <AppFormField TValue="string" Id="email" Label="Email address" For="() => signupModel.Email">
+            <AppField TValue="string" Id="email" Label="Email address" For="() => signupModel.Email">
                 <AppInput Id="email"
                           Type="email"
                           Autocomplete="email"
@@ -61,9 +61,9 @@
                         <MailIcon />
                     </LeftIcon>
                 </AppInput>
-            </AppFormField>
+            </AppField>
 
-            <AppFormField TValue="string" Id="password" Label="Password" For="() => signupModel.Password">
+            <AppField TValue="string" Id="password" Label="Password" For="() => signupModel.Password">
                 <AppInput Id="password"
                           Type="password"
                           Autocomplete="current-password"
@@ -73,9 +73,9 @@
                         <LockIcon />
                     </LeftIcon>
                 </AppInput>
-            </AppFormField>
+            </AppField>
 
-            <AppFormField TValue="string" Id="confirm-password" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
+            <AppField TValue="string" Id="confirm-password" Label="Confirm Password" For="() => signupModel.ConfirmPassword">
                 <AppInput Id="confirm-password"
                           Type="password"
                           Autocomplete="current-password"
@@ -85,7 +85,7 @@
                         <LockIcon />
                     </LeftIcon>
                 </AppInput>
-            </AppFormField>
+            </AppField>
 
             <div class="terms-conditions">
                 <input type="checkbox" />
