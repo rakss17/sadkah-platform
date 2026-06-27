@@ -2,7 +2,10 @@
 
 <CheckAuth Mode="AuthGuardMode.RequireAuthenticated">
     <div class="page">
-        <NavMenu />
+        @if (CurrentPath != "campaigns/create")
+        {
+            <NavMenu />
+        }
         <main>
             <article class="content px-4">
                 @Body
@@ -16,3 +19,10 @@
         <span class="dismiss">🗙</span>
     </div>
 </CheckAuth>
+
+@code {
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    private string CurrentPath => Navigation.ToBaseRelativePath(Navigation.Uri);
+}
