@@ -21,9 +21,20 @@ namespace Sadkah.API.Models
         public CampaignStatus Status { get; set; }
         public bool IsVerified { get; set; } = false;
         public bool IsArchived { get; set; } = false;
+        public Guid CategoryId { get; set; }
+        public CampaignCategory Category { get; set; } = null!;
         public List<Donation> Donations { get; set; } = new List<Donation>();
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ArchivedAt { get; set; }
+    }
+
+    public class CampaignCategory
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; } = string.Empty;
+        public List<Campaign> Campaigns { get; set; } = new();
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
