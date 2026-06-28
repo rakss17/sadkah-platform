@@ -23,6 +23,7 @@
     --color-text-tertiary: #70798F;
 
     /* Font Sizes */
+    --font-size-xs: 12px;
     --font-size-sm: 14px;
     --font-size-base: 16px;
     --font-size-lg: 30px;
@@ -112,4 +113,23 @@
 .app-input__icon-button:hover,
 .app-input__icon-button:focus-visible {
     color: var(--color-primary);
+}
+
+.app-field textarea {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    font: inherit;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    min-height: 5.6rem;
+    resize: vertical;
+    padding: .65rem .7rem;
+    font-size: var(--font-size-sm);
+}
+
+.app-field .app-input:has(textarea) {
+    height: 100%;
 }

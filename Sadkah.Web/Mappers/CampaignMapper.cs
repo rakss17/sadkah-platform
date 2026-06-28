@@ -21,9 +21,10 @@ namespace Sadkah.Web.Mappers
                 && string.Equals(ownerName, currentUserFullName, StringComparison.OrdinalIgnoreCase);
         }
 
-        private static int GetDaysLeft(DateTime deadline)
+        private static int GetDaysLeft(DateTime? deadline)
         {
-            return Math.Max(0, (deadline.Date - DateTime.Today).Days);
+            if (!deadline.HasValue) return 0;
+            return Math.Max(0, (deadline.Value.Date - DateTime.Today).Days);
         }
 
         private static string GetStatusLabel(CampaignStatus status)

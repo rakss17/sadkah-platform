@@ -1,0 +1,55 @@
+@inherits InputText
+
+<AppInputWrapper Class="@CssClass" LeftIcon="@LeftIcon" HasRightIcon="@IsPasswordType">
+    <ChildContent>
+        <input @attributes="AdditionalAttributes"
+               id="@Id"
+               class="app-input__control"
+               type="@ActualType"
+               autocomplete="@Autocomplete"
+               placeholder="@Placeholder"
+               @bind="CurrentValueAsString"
+               @bind:event="onchange" />
+    </ChildContent>
+    <RightContent>
+        @if (IsPasswordType)
+        {
+            <button type="button"
+                    class="app-input__icon-button"
+                    aria-label="@(_showPassword ? "Hide password" : "Show password")"
+                    @onclick="TogglePasswordVisibility">
+                @if (_showPassword)
+                {
+                    <EyeOffIcon />
+                }
+                else
+                {
+                    <EyeIcon />
+                }
+            </button>
+        }
+    </RightContent>
+</AppInputWrapper>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Type { get; set; } = "text";
+
+    [Parameter]
+    public string? Autocomplete { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeftIcon { get; set; }
+
+    private bool _showPassword;
+    private bool IsPasswordType => Type == "password";
+    private string ActualType => IsPasswordType && _showPassword ? "text" : Type;
+
+    private void TogglePasswordVisibility() => _showPassword = !_showPassword;
+}

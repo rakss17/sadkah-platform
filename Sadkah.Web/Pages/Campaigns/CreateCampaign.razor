@@ -1,0 +1,278 @@
+@page "/campaigns/create"
+@layout AppLayout
+@rendermode InteractiveServer
+
+<PageTitle>Sadkah - Create Campaign</PageTitle>
+
+<div class="create-campaign-page">
+    <EditForm Model="campaignModel"
+              OnValidSubmit="HandlePublishCampaignAsync"
+              OnInvalidSubmit="HandleInvalidSubmit"
+              FormName="create-campaign">
+        <DataAnnotationsValidator />
+
+        <header class="create-header">
+            <div>
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <span aria-hidden="true">/</span>
+                    <a href="/campaigns">Campaigns</a>
+                    <span aria-hidden="true">/</span>
+                    <span>Create Campaign</span>
+                </nav>
+
+                <h1>Create Campaign</h1>
+                <p>Start raising funds for a verified cause</p>
+            </div>
+
+            <div class="header-actions">
+                <AppButton Type="button" Variant="secondary" Size="md">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l4 4v12a2 2 0 0 1-2 2Z" />
+                        <path d="M9 21v-7h6v7" />
+                        <path d="M9 3v5h5" />
+                    </svg>
+                    <span>Save Draft</span>
+                </AppButton>
+
+                <AppButton Type="submit"
+                           Variant="primary"
+                           Size="md"
+                           IsLoading="@isPublishing"
+                           LoadingText="Publishing...">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m22 2-7 20-4-9-9-4Z" />
+                        <path d="M22 2 11 13" />
+                    </svg>
+                    <span>Publish Campaign</span>
+                </AppButton>
+            </div>
+        </header>
+
+        @if (!string.IsNullOrWhiteSpace(statusMessage))
+        {
+            <div class="create-alert @statusAlertClass" role="alert">
+                @statusMessage
+            </div>
+        }
+
+        <div class="create-layout">
+            <div class="campaign-form">
+            <section class="form-panel" aria-labelledby="campaign-details-title">
+                <h2 id="campaign-details-title">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                        <path d="M14 2v6h6" />
+                        <path d="M8 13h8" />
+                        <path d="M8 17h5" />
+                    </svg>
+                    Campaign Details
+                </h2>
+
+                <div class="field-grid">
+                    <AppField TValue="string" Id="campaign-title" Label="Title" IsRequired="true" For="() => campaignModel.Title">
+                        <AppInput Id="campaign-title"
+                                  Type="text"
+                                  Autocomplete="campaign-title"
+                                  Placeholder="Enter campaign title"
+                                  @bind-Value="campaignModel.Title">
+                        </AppInput>
+                    </AppField>
+
+                    <AppField TValue="string" Id="campaign-category" Label="Category" IsRequired="true" For="() => campaignModel.Category">
+                        <AppSelectInput Tvalue="string"
+                                   Id="campaign-category"
+                                   Placeholder="Select category"
+                                   @bind-Value="campaignModel.Category">
+                            @* TODO: Replace with dynamic categories from database *@
+                            <option value="Medical">Medical</option> 
+                            <option value="Mental Health">Mental Health</option>
+                            <option value="Disability">Disability</option>
+                        </AppSelectInput>
+                    </AppField>
+
+                    <AppField TValue="decimal" Id="fundraising-goal" Label="Fundraising Goal" IsRequired="true" For="() => campaignModel.TargetAmount">
+                        <AppNumberInput TValue="decimal"
+                                        Id="fundraising-goal"
+                                        Placeholder="Enter fundraising goal"
+                                        @bind-Value="campaignModel.TargetAmount"
+                                        ParsingErrorMessage="Fundraising goal is required." />
+                    </AppField>
+
+                    <AppField TValue="DateTime?" Id="campaign-end-date" Label="Campaign End Date" IsRequired="true" For="() => campaignModel.Deadline">
+                        <AppDateInput TValue="DateTime?"
+                                     Id="campaign-end-date"
+                                     @bind-Value="campaignModel.Deadline" />
+                    </AppField>
+                    
+                    <AppField TValue="string" Class="app-field--full" Id="campaign-description" Label="Campaign Description" IsRequired="true" For="() => campaignModel.Description">
+                        <AppTextAreaInput Id="campaign-description"
+                                      rows="5"
+                                      Placeholder="Enter campaign description"
+                                      @bind-Value="campaignModel.Description" />
+                    </AppField>
+                </div>
+
+                @* TODO: Hidden for the meantime *@
+                @* <div class="section-heading">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="m21 15-5-5L5 21" />
+                    </svg>
+                    <span>Cover Image</span>
+                </div>
+
+                <div class="drop-zone">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <path d="m17 8-5-5-5 5" />
+                        <path d="M12 3v12" />
+                    </svg>
+                    <strong>Drag &amp; drop image here</strong>
+                    <span>or</span>
+                    <button type="button">Upload Cover Image</button>
+                </div>
+
+                <div class="section-heading section-heading--spaced">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span>Location</span>
+                </div>
+
+                <div class="field-grid">
+                    <label class="field">
+                        <span>Address Line 1 <strong>*</strong></span>
+                        <input type="text" />
+                    </label>
+
+                    <label class="field">
+                        <span>Address Line 2</span>
+                        <input type="text" />
+                    </label>
+
+                    <label class="field">
+                        <span>Barangay <strong>*</strong></span>
+                        <input type="text" />
+                    </label>
+
+                    <label class="field">
+                        <span>City / Municipality <strong>*</strong></span>
+                        <input type="text" />
+                    </label>
+
+                    <label class="field">
+                        <span>Province <strong>*</strong></span>
+                        <input type="text" />
+                    </label>
+
+                    <label class="field">
+                        <span>Country <strong>*</strong></span>
+                        <input type="text" />
+                    </label>
+                </div>
+
+                <div class="section-heading section-heading--spaced">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3Z" />
+                        <path d="m9 12 2 2 4-4" />
+                    </svg>
+                    <span>Verification Documents</span>
+                </div>
+
+                <div class="document-grid">
+                    <div class="document-card">
+                        <strong>Valid ID <span>*</span></strong>
+                        <p>Upload a valid ID</p>
+                        <button type="button">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <path d="m17 8-5-5-5 5" />
+                                <path d="M12 3v12" />
+                            </svg>
+                            Upload File
+                        </button>
+                        <small>JPG, PNG or PDF (Max 5MB)</small>
+                    </div>
+
+                    <div class="document-card">
+                        <strong>Proof of Need <span>*</span></strong>
+                        <p>Upload proof of need</p>
+                        <button type="button">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <path d="m17 8-5-5-5 5" />
+                                <path d="M12 3v12" />
+                            </svg>
+                            Upload File
+                        </button>
+                        <small>JPG, PNG or PDF (Max 5MB)</small>
+                    </div>
+
+                    <div class="document-card">
+                        <strong>Supporting Documents</strong>
+                        <p>Upload other documents</p>
+                        <button type="button">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <path d="m17 8-5-5-5 5" />
+                                <path d="M12 3v12" />
+                            </svg>
+                            Upload File
+                        </button>
+                        <small>JPG, PNG or PDF (Max 5MB)</small>
+                    </div>
+                </div> *@
+            </section>
+            </div>
+
+        <aside class="progress-column" aria-label="Campaign creation progress">
+            <section class="side-panel">
+                <h2>Campaign Creation Progress</h2>
+                <div class="progress-summary">
+                    <div class="progress-ring" aria-label="70 percent complete">70%</div>
+                    <div>
+                        <strong>7 of 10 fields completed</strong>
+                        <p>Keep going! You're almost there.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="side-panel">
+                <h2>Ready to Publish</h2>
+                <p>Complete all required items to publish your campaign.</p>
+
+                <ul class="publish-list">
+                    <li>
+                        <span class="status-icon status-icon--complete">✓</span>
+                        <span>Campaign Details</span>
+                        <strong>Completed</strong>
+                    </li>
+                    <li>
+                        <span class="status-icon status-icon--complete">✓</span>
+                        <span>Cover Image</span>
+                        <strong>Completed</strong>
+                    </li>
+                    <li>
+                        <span class="status-icon status-icon--complete">✓</span>
+                        <span>Location</span>
+                        <strong>Completed</strong>
+                    </li>
+                    <li>
+                        <span class="status-icon status-icon--missing">×</span>
+                        <span>Verification Documents</span>
+                        <strong class="is-missing">Incomplete</strong>
+                    </li>
+                </ul>
+
+                <div class="publish-warning">
+                    <span>!</span>
+                    <p>Complete the missing items to publish your campaign.</p>
+                </div>
+            </section>
+        </aside>
+        </div>
+    </EditForm>
+</div>

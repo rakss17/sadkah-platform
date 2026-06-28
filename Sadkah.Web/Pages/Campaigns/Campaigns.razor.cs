@@ -128,6 +128,11 @@ namespace Sadkah.Web.Pages.Campaigns
             await LoadCampaignsAsync();
         }
 
+        private void CreateCampaign()
+        {
+            Navigation.NavigateTo("/campaigns/create");
+        }
+
         private string GetFilterTabClass(CampaignFilter filter)
         {
             return IsSelected(filter)

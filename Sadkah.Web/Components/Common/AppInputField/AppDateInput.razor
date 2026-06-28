@@ -1,0 +1,38 @@
+@using System.Linq.Expressions
+@typeparam TValue
+
+<AppInputWrapper Class="@CssClass" LeftIcon="@LeftIcon">
+    <InputDate TValue="TValue"
+           @attributes="AdditionalAttributes"
+           id="@Id"
+           class="app-input__control"
+           Value="Value"
+           ValueChanged="OnValueChanged"
+           ValueExpression="ValueExpression" />
+</AppInputWrapper>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public TValue? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue?> ValueChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<TValue?>>? ValueExpression { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeftIcon { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    private Task OnValueChanged(TValue? value)
+        => ValueChanged.InvokeAsync(value);
+}
