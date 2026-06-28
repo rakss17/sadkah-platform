@@ -127,9 +127,9 @@
     min-height: 5.6rem;
     resize: vertical;
     padding: .65rem .7rem;
+    font-size: var(--font-size-sm);
 }
 
-.app-field textarea:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 .16rem color-mix(in srgb, var(--color-primary) 14%, transparent);
+.app-field .app-input:has(textarea) {
+    height: 100%;
 }

@@ -1,15 +1,18 @@
 @typeparam TValue
 @using System.Linq.Expressions
+@using Microsoft.AspNetCore.Components.Forms
 
 <div class="app-field @Class">
     <label for="@Id">
-        @Label 
+        @Label
         @if (IsRequired)
         {
             <span> * </span>
         }
     </label>
-    @ChildContent
+    <CascadingValue Value="IsInvalid" Name="IsInvalid">
+        @ChildContent
+    </CascadingValue>
 
     @if (For is not null)
     {
@@ -18,6 +21,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    private EditContext? EditContext { get; set; }
+
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
@@ -35,4 +41,8 @@
 
     [Parameter]
     public string? Class { get; set; }
+
+    private bool IsInvalid =>
+        EditContext is not null && For is not null &&
+        EditContext.GetValidationMessages(FieldIdentifier.Create(For)).Any();
 }

@@ -49,7 +49,7 @@ namespace Sadkah.Web.Services
                 campaign.Title,
                 campaign.Description,
                 campaign.TargetAmount,
-                campaign.Deadline);
+                campaign.Deadline.GetValueOrDefault());
 
             return await apiClient.PostAsync<CreateCampaignRequest, CampaignModel>(
                 "api/campaigns",

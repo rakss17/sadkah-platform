@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Sadkah.Web.Models
 {
-    public class CampaignModel : IValidatableObject
+    public class CampaignModel
     {
         public Guid Id { get; set; }
 
@@ -21,25 +21,22 @@ namespace Sadkah.Web.Models
         public decimal TargetAmount { get; set; }
 
         public decimal CurrentAmount { get; set; }
-        public DateTime Deadline { get; set; }
+        [Required(ErrorMessage = "Campaign end date is required.")]
+        [FutureDate(ErrorMessage = "Campaign end date must be in the future.")]
+        public DateTime? Deadline { get; set; }
+
         public CampaignStatus Status { get; set; }
         public bool IsVerified { get; set; }
         public string OwnerName { get; set; } = string.Empty;
+    }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public class FutureDateAttribute : ValidationAttribute
+    {
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (Deadline == default)
-            {
-                yield return new ValidationResult(
-                    "Campaign end date is required.",
-                    [nameof(Deadline)]);
-            }
-            else if (Deadline.Date <= DateTime.Today)
-            {
-                yield return new ValidationResult(
-                    "Campaign end date must be in the future.",
-                    [nameof(Deadline)]);
-            }
+            if (value is DateTime date && date.Date <= DateTime.Today)
+                return new ValidationResult(ErrorMessage, [validationContext.MemberName!]);
+            return ValidationResult.Success;
         }
     }
 }

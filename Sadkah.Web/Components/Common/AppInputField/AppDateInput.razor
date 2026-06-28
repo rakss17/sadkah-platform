@@ -3,10 +3,12 @@
 
 <AppInputWrapper Class="@CssClass" LeftIcon="@LeftIcon">
     <InputDate TValue="TValue"
-               @attributes="AdditionalAttributes"
-               id="@Id"
-               class="app-input__control"
-               @bind-Value="Value" />
+           @attributes="AdditionalAttributes"
+           id="@Id"
+           class="app-input__control"
+           Value="Value"
+           ValueChanged="OnValueChanged"
+           ValueExpression="ValueExpression" />
 </AppInputWrapper>
 
 @code {
@@ -30,4 +32,7 @@
 
     [Parameter]
     public string? CssClass { get; set; }
+
+    private Task OnValueChanged(TValue? value)
+        => ValueChanged.InvokeAsync(value);
 }

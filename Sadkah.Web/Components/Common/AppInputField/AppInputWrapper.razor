@@ -25,6 +25,9 @@
     [Parameter]
     public bool HasRightIcon { get; set; }
 
+    [CascadingParameter(Name = "IsInvalid")]
+    public bool IsInvalid { get; set; }
+
     private string ComputedClass
     {
         get
@@ -39,6 +42,9 @@
 
             if (HasRightIcon)
                 classes.Add("app-input--with-right-icon");
+
+            if (IsInvalid)
+                classes.Add("invalid");
 
             return string.Join(" ", classes);
         }

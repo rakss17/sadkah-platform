@@ -45,7 +45,7 @@
     <section class="filter-panel" aria-label="Campaign filter options">
         <div class="filter-field">
             <label for="campaign-category-filter">Category</label>
-            <AppSelect TValue="string"
+            <AppSelectInput TValue="string"
                        Id="campaign-category-filter"
                        Placeholder="All categories"
                        Items="AvailableCategories"
@@ -54,7 +54,7 @@
 
         <div class="filter-field">
             <label for="campaign-location-filter">Location</label>
-            <AppSelect TValue="string"
+            <AppSelectInput TValue="string"
                        Id="campaign-location-filter"
                        Placeholder="All locations"
                        Items="AvailableLocations"
@@ -63,13 +63,13 @@
 
         <div class="filter-field">
             <label for="campaign-verification-filter">Verification</label>
-            <AppSelect TValue="string"
+            <AppSelectInput TValue="string"
                        Id="campaign-verification-filter"
                        Placeholder="Any status"
                        @bind-Value="verificationFilter">
                 <option value="@VerifiedFilterValue">Verified only</option>
                 <option value="@UnverifiedFilterValue">Unverified only</option>
-            </AppSelect>
+            </AppSelectInput>
         </div>
 
         <div class="filter-actions">

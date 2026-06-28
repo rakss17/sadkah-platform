@@ -80,7 +80,7 @@
                     </AppField>
 
                     <AppField TValue="string" Id="campaign-category" Label="Category" IsRequired="true" For="() => campaignModel.Category">
-                        <AppSelect Tvalue="string"
+                        <AppSelectInput Tvalue="string"
                                    Id="campaign-category"
                                    Placeholder="Select category"
                                    @bind-Value="campaignModel.Category">
@@ -88,26 +88,28 @@
                             <option value="Medical">Medical</option> 
                             <option value="Mental Health">Mental Health</option>
                             <option value="Disability">Disability</option>
-                        </AppSelect>
+                        </AppSelectInput>
                     </AppField>
 
                     <AppField TValue="decimal" Id="fundraising-goal" Label="Fundraising Goal" IsRequired="true" For="() => campaignModel.TargetAmount">
                         <AppNumberInput TValue="decimal"
                                         Id="fundraising-goal"
                                         Placeholder="Enter fundraising goal"
-                                        min="0.01"
-                                        step="0.01"
-                                        @bind-Value="campaignModel.TargetAmount" />
+                                        @bind-Value="campaignModel.TargetAmount"
+                                        ParsingErrorMessage="Fundraising goal is required." />
                     </AppField>
 
-                    <AppField TValue="DateTime" Id="campaign-end-date" Label="Campaign End Date" IsRequired="true" For="() => campaignModel.Deadline">
-                        <AppDateInput TValue="DateTime"
-                                      Id="campaign-end-date"
-                                      @bind-Value="campaignModel.Deadline" />
+                    <AppField TValue="DateTime?" Id="campaign-end-date" Label="Campaign End Date" IsRequired="true" For="() => campaignModel.Deadline">
+                        <AppDateInput TValue="DateTime?"
+                                     Id="campaign-end-date"
+                                     @bind-Value="campaignModel.Deadline" />
                     </AppField>
                     
                     <AppField TValue="string" Class="app-field--full" Id="campaign-description" Label="Campaign Description" IsRequired="true" For="() => campaignModel.Description">
-                        <textarea rows="5" @bind="campaignModel.Description"></textarea>
+                        <AppTextAreaInput Id="campaign-description"
+                                      rows="5"
+                                      Placeholder="Enter campaign description"
+                                      @bind-Value="campaignModel.Description" />
                     </AppField>
                 </div>
 

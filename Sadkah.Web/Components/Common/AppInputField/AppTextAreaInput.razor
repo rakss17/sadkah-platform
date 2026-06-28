@@ -1,0 +1,22 @@
+@inherits InputTextArea
+
+<AppInputWrapper Class="@CssClass" LeftIcon="@LeftIcon">
+    <textarea @attributes="AdditionalAttributes"
+              id="@Id"
+              class="app-input__control"
+              placeholder="@Placeholder"
+              @bind="CurrentValueAsString"
+              @bind:event="onchange">
+    </textarea>
+</AppInputWrapper>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeftIcon { get; set; }
+}

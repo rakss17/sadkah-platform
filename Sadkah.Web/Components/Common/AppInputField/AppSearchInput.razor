@@ -1,20 +1,13 @@
 @implements IDisposable
 
-<div class="@WrapperClass">
-    @if (LeftIcon is not null)
-    {
-        <span class="app-input__icon" aria-hidden="true">
-            @LeftIcon
-        </span>
-    }
-
+<AppInputWrapper class="@WrapperClass" LeftIcon="@LeftIcon">
     <input id="@Id"
            class="app-input__control"
            type="search"
            placeholder="@Placeholder"
            value="@Value"
            @oninput="OnInput" />
-</div>
+</AppInputWrapper>
 
 @code {
     [Parameter]

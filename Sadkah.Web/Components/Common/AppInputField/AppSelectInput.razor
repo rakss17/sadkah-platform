@@ -1,10 +1,10 @@
 @typeparam TValue
 @inherits InputSelect<TValue>
 
-<div class="@WrapperClass">
+<AppInputWrapper Class="@CssClass">
     <select @attributes="AdditionalAttributes"
             id="@Id"
-            class="@SelectClass"
+            class="app-input__control"
             disabled="@Disabled"
             value="@CurrentValueAsString"
             @onchange="HandleChange">
@@ -23,7 +23,7 @@
 
         @ChildContent
     </select>
-</div>
+</AppInputWrapper>
 
 @code {
     [Parameter]
@@ -60,45 +60,5 @@
     private string? FormatValue(TValue item)
     {
         return ItemValue?.Invoke(item) ?? item?.ToString();
-    }
-
-    private string WrapperClass
-    {
-        get
-        {
-            var classes = new List<string> { "app-select" };
-
-            if (Disabled)
-            {
-                classes.Add("app-select--disabled");
-            }
-
-            if (!string.IsNullOrWhiteSpace(CssClass))
-            {
-                classes.Add(CssClass);
-            }
-
-            if (!string.IsNullOrWhiteSpace(Class))
-            {
-                classes.Add(Class);
-            }
-
-            return string.Join(" ", classes);
-        }
-    }
-
-    private string SelectClass
-    {
-        get
-        {
-            var classes = new List<string> { "app-select__control" };
-
-            if (!string.IsNullOrWhiteSpace(CssClass))
-            {
-                classes.Add(CssClass);
-            }
-
-            return string.Join(" ", classes);
-        }
     }
 }
