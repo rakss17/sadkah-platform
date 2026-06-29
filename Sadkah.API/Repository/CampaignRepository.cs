@@ -114,6 +114,11 @@ namespace Sadkah.API.Repository
 
         }
 
+        public async Task<IEnumerable<string>> GetCampaignCategoriesAsync()
+        {
+            return await _context.CampaignCategories.Select(c => c.Name).ToListAsync();
+        }
+
         public async Task<bool> IsCampaignExistingAsync(Guid id)
         {
             return await _context.Campaigns.AnyAsync(c => c.Id == id);

@@ -131,5 +131,24 @@ namespace Sadkah.API.Controllers
             }
 
         }
+
+        [HttpGet("categories")]
+        [EnableRateLimiting("api")]
+        [Authorize]
+        public async Task<IActionResult> GetCategories()
+        {
+            try
+            {
+                var categories = await _campaignService.GetCampaignCategoriesAsync();
+                
+                return Ok(ApiResponse<IEnumerable<string>>.SuccessResponse("Campaign categories retrieved successfully.", categories));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving campaign categories: {ex.Message}");
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while retrieving campaign categories."));
+            }
+        }
     }
 }
+
