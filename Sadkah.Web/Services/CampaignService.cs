@@ -57,6 +57,18 @@ namespace Sadkah.Web.Services
                 requiresAuthentication: true);
         }
 
+        public async Task<ServiceResult<IEnumerable<string>>> GetCampaignCategoriesAsync()
+        {
+            var result = await apiClient.GetAsync<List<string>>("api/campaigns/categories", requiresAuthentication: true);
+
+            if (!result.Success || result.Data is null)
+            {
+                return ServiceResult<IEnumerable<string>>.Fail(result.Message);
+            }
+
+            return ServiceResult<IEnumerable<string>>.Ok(result.Data, result.Message);
+        }
+
         private static string? GetOwnerId(string? accessToken)
         {
             if (string.IsNullOrWhiteSpace(accessToken))

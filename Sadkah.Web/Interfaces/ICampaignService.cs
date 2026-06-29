@@ -4,5 +4,6 @@ namespace Sadkah.Web.Interfaces
     {
         Task<ServiceResult<IReadOnlyList<CampaignSummary>>> GetCampaignsAsync(int pageSize = 50, string? searchTerm = null);
         Task<ServiceResult<CampaignModel>> CreateCampaignAsync(CampaignModel campaign);
+        Task<ServiceResult<IEnumerable<string>>> GetCampaignCategoriesAsync();
     }
 }

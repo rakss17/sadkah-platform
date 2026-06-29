@@ -11,9 +11,30 @@ namespace Sadkah.Web.Pages.Campaigns
         private NavigationManager Navigation { get; set; } = default!;
 
         private CampaignModel campaignModel = new();
+        private IEnumerable<string> _campaignCategories = new List<string>();
         private bool isPublishing;
         private string? statusMessage;
         private string statusAlertClass = "create-alert--error";
+
+        protected override async Task OnInitializedAsync()
+        {
+            var result = await CampaignService.GetCampaignCategoriesAsync();
+
+            if (result.RequiresAuthentication)
+            {
+                Navigation.NavigateTo("/login", replace: true);
+                return;
+            }
+
+            if (!result.Success)
+            {
+                statusMessage = result.Message;
+                statusAlertClass = "create-alert--error";
+                return;
+            }
+
+            _campaignCategories = result.Data ?? new List<string>();
+        }
 
         private void HandleInvalidSubmit(EditContext editContext)
         {
