@@ -12,7 +12,7 @@ namespace Sadkah.API.Interfaces
         Task<Campaign> CreateCampaignAsync(Campaign campaign);
         Task<Campaign?> UpdateCampaignAsync(Guid id, UpdateCampaignRequestDto updatedCampaign);
         Task<Campaign?> ArchiveCampaignAsync(Guid id);
-        Task<IEnumerable<string>> GetCampaignCategoriesAsync();
+        Task<IEnumerable<CampaignCategoryDto>> GetCampaignCategoriesAsync();
         Task<bool> IsCampaignExistingAsync(Guid id);
     }
 }

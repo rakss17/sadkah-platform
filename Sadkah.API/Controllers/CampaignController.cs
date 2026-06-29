@@ -141,7 +141,7 @@ namespace Sadkah.API.Controllers
             {
                 var categories = await _campaignService.GetCampaignCategoriesAsync();
                 
-                return Ok(ApiResponse<IEnumerable<string>>.SuccessResponse("Campaign categories retrieved successfully.", categories));
+                return Ok(ApiResponse<IEnumerable<CampaignCategoryDto>>.SuccessResponse("Campaign categories retrieved successfully.", categories));
             }
             catch (Exception ex)
             {

@@ -114,10 +114,16 @@ namespace Sadkah.API.Repository
 
         }
 
-        public async Task<IEnumerable<string>> GetCampaignCategoriesAsync()
+        public async Task<IEnumerable<CampaignCategoryDto>> GetCampaignCategoriesAsync()
         {
-            return await _context.CampaignCategories.Select(c => c.Name).ToListAsync();
-        }
+        return await _context.CampaignCategories
+            .Select(c => new CampaignCategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name
+            })
+            .ToListAsync();
+}
 
         public async Task<bool> IsCampaignExistingAsync(Guid id)
         {
