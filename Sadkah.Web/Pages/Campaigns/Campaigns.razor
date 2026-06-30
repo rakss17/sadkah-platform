@@ -48,7 +48,7 @@
             <AppSelectInput TValue="string"
                        Id="campaign-category-filter"
                        Placeholder="All categories"
-                       Items="AvailableCategories"
+                       Items="_campaignCategories.Select(c => c.Name)"
                        @bind-Value="selectedCategory" />
         </div>
 
