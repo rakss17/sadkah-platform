@@ -11,7 +11,7 @@ namespace Sadkah.Web.Pages.Campaigns
         private NavigationManager Navigation { get; set; } = default!;
 
         private CampaignModel campaignModel = new();
-        private IEnumerable<string> _campaignCategories = new List<string>();
+        private IEnumerable<CampaignCategoryModel> _campaignCategories = new List<CampaignCategoryModel>();
         private bool isPublishing;
         private string? statusMessage;
         private string statusAlertClass = "create-alert--error";
@@ -33,7 +33,7 @@ namespace Sadkah.Web.Pages.Campaigns
                 return;
             }
 
-            _campaignCategories = result.Data ?? new List<string>();
+            _campaignCategories = result.Data ?? new List<CampaignCategoryModel>();
         }
 
         private void HandleInvalidSubmit(EditContext editContext)

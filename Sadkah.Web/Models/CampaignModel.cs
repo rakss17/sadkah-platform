@@ -15,7 +15,8 @@ namespace Sadkah.Web.Models
         public string Description { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Category is required.")]
-        public string Category { get; set; } = string.Empty;
+        public Guid CategoryId { get; set; } = Guid.Empty;
+        public string? CategoryName { get; set; } = string.Empty;
 
         [Range(typeof(decimal), "0.01", "79228162514264337593543950335", ErrorMessage = "Fundraising goal must be greater than 0.")]
         public decimal TargetAmount { get; set; }

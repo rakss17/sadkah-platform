@@ -79,12 +79,15 @@
                         </AppInput>
                     </AppField>
 
-                    <AppField TValue="string" Id="campaign-category" Label="Category" IsRequired="true" For="() => campaignModel.Category">
-                        <AppSelectInput Tvalue="string"
+                    <AppField TValue="Guid" Id="campaign-category" Label="Category" IsRequired="true" For="() => campaignModel.CategoryId">
+                        <AppSelectInput Tvalue="Guid"
                                    Id="campaign-category"
                                    Placeholder="Select category"
-                                   Items="_campaignCategories"
-                                   @bind-Value="campaignModel.Category">
+                                   @bind-Value="campaignModel.CategoryId">
+                            @foreach (var category in _campaignCategories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
                         </AppSelectInput>
                     </AppField>
 

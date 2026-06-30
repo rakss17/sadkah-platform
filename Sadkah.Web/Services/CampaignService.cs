@@ -48,6 +48,7 @@ namespace Sadkah.Web.Services
                 ownerId,
                 campaign.Title,
                 campaign.Description,
+                campaign.CategoryId,
                 campaign.TargetAmount,
                 campaign.Deadline.GetValueOrDefault());
 
@@ -57,16 +58,16 @@ namespace Sadkah.Web.Services
                 requiresAuthentication: true);
         }
 
-        public async Task<ServiceResult<IEnumerable<string>>> GetCampaignCategoriesAsync()
+        public async Task<ServiceResult<IEnumerable<CampaignCategoryModel>>> GetCampaignCategoriesAsync()
         {
-            var result = await apiClient.GetAsync<List<string>>("api/campaigns/categories", requiresAuthentication: true);
+            var result = await apiClient.GetAsync<List<CampaignCategoryModel>>("api/campaigns/categories", requiresAuthentication: true);
 
             if (!result.Success || result.Data is null)
             {
-                return ServiceResult<IEnumerable<string>>.Fail(result.Message);
+                return ServiceResult<IEnumerable<CampaignCategoryModel>>.Fail(result.Message);
             }
 
-            return ServiceResult<IEnumerable<string>>.Ok(result.Data, result.Message);
+            return ServiceResult<IEnumerable<CampaignCategoryModel>>.Ok(result.Data, result.Message);
         }
 
         private static string? GetOwnerId(string? accessToken)
@@ -107,6 +108,7 @@ namespace Sadkah.Web.Services
             string OwnerId,
             string Title,
             string Description,
+            Guid CategoryId,
             decimal TargetAmount,
             DateTime Deadline);
     }
