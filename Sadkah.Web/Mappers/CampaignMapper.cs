@@ -6,7 +6,7 @@ namespace Sadkah.Web.Mappers
         {
             return new CampaignSummary(
                 campaign.Title,
-                GetStatusLabel(campaign.Status),
+                campaign.CategoryName ?? "Uncategorized",
                 campaign.OwnerName,
                 GetDaysLeft(campaign.Deadline),
                 campaign.CurrentAmount,

@@ -13,6 +13,7 @@ namespace Sadkah.API.Mappers
             {
                 Id = campaignModel.Id,
                 Title = campaignModel.Title,
+                CategoryName = campaignModel.Category.Name,
                 Description = campaignModel.Description,
                 TargetAmount = campaignModel.TargetAmount,
                 CurrentAmount = campaignModel.CurrentAmount,
@@ -31,6 +32,7 @@ namespace Sadkah.API.Mappers
                 OwnerId = createDto.OwnerId,
                 Title = createDto.Title!,
                 Description = createDto.Description!,
+                CategoryId = createDto.CategoryId,
                 TargetAmount = createDto.TargetAmount,
                 Deadline = createDto.Deadline!.Value,
                 Status = Enums.CampaignStatus.Active,

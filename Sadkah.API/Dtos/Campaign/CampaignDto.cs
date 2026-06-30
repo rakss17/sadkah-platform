@@ -17,5 +17,7 @@ namespace Sadkah.API.Dtos.Campaign
         public bool IsVerified { get; set; }
         public string OwnerName { get; set; } = string.Empty;
         public List<DonationDto> Donations { get; set; } = new ();
+        public Guid CategoryId { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
     }
 }

@@ -15,7 +15,7 @@ namespace Sadkah.API.Repository
 
         public async Task<PagedResult<Campaign>> GetAllCampaignsAsync(QueryObject query)
         {
-            var campaignsQuery = _context.Campaigns.Where(c => !c.IsArchived).Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).AsQueryable();
+            var campaignsQuery = _context.Campaigns.Where(c => !c.IsArchived).Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).Include(c => c.Category).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.UserId))
             {
@@ -77,7 +77,7 @@ namespace Sadkah.API.Repository
             await _context.Campaigns.AddAsync(campaignModel);
             await _context.SaveChangesAsync();
 
-            var createdCampaign = await _context.Campaigns.Include(c => c.Owner).FirstOrDefaultAsync(c => c.Id == campaignModel.Id);
+            var createdCampaign = await _context.Campaigns.Include(c => c.Owner).Include(c => c.Category).FirstOrDefaultAsync(c => c.Id == campaignModel.Id);
 
             return createdCampaign!;
 
@@ -113,6 +113,17 @@ namespace Sadkah.API.Repository
             return campaign;
 
         }
+
+        public async Task<IEnumerable<CampaignCategoryDto>> GetCampaignCategoriesAsync()
+        {
+        return await _context.CampaignCategories
+            .Select(c => new CampaignCategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name
+            })
+            .ToListAsync();
+}
 
         public async Task<bool> IsCampaignExistingAsync(Guid id)
         {

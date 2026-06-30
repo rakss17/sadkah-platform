@@ -48,5 +48,11 @@ namespace Sadkah.API.Services
             var archivedCampaign = await _campaignRepository.ArchiveCampaignAsync(id);
             return archivedCampaign?.ToCampaignDto();
         }
+
+        public async Task<IEnumerable<CampaignCategoryDto>> GetCampaignCategoriesAsync()
+        {
+            var categories = await _campaignRepository.GetCampaignCategoriesAsync();
+            return categories;
+        }
     }
 }

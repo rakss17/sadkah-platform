@@ -21,6 +21,8 @@ namespace Sadkah.Web.Pages.Campaigns
         private const string VerifiedFilterValue = "verified";
         private const string UnverifiedFilterValue = "unverified";
 
+        private IEnumerable<CampaignCategoryModel> _campaignCategories = new List<CampaignCategoryModel>();
+
         private IEnumerable<CampaignSummary> FilteredCampaigns => selectedFilter switch
         {
             CampaignFilter.MyCampaigns => ApplyAdvancedFilters(campaigns.Where(campaign => campaign.IsMine)),
@@ -72,6 +74,7 @@ namespace Sadkah.Web.Pages.Campaigns
         protected override async Task OnInitializedAsync()
         {
             await LoadCampaignsAsync();
+            await LoadCampaignCategoriesAsync();
         }
 
         private async Task LoadCampaignsAsync()
@@ -96,6 +99,35 @@ namespace Sadkah.Web.Pages.Campaigns
                 }
 
                 campaigns = result.Data;
+            }
+            finally
+            {
+                isLoading = false;
+            }
+        }
+
+        private async Task LoadCampaignCategoriesAsync()
+        {
+            isLoading = true;
+            statusMessage = null;
+
+            try
+            {
+                var result = await CampaignService.GetCampaignCategoriesAsync();
+
+                if (result.RequiresAuthentication)
+                {
+                    Navigation.NavigateTo("/login", replace: true);
+                    return;
+                }
+
+                if (!result.Success || result.Data is null)
+                {
+                    statusMessage = result.Message;
+                    return;
+                }
+
+                _campaignCategories = result.Data;
             }
             finally
             {

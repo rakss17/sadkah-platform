@@ -84,7 +84,7 @@ namespace Sadkah.API.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating campaign: {ex.Message}");
+                Console.WriteLine($"Error creating campaign: {ex}");
                 return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while creating the campaign."));
             }
            
@@ -131,5 +131,24 @@ namespace Sadkah.API.Controllers
             }
 
         }
+
+        [HttpGet("categories")]
+        [EnableRateLimiting("api")]
+        [Authorize]
+        public async Task<IActionResult> GetCategories()
+        {
+            try
+            {
+                var categories = await _campaignService.GetCampaignCategoriesAsync();
+                
+                return Ok(ApiResponse<IEnumerable<CampaignCategoryDto>>.SuccessResponse("Campaign categories retrieved successfully.", categories));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving campaign categories: {ex.Message}");
+                return StatusCode(500, ApiResponse<object>.FailResponse("Internal server error while retrieving campaign categories."));
+            }
+        }
     }
 }
+

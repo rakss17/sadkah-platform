@@ -22,5 +22,7 @@ namespace Sadkah.API.Dtos.Campaign
         public decimal TargetAmount { get; set; }
         [Required]
         public DateTime? Deadline { get; set; }
+        [Required]
+        public Guid CategoryId { get; set; }
     }
 }
