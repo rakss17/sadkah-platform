@@ -113,6 +113,66 @@
                     </AppField>
                 </div>
 
+                <div class="section-heading section-heading--spaced">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span>Location</span>
+                </div>
+
+                <div class="field-grid">
+                    <AppField TValue="string" Id="campaign-address-1" Label="Address Line 1" IsRequired="true" For="() => campaignModel.AddressLine1">
+                        <AppInput Id="campaign-address-1"
+                                  Type="text"
+                                  Placeholder="Enter address line 1"
+                                  @bind-Value="campaignModel.AddressLine1">
+                        </AppInput>
+                    </AppField>
+
+                    <AppField TValue="string" Id="campaign-address-2" Label="Address Line 2" For="() => campaignModel.AddressLine2!">
+                        <AppInput Id="campaign-address-2"
+                                  Type="text"
+                                  Placeholder="Enter address line 2"
+                                  @bind-Value="campaignModel.AddressLine2">
+                        </AppInput>
+                    </AppField>
+
+                    <AppField TValue="string" Id="campaign-barangay" Label="Barangay" IsRequired="true" For="() => campaignModel.Barangay">
+                        <AppInput Id="campaign-barangay"
+                                  Type="text"
+                                  Placeholder="Enter barangay"
+                                  @bind-Value="campaignModel.Barangay">
+                        </AppInput>
+                    </AppField>
+
+                    <AppField TValue="string" Id="campaign-city" Label="City / Municipality" IsRequired="true" For="() => campaignModel.City">
+                        <AppAutocompleteInput Id="campaign-city"
+                                               Placeholder="Enter city or municipality"
+                                               Options="@Cities"
+                                               @bind-Value="campaignModel.City">
+                        </AppAutocompleteInput>
+                    </AppField>
+
+                    <AppField TValue="string" Id="campaign-province" Label="Province" IsRequired="true" For="() => campaignModel.Province">
+                        <AppAutocompleteInput Id="campaign-province"
+                                               Placeholder="Enter province"
+                                               Options="@_provinces"
+                                               @bind-Value="campaignModel.Province"
+                                               @bind-Value:after="HandleProvinceChanged">
+                        </AppAutocompleteInput>
+                    </AppField>
+
+                    <AppField TValue="string" Id="campaign-country" Label="Country" IsRequired="true" For="() => campaignModel.Country">
+                        <AppInput Id="campaign-country"
+                                  Type="text"
+                                  Placeholder="Enter country"
+                                  disabled="true"
+                                  @bind-Value="campaignModel.Country">
+                        </AppInput>
+                    </AppField>
+                </div>
+
                 @* TODO: Hidden for the meantime *@
                 @* <div class="section-heading">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -132,46 +192,6 @@
                     <strong>Drag &amp; drop image here</strong>
                     <span>or</span>
                     <button type="button">Upload Cover Image</button>
-                </div>
-
-                <div class="section-heading section-heading--spaced">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
-                        <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    <span>Location</span>
-                </div>
-
-                <div class="field-grid">
-                    <label class="field">
-                        <span>Address Line 1 <strong>*</strong></span>
-                        <input type="text" />
-                    </label>
-
-                    <label class="field">
-                        <span>Address Line 2</span>
-                        <input type="text" />
-                    </label>
-
-                    <label class="field">
-                        <span>Barangay <strong>*</strong></span>
-                        <input type="text" />
-                    </label>
-
-                    <label class="field">
-                        <span>City / Municipality <strong>*</strong></span>
-                        <input type="text" />
-                    </label>
-
-                    <label class="field">
-                        <span>Province <strong>*</strong></span>
-                        <input type="text" />
-                    </label>
-
-                    <label class="field">
-                        <span>Country <strong>*</strong></span>
-                        <input type="text" />
-                    </label>
                 </div>
 
                 <div class="section-heading section-heading--spaced">

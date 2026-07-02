@@ -4,10 +4,13 @@ namespace Sadkah.Web.Mappers
     {
         public static CampaignSummary ToSummary(this CampaignModel campaign, string? currentUserFullName)
         {
+            var location = !string.IsNullOrWhiteSpace(campaign.City) && !string.IsNullOrWhiteSpace(campaign.Province)
+                ? $"{campaign.City}, {campaign.Province}"
+                : "Unknown Location";
             return new CampaignSummary(
                 campaign.Title,
                 campaign.CategoryName ?? "Uncategorized",
-                campaign.OwnerName,
+                location,
                 GetDaysLeft(campaign.Deadline),
                 campaign.CurrentAmount,
                 campaign.TargetAmount,

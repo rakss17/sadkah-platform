@@ -29,6 +29,23 @@ namespace Sadkah.Web.Models
         public CampaignStatus Status { get; set; }
         public bool IsVerified { get; set; }
         public string OwnerName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Address Line 1 is required.")]
+        public string AddressLine1 { get; set; } = string.Empty;
+
+        public string? AddressLine2 { get; set; }
+
+        [Required(ErrorMessage = "Barangay is required.")]
+        public string Barangay { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "City/Municipality is required.")]
+        public string City { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Province is required.")]
+        public string Province { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Country is required.")]
+        public string Country { get; set; } = "Philippines";
     }
 
     public class FutureDateAttribute : ValidationAttribute

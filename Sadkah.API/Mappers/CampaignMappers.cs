@@ -21,7 +21,13 @@ namespace Sadkah.API.Mappers
                 Status = campaignModel.Status,
                 IsVerified = campaignModel.IsVerified,
                 OwnerName = campaignModel.Owner != null ? $"{campaignModel.Owner.FirstName} {campaignModel.Owner.LastName}" : "Unknown User",
-                Donations = campaignModel.Donations.Select(d => d.ToDonationDto()).ToList()
+                Donations = campaignModel.Donations.Select(d => d.ToDonationDto()).ToList(),
+                AddressLine1 = campaignModel.AddressLine1,
+                AddressLine2 = campaignModel.AddressLine2,
+                Barangay = campaignModel.Barangay,
+                City = campaignModel.City,
+                Province = campaignModel.Province,
+                Country = campaignModel.Country
             };
         }
 
@@ -37,6 +43,12 @@ namespace Sadkah.API.Mappers
                 Deadline = createDto.Deadline!.Value,
                 Status = Enums.CampaignStatus.Active,
                 IsVerified = false,
+                AddressLine1 = createDto.AddressLine1,
+                AddressLine2 = createDto.AddressLine2,
+                Barangay = createDto.Barangay,
+                City = createDto.City,
+                Province = createDto.Province,
+                Country = createDto.Country,
             };
         }
 

@@ -20,6 +20,7 @@ builder.Services.AddScoped<IApiClient, ApiClient>();
 builder.Services.AddScoped<IAuthSessionService, AuthSessionService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICampaignService, CampaignService>();
+builder.Services.AddSingleton<ILocationService, LocationService>();
 
 var app = builder.Build();
 

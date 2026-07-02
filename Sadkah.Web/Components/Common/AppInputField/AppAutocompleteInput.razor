@@ -1,0 +1,85 @@
+@inherits InputText
+
+<AppInputWrapper Class="@CssClass">
+    <div class="app-autocomplete">
+        <input @attributes="AdditionalAttributes"
+               id="@Id"
+               class="app-input__control"
+               type="text"
+               autocomplete="off"
+               placeholder="@Placeholder"
+               disabled="@Disabled"
+               value="@CurrentValueAsString"
+               @oninput="HandleInput"
+               @onfocus="HandleFocus"
+               @onfocusout="HandleFocusOut" />
+
+        @if (isOpen && filteredOptions.Count > 0)
+        {
+            <ul class="app-autocomplete__list" role="listbox">
+                @foreach (var option in filteredOptions)
+                {
+                    <li role="option" @onmousedown="() => SelectOption(option)" @onmousedown:preventDefault="true">
+                        @option
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</AppInputWrapper>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public IEnumerable<string>? Options { get; set; }
+
+    [Parameter]
+    public int MaxSuggestions { get; set; } = 8;
+
+    private bool isOpen;
+    private List<string> filteredOptions = new();
+
+    private void HandleFocus()
+    {
+        Filter(CurrentValueAsString);
+        isOpen = true;
+    }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        CurrentValueAsString = e.Value?.ToString();
+        Filter(CurrentValueAsString);
+        isOpen = true;
+    }
+
+    private void HandleFocusOut()
+    {
+        isOpen = false;
+    }
+
+    private void SelectOption(string option)
+    {
+        CurrentValueAsString = option;
+        isOpen = false;
+    }
+
+    private void Filter(string? text)
+    {
+        var source = Options ?? Enumerable.Empty<string>();
+
+        filteredOptions = string.IsNullOrWhiteSpace(text)
+            ? source.Take(MaxSuggestions).ToList()
+            : source
+                .Where(option => option.Contains(text, StringComparison.OrdinalIgnoreCase))
+                .Take(MaxSuggestions)
+                .ToList();
+    }
+}
