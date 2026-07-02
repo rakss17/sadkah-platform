@@ -24,5 +24,16 @@ namespace Sadkah.API.Dtos.Campaign
         public DateTime? Deadline { get; set; }
         [Required]
         public Guid CategoryId { get; set; }
+        [Required(ErrorMessage = "Address Line 1 is required.")]
+        public string AddressLine1 { get; set; } = string.Empty;
+        public string? AddressLine2 { get; set; }
+        [Required(ErrorMessage = "Barangay is required.")]
+        public string Barangay { get; set; } = string.Empty;
+        [Required(ErrorMessage = "City/Municipality is required.")]
+        public string City { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Province is required.")]
+        public string Province { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Country is required.")]
+        public string Country { get; set; } = string.Empty;
     }
 }

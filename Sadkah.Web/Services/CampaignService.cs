@@ -50,7 +50,13 @@ namespace Sadkah.Web.Services
                 campaign.Description,
                 campaign.CategoryId,
                 campaign.TargetAmount,
-                campaign.Deadline.GetValueOrDefault());
+                campaign.Deadline.GetValueOrDefault(),
+                campaign.AddressLine1,
+                campaign.Barangay,
+                campaign.City,
+                campaign.Province,
+                campaign.Country,
+                campaign.AddressLine2);
 
             return await apiClient.PostAsync<CreateCampaignRequest, CampaignModel>(
                 "api/campaigns",
@@ -110,6 +116,12 @@ namespace Sadkah.Web.Services
             string Description,
             Guid CategoryId,
             decimal TargetAmount,
-            DateTime Deadline);
+            DateTime Deadline,
+            string AddressLine1,
+            string Barangay,
+            string City,
+            string Province,
+            string Country = "Philippines",
+            string? AddressLine2 = null);
     }
 }
