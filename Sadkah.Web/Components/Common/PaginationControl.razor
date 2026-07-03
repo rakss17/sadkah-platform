@@ -1,0 +1,217 @@
+@if (TotalPages > 0)
+{
+    <nav class="@RootClass"
+         aria-label="@AriaLabel"
+         @attributes="AdditionalAttributes">
+        @if (ShowSummary)
+        {
+            <p class="pagination-control__summary">@SummaryText</p>
+        }
+
+        <div class="pagination-control__items">
+            <button type="button"
+                    class="pagination-control__button pagination-control__button--direction"
+                    disabled="@(!CanGoPrevious)"
+                    aria-label="Go to previous page"
+                    @onclick="GoToPreviousPage">
+                <span aria-hidden="true">&lt;</span>
+                <span>Previous</span>
+            </button>
+
+            @foreach (var page in VisiblePages)
+            {
+                if (page is null)
+                {
+                    <span class="pagination-control__ellipsis" aria-hidden="true">...</span>
+                }
+                else
+                {
+                    <button type="button"
+                            class="@GetPageButtonClass(page.Value)"
+                            disabled="@Disabled"
+                            aria-label="@GetPageAriaLabel(page.Value)"
+                            aria-current="@(page.Value == CurrentPage ? "page" : null)"
+                            @onclick="@(() => GoToPageAsync(page.Value))">
+                        @(page.Value)
+                    </button>
+                }
+            }
+
+            <button type="button"
+                    class="pagination-control__button pagination-control__button--direction"
+                    disabled="@(!CanGoNext)"
+                    aria-label="Go to next page"
+                    @onclick="GoToNextPage">
+                <span>Next</span>
+                <span aria-hidden="true">&gt;</span>
+            </button>
+        </div>
+    </nav>
+}
+
+@code {
+    [Parameter]
+    public int CurrentPage { get; set; } = 1;
+
+    [Parameter]
+    public int TotalPages { get; set; }
+
+    [Parameter]
+    public int TotalItems { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public int MaxVisiblePages { get; set; } = 5;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool ShowSummary { get; set; } = true;
+
+    [Parameter]
+    public string AriaLabel { get; set; } = "Pagination";
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private int SafeTotalPages => Math.Max(0, TotalPages);
+
+    private int SafeCurrentPage => SafeTotalPages == 0
+        ? 1
+        : Math.Clamp(CurrentPage, 1, SafeTotalPages);
+
+    private bool CanGoPrevious => !Disabled && SafeCurrentPage > 1;
+
+    private bool CanGoNext => !Disabled && SafeCurrentPage < SafeTotalPages;
+
+    private string RootClass
+    {
+        get
+        {
+            var classes = new List<string> { "pagination-control" };
+
+            if (Disabled)
+            {
+                classes.Add("pagination-control--disabled");
+            }
+
+            if (!string.IsNullOrWhiteSpace(Class))
+            {
+                classes.Add(Class);
+            }
+
+            return string.Join(" ", classes);
+        }
+    }
+
+    private string SummaryText
+    {
+        get
+        {
+            if (TotalItems > 0 && PageSize > 0)
+            {
+                var firstItem = ((SafeCurrentPage - 1) * PageSize) + 1;
+                var lastItem = Math.Min(SafeCurrentPage * PageSize, TotalItems);
+
+                return $"Showing {firstItem}-{lastItem} of {TotalItems}";
+            }
+
+            return $"Page {SafeCurrentPage} of {SafeTotalPages}";
+        }
+    }
+
+    private IEnumerable<int?> VisiblePages
+    {
+        get
+        {
+            if (SafeTotalPages == 0)
+            {
+                yield break;
+            }
+
+            var maxVisiblePages = Math.Max(3, MaxVisiblePages);
+
+            if (SafeTotalPages <= maxVisiblePages)
+            {
+                for (var page = 1; page <= SafeTotalPages; page++)
+                {
+                    yield return page;
+                }
+
+                yield break;
+            }
+
+            yield return 1;
+
+            var middleSlots = maxVisiblePages - 2;
+            var startPage = Math.Max(2, SafeCurrentPage - (middleSlots / 2));
+            var endPage = Math.Min(SafeTotalPages - 1, startPage + middleSlots - 1);
+
+            if (endPage - startPage + 1 < middleSlots)
+            {
+                startPage = Math.Max(2, endPage - middleSlots + 1);
+            }
+
+            if (startPage > 2)
+            {
+                yield return null;
+            }
+
+            for (var page = startPage; page <= endPage; page++)
+            {
+                yield return page;
+            }
+
+            if (endPage < SafeTotalPages - 1)
+            {
+                yield return null;
+            }
+
+            yield return SafeTotalPages;
+        }
+    }
+
+    private Task GoToPreviousPage() => GoToPageAsync(SafeCurrentPage - 1);
+
+    private Task GoToNextPage() => GoToPageAsync(SafeCurrentPage + 1);
+
+    private async Task GoToPageAsync(int page)
+    {
+        var targetPage = Math.Clamp(page, 1, SafeTotalPages);
+
+        if (Disabled || targetPage == SafeCurrentPage)
+        {
+            return;
+        }
+
+        await PageChanged.InvokeAsync(targetPage);
+    }
+
+    private string GetPageButtonClass(int page)
+    {
+        var classes = new List<string> { "pagination-control__button" };
+
+        if (page == SafeCurrentPage)
+        {
+            classes.Add("pagination-control__button--active");
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    private string GetPageAriaLabel(int page)
+    {
+        return page == SafeCurrentPage
+            ? $"Page {page}, current page"
+            : $"Go to page {page}";
+    }
+}
