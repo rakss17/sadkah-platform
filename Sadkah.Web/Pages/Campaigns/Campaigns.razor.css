@@ -147,6 +147,11 @@ input:focus {
     background: #fff1ee;
 }
 
+.campaign-list ::deep .campaign-pagination {
+    grid-column: 1 / -1;
+    margin-top: .25rem;
+}
+
 @media (max-width: 720px) {
     .header-content {
         align-items: flex-start;

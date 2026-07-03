@@ -49,7 +49,9 @@
                        Id="campaign-category-filter"
                        Placeholder="All categories"
                        Items="_campaignCategories.Select(c => c.Name)"
-                       @bind-Value="selectedCategory" />
+                       Value="@selectedCategory"
+                       ValueChanged="ChangeCategoryAsync"
+                       ValueExpression="@(() => selectedCategory)" />
         </div>
 
         <div class="filter-field">
@@ -58,7 +60,9 @@
                        Id="campaign-location-filter"
                        Placeholder="All locations"
                        Items="AvailableLocations"
-                       @bind-Value="selectedLocation" />
+                       Value="@selectedLocation"
+                       ValueChanged="ChangeLocationAsync"
+                       ValueExpression="@(() => selectedLocation)" />
         </div>
 
         <div class="filter-field">
@@ -66,7 +70,9 @@
             <AppSelectInput TValue="string"
                        Id="campaign-verification-filter"
                        Placeholder="Any status"
-                       @bind-Value="verificationFilter">
+                       Value="@verificationFilter"
+                       ValueChanged="ChangeVerificationFilterAsync"
+                       ValueExpression="@(() => verificationFilter)">
                 <option value="@VerifiedFilterValue">Verified only</option>
                 <option value="@UnverifiedFilterValue">Unverified only</option>
             </AppSelectInput>
@@ -109,13 +115,13 @@
     {
         <p class="campaign-status campaign-status--error" role="alert">@statusMessage</p>
     }
-    else if (!FilteredCampaigns.Any())
+    else if (TotalItems == 0)
     {
         <p class="campaign-status" role="status">No campaigns found.</p>
     }
     else
     {
-        @foreach (var campaign in FilteredCampaigns)
+        @foreach (var campaign in PagedCampaigns)
         {
             <CampaignCard Title="@campaign.Title"
                           Category="@campaign.Category"
@@ -125,5 +131,16 @@
                           GoalAmount="@campaign.GoalAmount"
                           IsVerified="@campaign.IsVerified" />
         }
+
+        <PaginationControl CurrentPage="@CurrentPage"
+                           TotalPages="@TotalPages"
+                           TotalItems="@TotalItems"
+                           PageSize="@PageSize"
+                           MaxVisiblePages="5"
+                           Disabled="@isLoading"
+                           ShowSummary="true"
+                           AriaLabel="Campaign pagination"
+                           Class="campaign-pagination"
+                           PageChanged="ChangePage" />
     }
 </section>
