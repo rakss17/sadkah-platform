@@ -135,12 +135,13 @@
         <PaginationControl CurrentPage="@CurrentPage"
                            TotalPages="@TotalPages"
                            TotalItems="@TotalItems"
-                           PageSize="@PageSize"
+                           PageSize="@pageSize"
                            MaxVisiblePages="5"
                            Disabled="@isLoading"
                            ShowSummary="true"
                            AriaLabel="Campaign pagination"
                            Class="campaign-pagination"
-                           PageChanged="ChangePage" />
+                           PageChanged="ChangePage"
+                           PageSizeChanged="ChangePageSize" />
     }
 </section>

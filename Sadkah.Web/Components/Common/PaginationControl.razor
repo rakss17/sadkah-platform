@@ -45,6 +45,16 @@
                 <span>Next</span>
                 <span aria-hidden="true">&gt;</span>
             </button>
+
+            <AppSelectInput Class="pagination-control__page-size"
+                            Value="@PageSize"
+                            ValueChanged="@((int newValue) => PageSizeChanged.InvokeAsync(newValue))"
+                            ValueExpression="@(() => PageSize)">
+                <option Value="5">5</option>
+                <option Value="10">10</option>
+                <option Value="20">20</option>
+                <option Value="50">50</option>
+            </AppSelectInput>
         </div>
     </nav>
 }
@@ -79,6 +89,9 @@
 
     [Parameter]
     public EventCallback<int> PageChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> PageSizeChanged { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }

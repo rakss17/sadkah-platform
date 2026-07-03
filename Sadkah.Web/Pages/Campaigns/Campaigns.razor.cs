@@ -12,6 +12,7 @@ namespace Sadkah.Web.Pages.Campaigns
         private IReadOnlyList<CampaignSummary> campaigns = [];
         private int totalItems;
         private int totalPages;
+        private int pageSize = 10;
         private bool isLoading = true;
         private string? statusMessage;
         private string searchTerm = string.Empty;
@@ -20,7 +21,6 @@ namespace Sadkah.Web.Pages.Campaigns
 
         private const string VerifiedFilterValue = "verified";
         private const string UnverifiedFilterValue = "unverified";
-        private const int PageSize = 6;
 
         private IEnumerable<CampaignCategoryModel> _campaignCategories = new List<CampaignCategoryModel>();
 
@@ -93,7 +93,7 @@ namespace Sadkah.Web.Pages.Campaigns
             {
                 var result = await CampaignService.GetCampaignsAsync(
                     pageNumber: currentPage,
-                    pageSize: PageSize,
+                    pageSize: pageSize,
                     searchTerm: searchTerm,
                     category: selectedCategory,
                     location: selectedLocation,
@@ -190,6 +190,13 @@ namespace Sadkah.Web.Pages.Campaigns
         private async Task ChangePage(int page)
         {
             currentPage = Math.Clamp(page, 1, TotalPages);
+            await LoadCampaignsAsync();
+        }
+
+        private async Task ChangePageSize(int newPageSize)
+        {
+            pageSize = Math.Max(1, newPageSize);
+            ResetPagination();
             await LoadCampaignsAsync();
         }
 
