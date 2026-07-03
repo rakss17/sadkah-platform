@@ -13,5 +13,8 @@ namespace Sadkah.API.Helpers
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public string? UserId { get; set; } = null;
+        public string? Category { get; set; } = null;
+        public string? Location { get; set; } = null;
+        public bool? IsVerified { get; set; } = null;
     }
 }
