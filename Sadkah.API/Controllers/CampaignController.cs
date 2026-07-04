@@ -27,8 +27,6 @@ namespace Sadkah.API.Controllers
             {
                 var campaigns = await _campaignService.GetAllCampaignsAsync(query);
                 
-                if (!campaigns.Items.Any()) return NotFound(ApiResponse<object>.FailResponse("Campaign not found."));
-
                 var metadata = new
                 {
                     totalCount = campaigns.TotalCount,

@@ -27,6 +27,24 @@ namespace Sadkah.API.Repository
                 campaignsQuery = campaignsQuery.Where(c => c.Title.Contains(query.SearchTerm) || c.Description.Contains(query.SearchTerm));
             }
 
+            if (!string.IsNullOrWhiteSpace(query.Category))
+            {
+                campaignsQuery = campaignsQuery.Where(c => c.Category.Name == query.Category);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Location))
+            {
+                campaignsQuery = campaignsQuery.Where(c =>
+                    c.City == query.Location ||
+                    c.Province == query.Location ||
+                    (c.City + ", " + c.Province) == query.Location);
+            }
+
+            if (query.IsVerified.HasValue)
+            {
+                campaignsQuery = campaignsQuery.Where(c => c.IsVerified == query.IsVerified.Value);
+            }
+
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
                 if (query.SortBy.Equals("title", StringComparison.OrdinalIgnoreCase))

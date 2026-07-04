@@ -85,7 +85,7 @@ namespace Sadkah.Web.Services
                     return ServiceResult<T>.Fail(apiResponse?.Message ?? "The Sadkah API could not complete the request.");
                 }
 
-                return ServiceResult<T>.Ok(apiResponse.Data, apiResponse.Message);
+                return ServiceResult<T>.Ok(apiResponse.Data, apiResponse.Message, apiResponse.Metadata);
             }
             catch (HttpRequestException)
             {

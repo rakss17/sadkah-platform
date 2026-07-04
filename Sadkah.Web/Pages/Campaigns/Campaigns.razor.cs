@@ -10,24 +10,31 @@ namespace Sadkah.Web.Pages.Campaigns
 
         private CampaignFilter selectedFilter = CampaignFilter.All;
         private IReadOnlyList<CampaignSummary> campaigns = [];
+        private int totalItems;
+        private int totalPages;
+        private int pageSize = 10;
         private bool isLoading = true;
         private string? statusMessage;
         private string searchTerm = string.Empty;
         private bool showFilters;
-        private string selectedCategory = string.Empty;
-        private string selectedLocation = string.Empty;
-        private string verificationFilter = string.Empty;
+        private int currentPage = 1;
 
         private const string VerifiedFilterValue = "verified";
         private const string UnverifiedFilterValue = "unverified";
 
         private IEnumerable<CampaignCategoryModel> _campaignCategories = new List<CampaignCategoryModel>();
 
-        private IEnumerable<CampaignSummary> FilteredCampaigns => selectedFilter switch
-        {
-            CampaignFilter.MyCampaigns => ApplyAdvancedFilters(campaigns.Where(campaign => campaign.IsMine)),
-            _ => ApplyAdvancedFilters(campaigns)
-        };
+        private string selectedCategory = string.Empty;
+        private string selectedLocation = string.Empty;
+        private string verificationFilter = string.Empty;
+
+        private IEnumerable<CampaignSummary> PagedCampaigns => campaigns;
+
+        private int TotalItems => totalItems;
+
+        private int TotalPages => Math.Max(1, totalPages);
+
+        private int CurrentPage => Math.Clamp(currentPage, 1, TotalPages);
 
         private IEnumerable<string> AvailableCategories => campaigns
             .Select(campaign => campaign.Category)
@@ -84,7 +91,14 @@ namespace Sadkah.Web.Pages.Campaigns
 
             try
             {
-                var result = await CampaignService.GetCampaignsAsync(searchTerm: searchTerm);
+                var result = await CampaignService.GetCampaignsAsync(
+                    pageNumber: currentPage,
+                    pageSize: pageSize,
+                    searchTerm: searchTerm,
+                    category: selectedCategory,
+                    location: selectedLocation,
+                    isVerified: GetVerificationFilterValue(),
+                    mineOnly: selectedFilter == CampaignFilter.MyCampaigns);
 
                 if (result.RequiresAuthentication)
                 {
@@ -98,7 +112,10 @@ namespace Sadkah.Web.Pages.Campaigns
                     return;
                 }
 
-                campaigns = result.Data;
+                campaigns = result.Data.Items;
+                totalItems = result.Data.TotalCount;
+                totalPages = result.Data.TotalPages;
+                currentPage = result.Data.CurrentPage;
             }
             finally
             {
@@ -137,9 +154,16 @@ namespace Sadkah.Web.Pages.Campaigns
 
         private bool IsSelected(CampaignFilter filter) => selectedFilter == filter;
 
-        private void SelectFilter(CampaignFilter filter)
+        private async Task SelectFilter(CampaignFilter filter)
         {
+            if (selectedFilter == filter)
+            {
+                return;
+            }
+
             selectedFilter = filter;
+            ResetPagination();
+            await LoadCampaignsAsync();
         }
 
         private void ToggleFilters()
@@ -147,16 +171,53 @@ namespace Sadkah.Web.Pages.Campaigns
             showFilters = !showFilters;
         }
 
-        private void ClearFilters()
+        private async Task ClearFilters()
         {
             selectedCategory = string.Empty;
             selectedLocation = string.Empty;
             verificationFilter = string.Empty;
+            ResetPagination();
+            await LoadCampaignsAsync();
         }
 
         private async Task SearchCampaignsAsync(string? value)
         {
             searchTerm = value ?? string.Empty;
+            ResetPagination();
+            await LoadCampaignsAsync();
+        }
+
+        private async Task ChangePage(int page)
+        {
+            currentPage = Math.Clamp(page, 1, TotalPages);
+            await LoadCampaignsAsync();
+        }
+
+        private async Task ChangePageSize(int newPageSize)
+        {
+            pageSize = Math.Max(1, newPageSize);
+            ResetPagination();
+            await LoadCampaignsAsync();
+        }
+
+        private async Task ChangeCategoryAsync(string? value)
+        {
+            selectedCategory = value ?? string.Empty;
+            ResetPagination();
+            await LoadCampaignsAsync();
+        }
+
+        private async Task ChangeLocationAsync(string? value)
+        {
+            selectedLocation = value ?? string.Empty;
+            ResetPagination();
+            await LoadCampaignsAsync();
+        }
+
+        private async Task ChangeVerificationFilterAsync(string? value)
+        {
+            verificationFilter = value ?? string.Empty;
+            ResetPagination();
             await LoadCampaignsAsync();
         }
 
@@ -172,30 +233,19 @@ namespace Sadkah.Web.Pages.Campaigns
                 : "filter-tab-button";
         }
 
-        private IEnumerable<CampaignSummary> ApplyAdvancedFilters(IEnumerable<CampaignSummary> source)
+        private bool? GetVerificationFilterValue()
         {
-            var filteredCampaigns = source;
-
-            if (!string.IsNullOrWhiteSpace(selectedCategory))
+            return verificationFilter switch
             {
-                filteredCampaigns = filteredCampaigns.Where(campaign =>
-                    string.Equals(campaign.Category, selectedCategory, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrWhiteSpace(selectedLocation))
-            {
-                filteredCampaigns = filteredCampaigns.Where(campaign =>
-                    string.Equals(campaign.Location, selectedLocation, StringComparison.OrdinalIgnoreCase));
-            }
-
-            filteredCampaigns = verificationFilter switch
-            {
-                VerifiedFilterValue => filteredCampaigns.Where(campaign => campaign.IsVerified),
-                UnverifiedFilterValue => filteredCampaigns.Where(campaign => !campaign.IsVerified),
-                _ => filteredCampaigns
+                VerifiedFilterValue => true,
+                UnverifiedFilterValue => false,
+                _ => null
             };
+        }
 
-            return filteredCampaigns;
+        private void ResetPagination()
+        {
+            currentPage = 1;
         }
     }
 }

@@ -9,19 +9,43 @@
         <h1>Find verified causes</h1>
         <p>Search, filter, and donate to campaigns that matter to you</p>
     </div>
-    <div class="header-filters">
+    <AppButton Class="create-button" Variant="primary" Size="md" @onclick="CreateCampaign">
+        <PlusIcon Width="20" Height="20" />
+        <span>Create Campaign</span>
+    </AppButton>
+</div>
+
+<div class="filter-tab" role="tablist" aria-label="Campaign filters">
+    <div class="filter-tab__buttons">
+        <AppButton Class="@GetFilterTabClass(CampaignFilter.All)"
+                Variant="secondary"
+                Size="md"
+                aria-pressed="@IsSelected(CampaignFilter.All)"
+                @onclick="@(() => SelectFilter(CampaignFilter.All))">
+            All
+        </AppButton>
+        <AppButton Class="@GetFilterTabClass(CampaignFilter.MyCampaigns)"
+                Variant="secondary"
+                Size="md"
+                aria-pressed="@IsSelected(CampaignFilter.MyCampaigns)"
+                @onclick="@(() => SelectFilter(CampaignFilter.MyCampaigns))">
+            My Campaigns
+        </AppButton>
+    </div>
+
+    <div class="filter-tab__search-filters">
         <AppSearchInput Id="search-campaigns"
-                        Placeholder="Search campaigns..."
-                        Debounce="300"
-                        ValueChanged="SearchCampaignsAsync">
-            <LeftIcon>
-                <SearchIcon />
-            </LeftIcon>
+                            Placeholder="Search campaigns..."
+                            Debounce="300"
+                            ValueChanged="SearchCampaignsAsync">
+                <LeftIcon>
+                    <SearchIcon />
+                </LeftIcon>
         </AppSearchInput>
         <AppButton Class="filter-button" Variant="secondary"
-                   Size="md"
-                   aria-expanded="@showFilters"
-                   @onclick="ToggleFilters">
+                Size="md"
+                aria-expanded="@showFilters"
+                @onclick="ToggleFilters">
             <FilterIcon Width="20" Height="20" />
             <span>
                 Filters
@@ -31,11 +55,6 @@
                     <span class="filter-count">@ActiveFilterCount</span>
                 }
             </span>
-        </AppButton>
-
-        <AppButton Class="create-button" Variant="primary" Size="md" @onclick="CreateCampaign">
-            <PlusIcon Width="20" Height="20" />
-            <span>Create Campaign</span>
         </AppButton>
     </div>
 </div>
@@ -49,7 +68,9 @@
                        Id="campaign-category-filter"
                        Placeholder="All categories"
                        Items="_campaignCategories.Select(c => c.Name)"
-                       @bind-Value="selectedCategory" />
+                       Value="@selectedCategory"
+                       ValueChanged="ChangeCategoryAsync"
+                       ValueExpression="@(() => selectedCategory)" />
         </div>
 
         <div class="filter-field">
@@ -58,7 +79,9 @@
                        Id="campaign-location-filter"
                        Placeholder="All locations"
                        Items="AvailableLocations"
-                       @bind-Value="selectedLocation" />
+                       Value="@selectedLocation"
+                       ValueChanged="ChangeLocationAsync"
+                       ValueExpression="@(() => selectedLocation)" />
         </div>
 
         <div class="filter-field">
@@ -66,7 +89,9 @@
             <AppSelectInput TValue="string"
                        Id="campaign-verification-filter"
                        Placeholder="Any status"
-                       @bind-Value="verificationFilter">
+                       Value="@verificationFilter"
+                       ValueChanged="ChangeVerificationFilterAsync"
+                       ValueExpression="@(() => verificationFilter)">
                 <option value="@VerifiedFilterValue">Verified only</option>
                 <option value="@UnverifiedFilterValue">Unverified only</option>
             </AppSelectInput>
@@ -83,23 +108,6 @@
     </section>
 }
 
-<div class="filter-tab" role="tablist" aria-label="Campaign filters">
-    <AppButton Class="@GetFilterTabClass(CampaignFilter.All)"
-               Variant="secondary"
-               Size="md"
-               aria-pressed="@IsSelected(CampaignFilter.All)"
-               @onclick="@(() => SelectFilter(CampaignFilter.All))">
-        All
-    </AppButton>
-    <AppButton Class="@GetFilterTabClass(CampaignFilter.MyCampaigns)"
-               Variant="secondary"
-               Size="md"
-               aria-pressed="@IsSelected(CampaignFilter.MyCampaigns)"
-               @onclick="@(() => SelectFilter(CampaignFilter.MyCampaigns))">
-        My Campaigns
-    </AppButton>
-</div>
-
 <section class="campaign-list" aria-label="Campaign list">
     @if (isLoading)
     {
@@ -109,13 +117,13 @@
     {
         <p class="campaign-status campaign-status--error" role="alert">@statusMessage</p>
     }
-    else if (!FilteredCampaigns.Any())
+    else if (TotalItems == 0)
     {
         <p class="campaign-status" role="status">No campaigns found.</p>
     }
     else
     {
-        @foreach (var campaign in FilteredCampaigns)
+        @foreach (var campaign in PagedCampaigns)
         {
             <CampaignCard Title="@campaign.Title"
                           Category="@campaign.Category"
@@ -125,5 +133,17 @@
                           GoalAmount="@campaign.GoalAmount"
                           IsVerified="@campaign.IsVerified" />
         }
+
+        <PaginationControl CurrentPage="@CurrentPage"
+                           TotalPages="@TotalPages"
+                           TotalItems="@TotalItems"
+                           PageSize="@pageSize"
+                           MaxVisiblePages="5"
+                           Disabled="@isLoading"
+                           ShowSummary="true"
+                           AriaLabel="Campaign pagination"
+                           Class="campaign-pagination"
+                           PageChanged="ChangePage"
+                           PageSizeChanged="ChangePageSize" />
     }
 </section>
