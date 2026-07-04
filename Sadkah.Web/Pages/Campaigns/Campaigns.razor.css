@@ -95,11 +95,22 @@ input:focus {
 }
 
 .filter-tab {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 0.25rem;
     margin-top: 1.5rem;
     padding: 0.25rem;
+    justify-content: space-between;
+}
+
+.filter-tab__search-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.filter-tab__search-filters ::deep .app-input {
+    width: 20vw;
 }
 
 .filter-tab ::deep .filter-tab-button {
