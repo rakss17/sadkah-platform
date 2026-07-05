@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.RateLimiting;
+using CloudinaryDotNet;
 
 namespace Sadkah.API.Extensions
 {
@@ -101,6 +102,7 @@ namespace Sadkah.API.Extensions
             builder.Services.AddScoped<ICampaignService, CampaignService>();
             builder.Services.AddScoped<IDonationService, DonationService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
             return builder;
         }
@@ -130,6 +132,22 @@ namespace Sadkah.API.Extensions
                             Window = TimeSpan.FromMinutes(1),
                             QueueLimit = 0
                         }));
+            });
+
+            return builder;
+        }
+
+        public static WebApplicationBuilder AddCloudinaryConfiguration(this WebApplicationBuilder builder, IConfiguration config)
+        {
+
+            builder.Services.AddSingleton(sp =>
+            {
+                var account = new Account(
+                    config["Cloudinary:CloudName"] ?? throw new ArgumentNullException("Cloudinary:CloudName is not configured."),
+                    config["Cloudinary:ApiKey"] ?? throw new ArgumentNullException("Cloudinary:ApiKey is not configured."),
+                    config["Cloudinary:ApiSecret"] ?? throw new ArgumentNullException("Cloudinary:ApiSecret is not configured."));
+
+                return new Cloudinary(account);
             });
 
             return builder;

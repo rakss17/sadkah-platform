@@ -1,6 +1,7 @@
 ﻿using Sadkah.API.Extensions;
 using Serilog;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,7 +21,8 @@ builder.AddIdentityServices()
     .AddJwtAuthentication(builder.Configuration)
     .AddCustomValidation()
     .AddApplicationServices()
-    .AddRateLimiting();
+    .AddRateLimiting()
+    .AddCloudinaryConfiguration(builder.Configuration);
 
 var app = builder.Build();
 
