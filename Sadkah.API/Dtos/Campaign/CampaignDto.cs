@@ -25,5 +25,6 @@ namespace Sadkah.API.Dtos.Campaign
         public string City { get; set; } = string.Empty;
         public string Province { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
+        public List<DonationMethodDto> DonationMethods { get; set; } = new();
     }
 }
