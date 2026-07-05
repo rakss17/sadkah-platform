@@ -15,7 +15,7 @@ namespace Sadkah.API.Repository
 
         public async Task<PagedResult<Campaign>> GetAllCampaignsAsync(QueryObject query)
         {
-            var campaignsQuery = _context.Campaigns.Where(c => !c.IsArchived).Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).Include(c => c.Category).AsQueryable();
+            var campaignsQuery = _context.Campaigns.Where(c => !c.IsArchived).Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).Include(c => c.Category).Include(c => c.DonationMethods).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query.UserId))
             {
@@ -87,7 +87,7 @@ namespace Sadkah.API.Repository
 
         public async Task<Campaign?> GetCampaignByIdAsync(Guid id)
         {
-            return await _context.Campaigns.Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Campaigns.Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).Include(c => c.DonationMethods).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Campaign> CreateCampaignAsync(Campaign campaignModel)
@@ -95,7 +95,7 @@ namespace Sadkah.API.Repository
             await _context.Campaigns.AddAsync(campaignModel);
             await _context.SaveChangesAsync();
 
-            var createdCampaign = await _context.Campaigns.Include(c => c.Owner).Include(c => c.Category).FirstOrDefaultAsync(c => c.Id == campaignModel.Id);
+            var createdCampaign = await _context.Campaigns.Include(c => c.Owner).Include(c => c.Category).Include(c => c.DonationMethods).FirstOrDefaultAsync(c => c.Id == campaignModel.Id);
 
             return createdCampaign!;
 

@@ -27,7 +27,21 @@ namespace Sadkah.API.Mappers
                 Barangay = campaignModel.Barangay,
                 City = campaignModel.City,
                 Province = campaignModel.Province,
-                Country = campaignModel.Country
+                Country = campaignModel.Country,
+                DonationMethods = campaignModel.DonationMethods.Select(dm => dm.ToDonationMethodDto()).ToList()
+            };
+        }
+
+        public static DonationMethodDto ToDonationMethodDto(this DonationMethod donationMethod)
+        {
+            return new DonationMethodDto
+            {
+                Id = donationMethod.Id,
+                Type = donationMethod.Type,
+                Provider = donationMethod.Provider,
+                QrImageUrl = donationMethod.QrCodeImageUrl,
+                QrImagePublicId = donationMethod.QrCodeImagePublicId,
+                CampaignId = donationMethod.CampaignId
             };
         }
 

@@ -5,7 +5,7 @@
 <PageTitle>Sadkah - Create Campaign</PageTitle>
 
 <div class="create-campaign-page">
-    <EditForm Model="campaignModel"
+    <EditForm EditContext="editContext"
               OnValidSubmit="HandlePublishCampaignAsync"
               OnInvalidSubmit="HandleInvalidSubmit"
               FormName="create-campaign">
@@ -171,6 +171,104 @@
                                   @bind-Value="campaignModel.Country">
                         </AppInput>
                     </AppField>
+                </div>
+
+                <div class="section-heading section-heading--spaced">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 5H4C2.89543 5 2 5.89543 2 7V17C2 18.1046 2.89543 19 4 19H20C21.1046 19 22 18.1046 22 17V7C22 5.89543 21.1046 5 20 5Z" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 10H22" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Donation Method</span>
+                </div>
+
+                <div class="donation-methods">
+                    @for (var i = 0; i < campaignModel.DonationMethods.Count; i++)
+                    {
+                        var index = i;
+                        var method = campaignModel.DonationMethods[index];
+
+                        <div class="donation-method-card" @key="method.Id">
+                            <div class="donation-method-card__header">
+                                <strong>Method @(index + 1)</strong>
+                                <button type="button"
+                                        class="donation-method-card__remove"
+                                        aria-label="Remove donation method"
+                                        @onclick="() => RemoveDonationMethod(method)">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M3 6h18" />
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="field-grid">
+                                <AppField TValue="DonationMethodType?" Id="@($"donation-type-{index}")" Label="Method Type" IsRequired="true" For="() => method.Type">
+                                    <AppSelectInput TValue="DonationMethodType?"
+                                                    Id="@($"donation-type-{index}")"
+                                                    Placeholder="Select method type"
+                                                    @bind-Value="method.Type"
+                                                    @bind-Value:after="() => HandleDonationMethodTypeChanged(method)">
+                                        <option value="@DonationMethodType.OnlineBanking">Online Banking</option>
+                                        <option value="@DonationMethodType.EWallet">E-Wallet</option>
+                                    </AppSelectInput>
+                                </AppField>
+
+                                <AppField TValue="string" Id="@($"donation-provider-{index}")" Label="Provider" IsRequired="true" For="() => method.Provider">
+                                    <AppSelectInput Tvalue="string"
+                                                    Id="@($"donation-provider-{index}")"
+                                                    Placeholder="Select provider"
+                                                    @bind-Value="method.Provider">
+                                        @foreach (var provider in GetDonationProviderOptions(method.Type))
+                                        {
+                                            <option value="@provider">@provider</option>
+                                        }
+                                    </AppSelectInput>
+                                </AppField>
+                            </div>
+
+                            <div class="donation-method-card__upload">
+                                <span class="donation-upload-label">QR Code / Account Image <span class="donation-upload-label__required">*</span></span>
+
+                                @if (!string.IsNullOrEmpty(method.QrImageFile?.Name))
+                                {
+                                    <div class="donation-upload-preview">
+                                        <img src="@_qrCodeImagePreviewUrl" alt="Uploaded QR code preview" />
+                                        <div>
+                                            <span>@method.QrImageFile.Name</span>
+                                            <button type="button" @onclick="() => RemoveDonationMethodImage(method)">Remove</button>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="donation-upload-dropzone">
+                                        <InputFile class="donation-upload-input"
+                                                   accept=".jpg,.jpeg,.png"
+                                                   OnChange="@(e => HandleDonationImageUploadAsync(e, method))" />
+                                        <small>JPG or PNG (Max 2MB)</small>
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrEmpty(method.UploadError))
+                                {
+                                    <small class="donation-upload-error">@method.UploadError</small>
+                                }
+
+                                <ValidationMessage For="() => method.QrImageFile" />
+                            </div>
+                        </div>
+                    }
+
+                    <AppButton Type="button" Variant="secondary" Size="md" Class="donation-add-button" @onclick="AddDonationMethod">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 5v14" />
+                            <path d="M5 12h14" />
+                        </svg>
+                        <span>Add Method</span>
+                    </AppButton>
+                    
+                    <ValidationMessage For="() => campaignModel.DonationMethods" />
                 </div>
 
                 @* TODO: Hidden for the meantime *@

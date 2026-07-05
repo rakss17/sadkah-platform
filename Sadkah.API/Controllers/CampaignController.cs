@@ -66,7 +66,8 @@ namespace Sadkah.API.Controllers
         [HttpPost]
         [EnableRateLimiting("api")]
         [Authorize]
-        public async Task<IActionResult> CreateCampaign([FromBody] CreateCampaignRequestDto createDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateCampaign([FromForm] CreateCampaignRequestDto createDto)
         {
             try
             {

@@ -46,6 +46,9 @@ namespace Sadkah.Web.Models
 
         [Required(ErrorMessage = "Country is required.")]
         public string Country { get; set; } = "Philippines";
+
+        [MinLength(1, ErrorMessage = "At least one donation method is required.")]
+        public List<DonationMethodModel> DonationMethods { get; set; } = new();
     }
 
     public class FutureDateAttribute : ValidationAttribute

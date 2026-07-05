@@ -1,3 +1,6 @@
+using System.Globalization;
+using System.Net.Http.Headers;
+
 namespace Sadkah.Web.Services
 {
     public sealed class CampaignService : ICampaignService
@@ -100,24 +103,50 @@ namespace Sadkah.Web.Services
                 return ServiceResult<CampaignModel>.AuthenticationRequired();
             }
 
-            var request = new CreateCampaignRequest(
-                ownerId,
-                campaign.Title,
-                campaign.Description,
-                campaign.CategoryId,
-                campaign.TargetAmount,
-                campaign.Deadline.GetValueOrDefault(),
-                campaign.AddressLine1,
-                campaign.Barangay,
-                campaign.City,
-                campaign.Province,
-                campaign.Country,
-                campaign.AddressLine2);
-
-            return await apiClient.PostAsync<CreateCampaignRequest, CampaignModel>(
+            return await apiClient.PostMultipartAsync<CampaignModel>(
                 "api/campaigns",
-                request,
+                () => BuildCreateCampaignContent(campaign, ownerId),
                 requiresAuthentication: true);
+        }
+
+        private static MultipartFormDataContent BuildCreateCampaignContent(CampaignModel campaign, string ownerId)
+        {
+            var content = new MultipartFormDataContent
+            {
+                { new StringContent(ownerId), "OwnerId" },
+                { new StringContent(campaign.Title), nameof(CampaignModel.Title) },
+                { new StringContent(campaign.Description), nameof(CampaignModel.Description) },
+                { new StringContent(campaign.CategoryId.ToString()), nameof(CampaignModel.CategoryId) },
+                { new StringContent(campaign.TargetAmount.ToString(CultureInfo.InvariantCulture)), nameof(CampaignModel.TargetAmount) },
+                { new StringContent(campaign.Deadline.GetValueOrDefault().ToString("o")), nameof(CampaignModel.Deadline) },
+                { new StringContent(campaign.AddressLine1), nameof(CampaignModel.AddressLine1) },
+                { new StringContent(campaign.Barangay), nameof(CampaignModel.Barangay) },
+                { new StringContent(campaign.City), nameof(CampaignModel.City) },
+                { new StringContent(campaign.Province), nameof(CampaignModel.Province) },
+                { new StringContent(campaign.Country), nameof(CampaignModel.Country) }
+            };
+
+            if (!string.IsNullOrWhiteSpace(campaign.AddressLine2))
+            {
+                content.Add(new StringContent(campaign.AddressLine2), nameof(CampaignModel.AddressLine2));
+            }
+
+            for (var i = 0; i < campaign.DonationMethods.Count; i++)
+            {
+                var method = campaign.DonationMethods[i];
+
+                content.Add(new StringContent(method.Type?.ToString() ?? string.Empty), $"DonationMethods[{i}].Type");
+                content.Add(new StringContent(method.Provider), $"DonationMethods[{i}].Provider");
+
+                if (method.QrImageBytes is not null && method.QrImageFile is not null)
+                {
+                    var byteContent = new ByteArrayContent(method.QrImageBytes);
+                    byteContent.Headers.ContentType = new MediaTypeHeaderValue(method.QrImageFile.ContentType);
+                    content.Add(byteContent, $"DonationMethods[{i}].QrImageFile", method.QrImageFile.Name);
+                }
+            }
+
+            return content;
         }
 
         public async Task<ServiceResult<IEnumerable<CampaignCategoryModel>>> GetCampaignCategoriesAsync()
@@ -178,19 +207,5 @@ namespace Sadkah.Web.Services
 
             return value;
         }
-
-        private sealed record CreateCampaignRequest(
-            string OwnerId,
-            string Title,
-            string Description,
-            Guid CategoryId,
-            decimal TargetAmount,
-            DateTime Deadline,
-            string AddressLine1,
-            string Barangay,
-            string City,
-            string Province,
-            string Country = "Philippines",
-            string? AddressLine2 = null);
     }
 }

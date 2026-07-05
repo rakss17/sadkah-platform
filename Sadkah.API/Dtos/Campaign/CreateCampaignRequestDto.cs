@@ -35,5 +35,8 @@ namespace Sadkah.API.Dtos.Campaign
         public string Province { get; set; } = string.Empty;
         [Required(ErrorMessage = "Country is required.")]
         public string Country { get; set; } = string.Empty;
+
+        [MinLength(1, ErrorMessage = "At least one donation method is required.")]
+        public List<CreateDonationMethodRequestDto> DonationMethods { get; set; } = new List<CreateDonationMethodRequestDto>();
     }
 }
