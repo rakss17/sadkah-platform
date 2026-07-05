@@ -230,12 +230,12 @@
                             <div class="donation-method-card__upload">
                                 <span class="donation-upload-label">QR Code / Account Image <span class="donation-upload-label__required">*</span></span>
 
-                                @if (!string.IsNullOrEmpty(method.QrImageDataUrl))
+                                @if (!string.IsNullOrEmpty(method.QrImageFile?.Name))
                                 {
                                     <div class="donation-upload-preview">
-                                        <img src="@method.QrImageDataUrl" alt="Uploaded QR code preview" />
+                                        <img src="@_qrCodeImagePreviewUrl" alt="Uploaded QR code preview" />
                                         <div>
-                                            <span>@method.QrImageFileName</span>
+                                            <span>@method.QrImageFile.Name</span>
                                             <button type="button" @onclick="() => RemoveDonationMethodImage(method)">Remove</button>
                                         </div>
                                     </div>
@@ -255,7 +255,7 @@
                                     <small class="donation-upload-error">@method.UploadError</small>
                                 }
 
-                                <ValidationMessage For="() => method.QrImageDataUrl" />
+                                <ValidationMessage For="() => method.QrImageFile" />
                             </div>
                         </div>
                     }

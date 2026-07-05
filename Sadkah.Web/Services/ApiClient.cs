@@ -62,6 +62,31 @@ namespace Sadkah.Web.Services
             }, accessToken);
         }
 
+        public async Task<ServiceResult<T>> PostMultipartAsync<T>(string requestUri, Func<MultipartFormDataContent> createContent, bool requiresAuthentication = true)
+        {
+            string? accessToken = null;
+
+            if (requiresAuthentication)
+            {
+                accessToken = await authSession.GetAccessTokenAsync();
+
+                if (string.IsNullOrWhiteSpace(accessToken))
+                {
+                    return ServiceResult<T>.AuthenticationRequired();
+                }
+            }
+
+            return await SendAsync<T>(() =>
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
+                {
+                    Content = createContent()
+                };
+                AddAuthorizationHeader(request, accessToken);
+                return request;
+            }, accessToken);
+        }
+
         private async Task<ServiceResult<T>> SendAsync<T>(Func<HttpRequestMessage> createRequest, string? bearerToken)
         {
             try

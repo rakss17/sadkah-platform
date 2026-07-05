@@ -23,10 +23,11 @@ namespace Sadkah.Web.Pages.Campaigns
         private bool isPublishing;
         private string? statusMessage;
         private string statusAlertClass = "create-alert--error";
+        private string _qrCodeImagePreviewUrl = string.Empty;
 
         private IReadOnlyList<string> Cities => LocationService.GetCities(campaignModel.Province);
 
-        private const long MaxDonationImageSizeBytes = 2 * 1024 * 1024;
+        private const long MaxDonationImageSizeBytes = DonationMethodModel.MaxQrImageSizeBytes;
         private static readonly string[] AllowedDonationImageContentTypes = { "image/jpeg", "image/png" };
 
         private static readonly Dictionary<DonationMethodType, string[]> DonationProviderOptions = new()
@@ -103,9 +104,10 @@ namespace Sadkah.Web.Pages.Campaigns
 
         private void RemoveDonationMethodImage(DonationMethodModel method)
         {
-            method.QrImageFileName = null;
-            method.QrImageDataUrl = null;
+            method.QrImageFile = null;
+            method.QrImageBytes = null;
             method.UploadError = null;
+            _qrCodeImagePreviewUrl = string.Empty;
         }
 
         private void HandleDonationMethodFieldChanged(object? sender, FieldChangedEventArgs e)
@@ -155,22 +157,23 @@ namespace Sadkah.Web.Pages.Campaigns
 
             if (!AllowedDonationImageContentTypes.Contains(file.ContentType))
             {
-                method.UploadError = "Only JPG or PNG images are allowed.";
+                method.UploadError = "Only JPG and PNG images are allowed.";
                 return;
             }
 
             try
             {
-                using var stream = file.OpenReadStream(MaxDonationImageSizeBytes);
+                await using var stream = file.OpenReadStream(maxAllowedSize: MaxDonationImageSizeBytes);
                 using var memoryStream = new MemoryStream();
                 await stream.CopyToAsync(memoryStream);
 
-                method.QrImageFileName = file.Name;
-                method.QrImageDataUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(memoryStream.ToArray())}";
+                method.QrImageBytes = memoryStream.ToArray();
+                method.QrImageFile = file;
+                _qrCodeImagePreviewUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(memoryStream.ToArray())}";
             }
-            catch (IOException)
+            catch (Exception)
             {
-                method.UploadError = "Image must be 2MB or smaller.";
+                method.UploadError = "Failed to read the selected image. Please try again.";
             }
         }
 
@@ -182,33 +185,32 @@ namespace Sadkah.Web.Pages.Campaigns
 
         private async Task HandlePublishCampaignAsync()
         {
-            Console.WriteLine("campaignModel: " + JsonSerializer.Serialize(campaignModel));
-            // isPublishing = true;
-            // statusMessage = null;
-            // statusAlertClass = "create-alert--error";
+            isPublishing = true;
+            statusMessage = null;
+            statusAlertClass = "create-alert--error";
 
-            // try
-            // {
-            //     var result = await CampaignService.CreateCampaignAsync(campaignModel);
+            try
+            {
+                var result = await CampaignService.CreateCampaignAsync(campaignModel);
 
-            //     if (result.RequiresAuthentication)
-            //     {
-            //         Navigation.NavigateTo("/login", replace: true);
-            //         return;
-            //     }
+                if (result.RequiresAuthentication)
+                {
+                    Navigation.NavigateTo("/login", replace: true);
+                    return;
+                }
 
-            //     if (!result.Success)
-            //     {
-            //         statusMessage = result.Message;
-            //         return;
-            //     }
+                if (!result.Success)
+                {
+                    statusMessage = result.Message;
+                    return;
+                }
 
-            //     Navigation.NavigateTo("/campaigns");
-            // }
-            // finally
-            // {
-            //     isPublishing = false;
-            // }
+                Navigation.NavigateTo("/campaigns");
+            }
+            finally
+            {
+                isPublishing = false;
+            }
         }
 
         public void Dispose()
