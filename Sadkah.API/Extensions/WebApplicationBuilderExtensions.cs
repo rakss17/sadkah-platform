@@ -103,6 +103,7 @@ namespace Sadkah.API.Extensions
             builder.Services.AddScoped<IDonationService, DonationService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+            builder.Services.AddScoped<IOcrService, OcrService>();
 
             return builder;
         }
