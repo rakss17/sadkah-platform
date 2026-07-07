@@ -8,6 +8,7 @@ namespace Sadkah.Web.Mappers
                 ? $"{campaign.City}, {campaign.Province}"
                 : "Unknown Location";
             return new CampaignSummary(
+                campaign.Id,
                 campaign.Title,
                 campaign.CategoryName ?? "Uncategorized",
                 location,

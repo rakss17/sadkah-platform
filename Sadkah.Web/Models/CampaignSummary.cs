@@ -1,6 +1,7 @@
 namespace Sadkah.Web.Models
 {
     public sealed record CampaignSummary(
+        Guid Id,
         string Title,
         string Category,
         string Location,

@@ -7,3 +7,4 @@ global using Sadkah.Web.Models;
 global using Sadkah.Web.Services;
 global using Sadkah.Web.Enums;
 global using Sadkah.Web.Mappers;
+global using Sadkah.Web.Components.Common;

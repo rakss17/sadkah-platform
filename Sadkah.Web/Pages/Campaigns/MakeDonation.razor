@@ -1,0 +1,30 @@
+@page "/campaigns/{CampaignId:guid}/donate"
+@layout AppLayout
+@rendermode InteractiveServer
+
+<PageTitle>Sadkah - Make Donation</PageTitle>
+
+<div class="make-donation-page">
+    <header class="make-header">
+        <div>
+            <Breadcrumb Builder="BuildBreadcrumb"/>
+
+            <h1>Make a Donation</h1>
+            <p>Support a verified cause and make a difference</p>
+        </div>
+
+        <div class="header-actions">
+            <AppButton Type="submit"
+                        Variant="primary"
+                        Size="md"
+                        LoadingText="Submitting...">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m22 2-7 20-4-9-9-4Z" />
+                    <path d="M22 2 11 13" />
+                </svg>
+                <span>Submit Donation</span>
+            </AppButton>
+        </div>
+    </header>
+</div>
+

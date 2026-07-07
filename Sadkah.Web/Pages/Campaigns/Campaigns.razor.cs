@@ -226,6 +226,11 @@ namespace Sadkah.Web.Pages.Campaigns
             Navigation.NavigateTo("/campaigns/create");
         }
 
+        private void DonateToCampaign(Guid campaignId)
+        {
+            Navigation.NavigateTo($"/campaigns/{campaignId}/donate");
+        }
+
         private string GetFilterTabClass(CampaignFilter filter)
         {
             return IsSelected(filter)
