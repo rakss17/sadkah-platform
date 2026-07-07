@@ -12,25 +12,6 @@
     margin-bottom: 1.5rem;
 }
 
-.breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: .45rem;
-    margin-bottom: .35rem;
-    color: var(--color-text-secondary);
-    font-size: .78rem;
-    font-weight: 600;
-}
-
-.breadcrumb a {
-    color: inherit;
-    text-decoration: none;
-}
-
-.breadcrumb span:last-child {
-    color: var(--color-text-primary);
-}
-
 .create-header h1 {
     margin: 0;
     font-size: 1.9rem;
