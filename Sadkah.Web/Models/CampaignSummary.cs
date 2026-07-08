@@ -9,5 +9,6 @@ namespace Sadkah.Web.Models
         decimal RaisedAmount,
         decimal GoalAmount,
         bool IsVerified,
-        bool IsMine);
+        bool IsMine,
+        DonationMethodResult[] DonationMethods);
 }

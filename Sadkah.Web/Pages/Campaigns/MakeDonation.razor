@@ -5,26 +5,192 @@
 <PageTitle>Sadkah - Make Donation</PageTitle>
 
 <div class="make-donation-page">
-    <header class="make-header">
-        <div>
-            <Breadcrumb Builder="BuildBreadcrumb"/>
+    <EditForm Model="donationModel"
+              FormName="make-donation">
+        <DataAnnotationsValidator />
 
-            <h1>Make a Donation</h1>
-            <p>Support a verified cause and make a difference</p>
-        </div>
+        <header class="make-donation-header">
+            <div>
+                <Breadcrumb Builder="BuildBreadcrumb"/>
 
-        <div class="header-actions">
-            <AppButton Type="submit"
-                        Variant="primary"
-                        Size="md"
-                        LoadingText="Submitting...">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="m22 2-7 20-4-9-9-4Z" />
-                    <path d="M22 2 11 13" />
-                </svg>
-                <span>Submit Donation</span>
-            </AppButton>
+                <h1>Make a Donation</h1>
+                <p>Support a verified cause and make a difference</p>
+            </div>
+
+            <div class="header-actions">
+                <AppButton Type="submit"
+                            Variant="primary"
+                            Size="md"
+                            LoadingText="Submitting...">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m22 2-7 20-4-9-9-4Z" />
+                        <path d="M22 2 11 13" />
+                    </svg>
+                    <span>Submit Donation</span>
+                </AppButton>
+            </div>
+        </header>
+
+        <div class="make-donation-layout">
+            <div class="make-donation-form">
+                <section class="form-panel">
+                    <div class="section-heading section-heading--spaced">
+                        <span>1. Your Details</span>
+                    </div>
+
+                    <div class="field-group">
+                        <AppField TValue="string" Id="full-name" Label="Full Name" IsRequired="true" For="() => _currentUserFullName">
+                            <AppInput Id="full-name"
+                                        Type="text"
+                                        Autocomplete="full-name"
+                                        Placeholder="Enter your full name"
+                                        disabled="true"
+                                        @bind-Value="_currentUserFullName">
+                            </AppInput>
+                        </AppField>
+                        <AppField TValue="string" Id="email" Label="Email" IsRequired="true" For="() => _currentUserEmail">
+                            <AppInput Id="email"
+                                        Type="text"
+                                        Autocomplete="email"
+                                        Placeholder="Enter your email"
+                                        disabled="true"
+                                        @bind-Value="_currentUserEmail">
+                            </AppInput>
+                        </AppField>
+                        
+                        <div class="field-group__checkbox">
+                            <InputCheckbox id="is-anonymous" @bind-Value="donationModel.IsAnonymous" />
+                            <div class="field-group__checkbox-label">
+                                <label for="is-anonymous">Donate Anonymously</label>
+                                <span>Your name will not be displayed on the campaign.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-heading section-heading--spaced">
+                        <span>2. Donation Message (optional)</span>
+                    </div>
+                    <AppTextAreaInput Id="donation-message"
+                                      WrapperCssClass="donation-message__wrapper"
+                                      rows="5"
+                                      Placeholder="Enter donation message"
+                                      @bind-Value="donationModel.Message" />
+                    
+                    <div class="section-heading section-heading--spaced">
+                        <span>3. Choose Your Donation Method</span>
+                    </div>
+                    
+                    <AppSelectInput Id="donation-method"
+                                    Placeholder="Select donation method"
+                                    @bind-Value="_selectedDonationMethod"
+                                    @bind-Value:after="OnDonationMethodSelected">
+                            @foreach (var method in _donationMethods)
+                            {
+                                <option value="@method.Id">@method.Provider</option>
+                            }
+                    </AppSelectInput>
+
+                    @if (!string.IsNullOrWhiteSpace(_qrCodeImagePreviewUrl)) {
+                        <div class="qr-code-preview-container">
+                             <img src="@_qrCodeImagePreviewUrl" alt="QR Code Preview" class="qr-code-preview" @onclick="ShowQrImage" />
+                             @if (!_isReceiptUploaded) {
+                                <div class="qr-code-preview-note">
+                                    <span>!</span>
+                                    <p>Click the generated QR code to view a larger version. Scan the QR code, then upload the receipt below.</p>
+                                </div>
+                             }
+                        </div>
+
+                        @if (_isQrImageOpen)
+                        {
+                            <div class="image-modal" @onclick="CloseQrImage">
+                                <img src="@_qrCodeImagePreviewUrl"
+                                    class="image-modal-content"
+                                    @onclick:stopPropagation />
+                            </div>
+                        }
+                    }
+
+                    <div class="section-heading section-heading--spaced">
+                        <span>4. Upload receipt</span>
+                    </div>
+
+                    <div class="receipt__upload">
+                        @if (!string.IsNullOrEmpty(donationModel.ReceiptImageFile?.Name))
+                        {
+                            <div class="receipt-upload-preview">
+                                <img src="@_receiptImagePreviewUrl" alt="Uploaded Receipt preview" @onclick="ShowReceiptImage" />
+                                <div>
+                                    <span>@donationModel.ReceiptImageFile.Name</span>
+                                    <button type="button" @onclick="() => RemoveReceiptImage(donationModel)">Remove</button>
+                                </div>
+                            </div>
+
+                            @if (_isReceiptImageOpen) {
+                                <div class="image-modal" @onclick="CloseReceiptImage">
+                                <img src="@_receiptImagePreviewUrl"
+                                    class="image-modal-content"
+                                    @onclick:stopPropagation />
+                            </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="receipt-upload-dropzone">
+                                @if (_isUploadingReceipt) {
+                                    <div class="loading-overlay">
+                                        <div class="loading-content">
+                                            <div class="spinner"></div>
+                                            <span class="loading-text">Uploading receipt...</span>
+                                        </div>
+                                    </div>
+                                }
+                                else {
+                                    <InputFile class="receipt-upload-input"
+                                            accept=".jpg,.jpeg,.png"
+                                            OnChange="@(e => HandleReceiptImageUploadAsync(e, donationModel))" />
+                                    <small>JPG or PNG (Max 2MB)</small>
+                                }
+
+                            </div>
+  
+                        }
+
+                        @if (!string.IsNullOrEmpty(donationModel.UploadError))
+                        {
+                            <small class="receipt-upload-error">@donationModel.UploadError</small>
+                        }
+
+                        <ValidationMessage For="() => donationModel.ReceiptImageFile" />
+                    </div>
+
+                    @if (_isReceiptUploaded) {
+                        <div class="field-group field-group__payment-field"> 
+                            <AppField TValue="decimal" Id="amount" Label="Amount" IsRequired="true" For="() => donationModel.Amount">
+                                <AppNumberInput Id="amount"
+                                                Placeholder="Enter amount"
+                                                disabled="@(donationModel.Amount > 0)"
+                                                @bind-Value="donationModel.Amount">
+                                </AppNumberInput>
+                            </AppField>
+                            <AppField TValue="string" Id="payment-reference" Label="Payment Reference" IsRequired="true" For="() => donationModel.PaymentReference">
+                                <AppInput Id="payment-reference"
+                                            Type="text"
+                                            Placeholder="Enter reference number"
+                                            disabled="@(!string.IsNullOrWhiteSpace(donationModel.PaymentReference))"
+                                            @bind-Value="donationModel.PaymentReference">
+                                </AppInput>
+                            </AppField>
+                        </div>
+                    }
+                </section>
+                
+            </div>
+
+            <div class="donation-summary">
+
+            </div>
         </div>
-    </header>
+    </EditForm>
 </div>
 

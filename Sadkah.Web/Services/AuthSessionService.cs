@@ -38,6 +38,11 @@ namespace Sadkah.Web.Services
             return Task.FromResult(GetSession()?.FullName);
         }
 
+        public Task<string?> GetCurrentUserEmailAsync()
+        {
+            return Task.FromResult(GetSession()?.Email);
+        }
+
         public Task<bool> IsAuthenticatedAsync()
         {
             return Task.FromResult(!string.IsNullOrWhiteSpace(GetSession()?.AccessToken));

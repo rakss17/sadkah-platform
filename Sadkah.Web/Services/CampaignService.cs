@@ -109,6 +109,34 @@ namespace Sadkah.Web.Services
                 requiresAuthentication: true);
         }
 
+        public async Task<ServiceResult<CampaignSummary>> GetCampaignByIdAsync(Guid campaignId)
+        {
+            var result = await apiClient.GetAsync<CampaignModel>($"api/campaigns/{campaignId}", requiresAuthentication: true);
+
+            if (!result.Success || result.Data is null)
+            {
+                return ServiceResult<CampaignSummary>.Fail(result.Message);
+            }
+
+            var currentUserFullName = await authSession.GetCurrentUserFullNameAsync();
+
+            var campaign = result.Data.ToSummary(currentUserFullName);
+
+            return ServiceResult<CampaignSummary>.Ok(campaign, result.Message);
+        }
+
+        public async Task<ServiceResult<IEnumerable<CampaignCategoryModel>>> GetCampaignCategoriesAsync()
+        {
+            var result = await apiClient.GetAsync<List<CampaignCategoryModel>>("api/campaigns/categories", requiresAuthentication: true);
+
+            if (!result.Success || result.Data is null)
+            {
+                return ServiceResult<IEnumerable<CampaignCategoryModel>>.Fail(result.Message);
+            }
+
+            return ServiceResult<IEnumerable<CampaignCategoryModel>>.Ok(result.Data, result.Message);
+        }
+
         private static MultipartFormDataContent BuildCreateCampaignContent(CampaignModel campaign, string ownerId)
         {
             var content = new MultipartFormDataContent
@@ -147,18 +175,6 @@ namespace Sadkah.Web.Services
             }
 
             return content;
-        }
-
-        public async Task<ServiceResult<IEnumerable<CampaignCategoryModel>>> GetCampaignCategoriesAsync()
-        {
-            var result = await apiClient.GetAsync<List<CampaignCategoryModel>>("api/campaigns/categories", requiresAuthentication: true);
-
-            if (!result.Success || result.Data is null)
-            {
-                return ServiceResult<IEnumerable<CampaignCategoryModel>>.Fail(result.Message);
-            }
-
-            return ServiceResult<IEnumerable<CampaignCategoryModel>>.Ok(result.Data, result.Message);
         }
 
         private static string? GetOwnerId(string? accessToken)
