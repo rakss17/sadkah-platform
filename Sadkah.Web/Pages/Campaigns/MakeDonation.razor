@@ -187,9 +187,32 @@
                 
             </div>
 
-            <div class="donation-summary">
-
-            </div>
+            <aside class="donation-summary">
+                <h2>Your Donation Summary</h2>
+                <div class="placeholder"></div>
+                <div class="description">
+                    <h3>@_campaign?.Title</h3>
+                    <p>@_campaign?.Description</p>
+                </div>
+                <div class="amount">
+                    <div class="amount__content">
+                        <p>Reference no.</p>
+                        <p>@donationModel.PaymentReference</p>
+                    </div>
+                    <div class="amount__content">
+                        <p>Donation Amount</p>
+                        <p>₱@donationModel.Amount</p>
+                    </div>
+                    <div class="amount__content">
+                        <p>Platform Fee (0%)</p>
+                        <p>₱0</p>
+                    </div>
+                    <div class="amount__content-total">
+                        <p>Total Donation</p>
+                        <p>₱@donationModel.Amount</p>
+                    </div>
+                </div>
+            </aside>
         </div>
     </EditForm>
 </div>

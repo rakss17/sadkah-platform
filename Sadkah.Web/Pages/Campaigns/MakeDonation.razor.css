@@ -66,10 +66,9 @@
     padding: 1.25rem;
 }
 
-.section-heading,
-.document-card strong {
+.section-heading {
     font-size: var(--font-size-sm);
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .section-heading--spaced {
@@ -147,7 +146,7 @@
     display: flex;
     align-items: center;
     gap: .75rem;
-    margin-top: 2rem;
+    margin-top: 0.8rem;
     padding: .9rem 1rem;
     border: 1px solid #8ef56f;
     border-radius: 8px;
@@ -317,4 +316,85 @@
 
 .field-group__payment-field {
     margin-top: 0.5rem;
+}
+
+.donation-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg);
+    box-shadow: 0 1px 3px rgba(17, 24, 39, .06);
+    padding: 1.25rem;
+}
+
+.donation-summary h2,
+.donation-summary h3 {
+    color: var(--color-text-primary);
+}
+
+.donation-summary h2 {
+    font-weight: 700;
+    font-size: var(--font-size-base);
+}
+
+.donation-summary h3 {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+}
+
+.donation-summary .placeholder {
+    position: relative;
+    min-height: 10.35rem;
+    background:
+        radial-gradient(circle at 54% 23%, rgba(255, 255, 255, .52), transparent 0.12rem),
+        linear-gradient(135deg, #defbe8 0%, #e7fff0 48%, #d7f8e1 100%);
+    border-radius: 0.8rem;
+    cursor: default !important; 
+}
+
+.donation-summary .description p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.donation-summary .amount {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.donation-summary p {
+    margin-bottom: 0;
+}
+
+.donation-summary .amount__content,
+.donation-summary .amount__content-total {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.donation-summary .amount__content-total {
+    margin-top: 0.75rem
+}
+
+.donation-summary .amount__content p,
+.donation-summary .amount__content-total p {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+}
+
+.donation-summary .amount__content p {
+    font-weight: 600;
+}
+
+.donation-summary .amount__content-total p {
+    font-weight: 700;
+}
+
+.donation-summary .amount__content-total p:nth-of-type(2) {
+    color: var(--color-primary);
 }

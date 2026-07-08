@@ -10,6 +10,7 @@ namespace Sadkah.Web.Mappers
             return new CampaignSummary(
                 campaign.Id,
                 campaign.Title,
+                campaign.Description,
                 campaign.CategoryName ?? "Uncategorized",
                 location,
                 GetDaysLeft(campaign.Deadline),
