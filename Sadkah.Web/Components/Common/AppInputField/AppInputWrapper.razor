@@ -25,6 +25,9 @@
     [Parameter]
     public bool HasRightIcon { get; set; }
 
+    [Parameter]
+    public string WrapperCssClass { get; set; } = string.Empty;
+
     [CascadingParameter(Name = "IsInvalid")]
     public bool IsInvalid { get; set; }
 
@@ -45,6 +48,9 @@
 
             if (IsInvalid)
                 classes.Add("invalid");
+
+            if (!string.IsNullOrWhiteSpace(WrapperCssClass))
+                classes.Add(WrapperCssClass);
 
             return string.Join(" ", classes);
         }

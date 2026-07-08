@@ -1,6 +1,6 @@
 @inherits InputTextArea
 
-<AppInputWrapper Class="@CssClass" LeftIcon="@LeftIcon">
+<AppInputWrapper Class="@CssClass" LeftIcon="@LeftIcon" WrapperCssClass="@WrapperCssClass">
     <textarea @attributes="AdditionalAttributes"
               id="@Id"
               class="app-input__control"
@@ -19,4 +19,7 @@
 
     [Parameter]
     public RenderFragment? LeftIcon { get; set; }
+
+    [Parameter]
+    public string WrapperCssClass { get; set; } = string.Empty;
 }
