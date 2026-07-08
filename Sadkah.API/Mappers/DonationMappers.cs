@@ -18,6 +18,9 @@ namespace Sadkah.API.Mappers
                 Amount = donationModel.Amount,
                 IsAnonymous = donationModel.IsAnonymous,
                 PaymentReference = donationModel.PaymentReference,
+                Method = donationModel.Method,
+                ReceiptImageUrl = donationModel.ReceiptImageUrl,
+                ReceiptPublicId = donationModel.ReceiptImagePublicId,
                 CreatedAt = donationModel.CreatedAt
             };
         }
@@ -30,7 +33,8 @@ namespace Sadkah.API.Mappers
                 CampaignId = createDto.CampaignId,
                 Amount = createDto.Amount,
                 IsAnonymous = createDto.IsAnonymous!.Value,
-                PaymentReference = createDto.PaymentReference
+                PaymentReference = createDto.PaymentReference,
+                Method = createDto.Method
             };
         }
     }
