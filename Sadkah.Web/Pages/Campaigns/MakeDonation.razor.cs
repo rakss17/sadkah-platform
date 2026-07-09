@@ -20,6 +20,7 @@ namespace Sadkah.Web.Pages.Campaigns
         private IOcrService OcrService { get; set; } = default!;
 
         private DonationModel donationModel = new();
+        private EditContext? _editContext;
 
         private CampaignSummary? _campaign { get; set; }
 
@@ -38,9 +39,17 @@ namespace Sadkah.Web.Pages.Campaigns
         private bool _isQrImageOpen;
         private bool _isReceiptImageOpen;
         private bool _isReceiptUploaded;
+        private bool IsReceiptImageInvalid =>
+            _editContext is not null &&
+            _editContext.GetValidationMessages(_editContext.Field(nameof(DonationModel.ReceiptImageFile))).Any();
 
         private const long MaxDonationImageSizeBytes = DonationModel.MaxQrImageSizeBytes;
         private static readonly string[] AllowedDonationImageContentTypes = { "image/jpeg", "image/png" };
+
+        protected override void OnInitialized()
+        {
+            _editContext = new EditContext(donationModel);
+        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -165,6 +174,7 @@ namespace Sadkah.Web.Pages.Campaigns
         {
             var donationMethod = _donationMethods.SingleOrDefault(x => x.Id == _selectedDonationMethod);
             _qrCodeImagePreviewUrl = donationMethod?.QrImageUrl ?? string.Empty;
+            donationModel.Method = donationMethod?.Provider ?? string.Empty;
         }
 
         private void RemoveReceiptImage(DonationModel donation)

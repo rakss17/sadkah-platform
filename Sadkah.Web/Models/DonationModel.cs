@@ -25,6 +25,8 @@ namespace Sadkah.Web.Models
         [Required(ErrorMessage = "Please enter reference number mannually.")]
         public string PaymentReference { get; set; } = string.Empty;
         public string? Message { get; set; }
+        [Required(ErrorMessage = "Please select donation method.")]
+        public string Method { get; set; } = string.Empty;
         [Required(ErrorMessage = "Please upload a receipt image.")]
         public IBrowserFile? ReceiptImageFile { get; set; }
         public byte[]? ReceiptImageBytes { get; set; }

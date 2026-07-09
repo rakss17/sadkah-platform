@@ -5,7 +5,7 @@
 <PageTitle>Sadkah - Make Donation</PageTitle>
 
 <div class="make-donation-page">
-    <EditForm Model="donationModel"
+    <EditForm EditContext="_editContext"
               FormName="make-donation">
         <DataAnnotationsValidator />
 
@@ -79,16 +79,17 @@
                     <div class="section-heading section-heading--spaced">
                         <span>3. Choose Your Donation Method</span>
                     </div>
-                    
-                    <AppSelectInput Id="donation-method"
-                                    Placeholder="Select donation method"
-                                    @bind-Value="_selectedDonationMethod"
-                                    @bind-Value:after="OnDonationMethodSelected">
-                            @foreach (var method in _donationMethods)
-                            {
-                                <option value="@method.Id">@method.Provider</option>
-                            }
-                    </AppSelectInput>
+                    <AppField TValue="string" Id="method" IsRequired="true" For="() => donationModel.Method">
+                        <AppSelectInput Id="donation-method"
+                                        Placeholder="Select donation method"
+                                        @bind-Value="_selectedDonationMethod"
+                                        @bind-Value:after="OnDonationMethodSelected">
+                                @foreach (var method in _donationMethods)
+                                {
+                                    <option value="@method.Id">@method.Provider</option>
+                                }
+                        </AppSelectInput>
+                    </AppField>
 
                     @if (!string.IsNullOrWhiteSpace(_qrCodeImagePreviewUrl)) {
                         <div class="qr-code-preview-container">
@@ -114,56 +115,51 @@
                     <div class="section-heading section-heading--spaced">
                         <span>4. Upload receipt</span>
                     </div>
-
-                    <div class="receipt__upload">
-                        @if (!string.IsNullOrEmpty(donationModel.ReceiptImageFile?.Name))
-                        {
-                            <div class="receipt-upload-preview">
-                                <img src="@_receiptImagePreviewUrl" alt="Uploaded Receipt preview" @onclick="ShowReceiptImage" />
-                                <div>
-                                    <span>@donationModel.ReceiptImageFile.Name</span>
-                                    <button type="button" @onclick="() => RemoveReceiptImage(donationModel)">Remove</button>
-                                </div>
-                            </div>
-
-                            @if (_isReceiptImageOpen) {
-                                <div class="image-modal" @onclick="CloseReceiptImage">
-                                <img src="@_receiptImagePreviewUrl"
-                                    class="image-modal-content"
-                                    @onclick:stopPropagation />
-                            </div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="receipt-upload-dropzone">
-                                @if (_isUploadingReceipt) {
-                                    <div class="loading-overlay">
-                                        <div class="loading-content">
-                                            <div class="spinner"></div>
-                                            <span class="loading-text">Uploading receipt...</span>
-                                        </div>
+                    <AppField TValue="IBrowserFile" Id="method" IsRequired="true" For="() => donationModel.ReceiptImageFile">
+                        <div class="receipt__upload">
+                            @if (!string.IsNullOrEmpty(donationModel.ReceiptImageFile?.Name))
+                            {
+                                <div class="receipt-upload-preview">
+                                    <img src="@_receiptImagePreviewUrl" alt="Uploaded Receipt preview" @onclick="ShowReceiptImage" />
+                                    <div>
+                                        <span>@donationModel.ReceiptImageFile.Name</span>
+                                        <button type="button" @onclick="() => RemoveReceiptImage(donationModel)">Remove</button>
                                     </div>
+                                </div>
+
+                                @if (_isReceiptImageOpen) {
+                                    <div class="image-modal" @onclick="CloseReceiptImage">
+                                    <img src="@_receiptImagePreviewUrl"
+                                        class="image-modal-content"
+                                        @onclick:stopPropagation />
+                                </div>
                                 }
-                                else {
-                                    <InputFile class="receipt-upload-input"
-                                            accept=".jpg,.jpeg,.png"
-                                            OnChange="@(e => HandleReceiptImageUploadAsync(e, donationModel))" />
-                                    <small>JPG or PNG (Max 2MB)</small>
-                                }
-
-                            </div>
-  
-                        }
-
-                        @if (!string.IsNullOrEmpty(donationModel.UploadError))
-                        {
-                            <small class="receipt-upload-error">@donationModel.UploadError</small>
-                        }
-
-                        <ValidationMessage For="() => donationModel.ReceiptImageFile" />
-                    </div>
-
+                            }
+                            else
+                            {
+                                <div class="receipt-upload-dropzone @(IsReceiptImageInvalid ? "invalid" : "")">
+                                    @if (_isUploadingReceipt) {
+                                        <div class="loading-overlay">
+                                            <div class="loading-content">
+                                                <div class="spinner"></div>
+                                                <span class="loading-text">Uploading receipt...</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    else {                        
+                                            <InputFile class="receipt-upload-input"
+                                                accept=".jpg,.jpeg,.png"
+                                                OnChange="@(e => HandleReceiptImageUploadAsync(e, donationModel))" />
+                                            <small>JPG or PNG (Max 2MB)</small>
+                                    }
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(donationModel.UploadError))
+                            {
+                                <small class="receipt-upload-error">@donationModel.UploadError</small>
+                            }
+                        </div>
+                    </AppField>
                     @if (_isReceiptUploaded) {
                         <div class="field-group field-group__payment-field"> 
                             <AppField TValue="decimal" Id="amount" Label="Amount" IsRequired="true" For="() => donationModel.Amount">

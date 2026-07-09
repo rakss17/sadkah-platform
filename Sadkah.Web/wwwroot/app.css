@@ -51,8 +51,9 @@
     box-shadow: 0 0 0 .15rem color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
-.app-input.invalid {
-    border-color: var(--color-danger);
+.app-input.invalid,
+.receipt-upload-dropzone.invalid {
+    border: 1px solid var(--color-danger) !important;
 }
 
 .app-input__control {
