@@ -103,5 +103,47 @@ namespace Sadkah.Web.Services
                 return null;
             }
         }
+
+        public async Task<string?> GetCurrentUserIdFromTokenAsync()
+        {
+            var accessToken = await GetAccessTokenAsync();
+
+            return GetCurrentUserIdFromToken(accessToken);
+        }
+
+        private static string? GetCurrentUserIdFromToken(string? accessToken)
+        {
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                return null;
+            }
+
+            var tokenParts = accessToken.Split('.');
+            if (tokenParts.Length < 2)
+            {
+                return null;
+            }
+
+            try
+            {
+                var payload = tokenParts[1]
+                    .Replace('-', '+')
+                    .Replace('_', '/');
+
+                payload = payload.PadRight(
+                    payload.Length + (4 - payload.Length % 4) % 4,
+                    '=');
+
+                using var document = JsonDocument.Parse(Convert.FromBase64String(payload));
+
+                return document.RootElement.TryGetProperty("sub", out var subjectClaim)
+                    ? subjectClaim.GetString()
+                    : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

@@ -6,6 +6,8 @@
 
 <div class="make-donation-page">
     <EditForm EditContext="_editContext"
+              OnValidSubmit="HandleSubmitDonationAsync"
+              OnInvalidSubmit="HandleInvalidSubmit"
               FormName="make-donation">
         <DataAnnotationsValidator />
 
@@ -21,6 +23,7 @@
                 <AppButton Type="submit"
                             Variant="primary"
                             Size="md"
+                            IsLoading="@_isSubmittingDonation"
                             LoadingText="Submitting...">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="m22 2-7 20-4-9-9-4Z" />
@@ -30,6 +33,13 @@
                 </AppButton>
             </div>
         </header>
+
+        @if (!string.IsNullOrWhiteSpace(_statusMessage))
+        {
+            <div class="create-alert" role="alert">
+                @_statusMessage
+            </div>
+        }
 
         <div class="make-donation-layout">
             <div class="make-donation-form">

@@ -11,10 +11,6 @@ namespace Sadkah.Web.Models
     {
 
         public const long MaxQrImageSizeBytes = 2 * 1024 * 1024;
-
-        [Required]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "DonorId must be between 5 and 100 characters.")]
-        public string DonorId { get; set; } = string.Empty;
         [Required]
         public Guid CampaignId { get; set; }
         [Required]
@@ -28,8 +24,8 @@ namespace Sadkah.Web.Models
         [Required(ErrorMessage = "Please select donation method.")]
         public string Method { get; set; } = string.Empty;
         [Required(ErrorMessage = "Please upload a receipt image.")]
-        public IBrowserFile? ReceiptImageFile { get; set; }
-        public byte[]? ReceiptImageBytes { get; set; }
+        public IBrowserFile ReceiptImageFile { get; set; } = null!;
+        public byte[] ReceiptImageBytes { get; set; } = [];
         public string? UploadError { get; set; }
     }
 }

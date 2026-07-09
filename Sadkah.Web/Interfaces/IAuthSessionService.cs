@@ -9,5 +9,6 @@ namespace Sadkah.Web.Interfaces
         Task<bool> IsAuthenticatedAsync();
         Task SaveAsync(AuthResult authResult);
         Task SaveTokensAsync(string accessToken, string refreshToken);
+        Task<string?> GetCurrentUserIdFromTokenAsync();
     }
 }

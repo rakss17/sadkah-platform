@@ -11,6 +11,9 @@ namespace Sadkah.Web.Pages.Campaigns
         private ICampaignService CampaignService { get; set; } = default!;
 
         [Inject]
+        private IDonationService DonationService { get; set; } = default!;
+
+        [Inject]
         private IAuthSessionService AuthSessionService { get; set; } = default!;
 
         [Inject]
@@ -39,6 +42,7 @@ namespace Sadkah.Web.Pages.Campaigns
         private bool _isQrImageOpen;
         private bool _isReceiptImageOpen;
         private bool _isReceiptUploaded;
+        private bool _isSubmittingDonation;
         private bool IsReceiptImageInvalid =>
             _editContext is not null &&
             _editContext.GetValidationMessages(_editContext.Field(nameof(DonationModel.ReceiptImageFile))).Any();
@@ -57,6 +61,8 @@ namespace Sadkah.Web.Pages.Campaigns
 
             _currentUserFullName = await AuthSessionService.GetCurrentUserFullNameAsync() ?? string.Empty;
             _currentUserEmail = await AuthSessionService.GetCurrentUserEmailAsync() ?? string.Empty;
+
+            donationModel.CampaignId = CampaignId;
         }
 
 
@@ -89,6 +95,36 @@ namespace Sadkah.Web.Pages.Campaigns
                 _isLoading = false;
             }
         }
+
+        private async Task HandleSubmitDonationAsync()
+        {
+            _isSubmittingDonation = true;
+            _statusMessage = null;
+
+            try
+            {
+                var result = await DonationService.CreateDonationAsync(donationModel);
+
+                if (result.RequiresAuthentication)
+                {
+                    Navigation.NavigateTo("/login", replace: true);
+                    return;
+                }
+
+                if (!result.Success)
+                {
+                    _statusMessage = result.Message;
+                    return;
+                }
+
+                Navigation.NavigateTo("/campaigns");
+            }
+            finally
+            {
+                _isSubmittingDonation = false;
+            }
+        }
+        
 
         private async Task HandleReceiptImageUploadAsync(InputFileChangeEventArgs e, DonationModel donation)
         {
@@ -170,6 +206,11 @@ namespace Sadkah.Web.Pages.Campaigns
             finally {}
         }
 
+        private void HandleInvalidSubmit(EditContext editContext)
+        {
+            _statusMessage = "Please fix the highlighted fields before publishing.";
+        }
+
         private void OnDonationMethodSelected()
         {
             var donationMethod = _donationMethods.SingleOrDefault(x => x.Id == _selectedDonationMethod);
@@ -179,8 +220,8 @@ namespace Sadkah.Web.Pages.Campaigns
 
         private void RemoveReceiptImage(DonationModel donation)
         {
-            donation.ReceiptImageFile = null;
-            donation.ReceiptImageBytes = null;
+            donation.ReceiptImageFile = null!;
+            donation.ReceiptImageBytes = [];
             donation.UploadError = null;
             donation.Amount = 0;
             donation.PaymentReference = string.Empty;
