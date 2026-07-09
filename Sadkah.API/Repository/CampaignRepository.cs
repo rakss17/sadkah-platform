@@ -87,7 +87,7 @@ namespace Sadkah.API.Repository
 
         public async Task<Campaign?> GetCampaignByIdAsync(Guid id)
         {
-            return await _context.Campaigns.Include(c => c.Owner).Include(c => c.Donations).ThenInclude(d => d.Donor).Include(c => c.DonationMethods).FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Campaigns.Include(c => c.Owner).Include(c => c.Category).Include(c => c.Donations).ThenInclude(d => d.Donor).Include(c => c.DonationMethods).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Campaign> CreateCampaignAsync(Campaign campaignModel)

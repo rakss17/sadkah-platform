@@ -23,6 +23,10 @@ namespace Sadkah.Web.Models
 
         public byte[]? QrImageBytes { get; set; }
 
+        public string QrImageUrl { get; set; } = string.Empty;
+
+        public string QrImagePublicId { get; set; } = string.Empty;
+
         public string? UploadError { get; set; }
 
         public Guid CampaignId { get; set; }

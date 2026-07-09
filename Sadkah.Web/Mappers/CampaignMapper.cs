@@ -8,14 +8,30 @@ namespace Sadkah.Web.Mappers
                 ? $"{campaign.City}, {campaign.Province}"
                 : "Unknown Location";
             return new CampaignSummary(
+                campaign.Id,
                 campaign.Title,
+                campaign.Description,
                 campaign.CategoryName ?? "Uncategorized",
                 location,
                 GetDaysLeft(campaign.Deadline),
                 campaign.CurrentAmount,
                 campaign.TargetAmount,
                 campaign.IsVerified,
-                IsCurrentUsersCampaign(campaign.OwnerName, currentUserFullName));
+                IsCurrentUsersCampaign(campaign.OwnerName, currentUserFullName),
+                campaign.DonationMethods.Select(ToDonationMethodResult).ToArray());
+        }
+
+        private static DonationMethodResult ToDonationMethodResult(DonationMethodModel method)
+        {
+            return new DonationMethodResult
+            {
+                Id = method.Id,
+                Type = method.Type?.ToString() ?? string.Empty,
+                Provider = method.Provider,
+                QrImageUrl = method.QrImageUrl,
+                QrImagePublicId = method.QrImagePublicId,
+                CampaignId = method.CampaignId
+            };
         }
 
         private static bool IsCurrentUsersCampaign(string ownerName, string? currentUserFullName)

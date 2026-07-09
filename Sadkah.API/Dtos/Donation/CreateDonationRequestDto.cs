@@ -20,5 +20,9 @@ namespace Sadkah.API.Dtos.Donation
         public bool? IsAnonymous { get; set; }
         [Required]
         public string PaymentReference { get; set; } = string.Empty;
+        [Required]
+        public string Method { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Receipt image is required.")]
+        public IFormFile ReceiptImageFile { get; set; } = null!;
     }
 }

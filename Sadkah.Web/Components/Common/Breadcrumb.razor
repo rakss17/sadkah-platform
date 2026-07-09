@@ -1,0 +1,97 @@
+@using System.Globalization
+@implements IDisposable
+@inject NavigationManager Navigation
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    @for (int i = 0; i < Breadcrumbs.Count; i++)
+    {
+        var crumb = Breadcrumbs[i];
+
+        @if (i > 0)
+        {
+            <span aria-hidden="true">/</span>
+        }
+
+        @if (i == Breadcrumbs.Count - 1)
+        {
+            <span>@GetTitle(crumb, i)</span>
+        }
+        else
+        {
+            <a href="@crumb.Href">@GetTitle(crumb, i)</a>
+        }
+    }
+</nav>
+
+@code {
+    [Parameter]
+    public Func<BreadcrumbItem, int, List<BreadcrumbItem>, string>? Builder { get; set; }
+
+    private List<BreadcrumbItem> Breadcrumbs = new();
+
+    protected override void OnInitialized()
+    {
+        GenerateBreadcrumbs();
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        GenerateBreadcrumbs();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void GenerateBreadcrumbs()
+    {
+        var relativePath = Navigation.ToBaseRelativePath(Navigation.Uri);
+
+        // Remove query string if present
+        relativePath = relativePath.Split('?')[0];
+
+        var segments = relativePath
+            .Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        Breadcrumbs = new List<BreadcrumbItem>
+        {
+            new()
+            {
+                Href = "/",
+                Title = "Home"
+            }
+        };
+
+        for (int i = 0; i < segments.Length; i++)
+        {
+            var segment = segments[i];
+
+            Breadcrumbs.Add(new BreadcrumbItem
+            {
+                Href = "/" + string.Join("/", segments.Take(i + 1)),
+                Segment = segment,
+                Title = CapitalizeWords(segment.Replace("-", " "))
+            });
+        }
+    }
+
+    private string GetTitle(BreadcrumbItem crumb, int index)
+    {
+        return Builder?.Invoke(crumb, index, Breadcrumbs) ?? crumb.Title;
+    }
+
+    private static string CapitalizeWords(string value)
+    {
+        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
+
+    public class BreadcrumbItem
+    {
+        public string Href { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Segment { get; set; } = string.Empty;
+    }
+}

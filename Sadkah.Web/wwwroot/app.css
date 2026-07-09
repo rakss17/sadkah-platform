@@ -4,7 +4,7 @@
     --color-primary-hover: #f8f9fa;
     --color-secondary-hover: #dcdfe2;
     --color-secondary: #15803D;
-    --color-accent: #22C55E;
+    --color-accent: #DEFAE7;
 
     /* Status colors */
     --color-success: #16A34A;
@@ -29,7 +29,7 @@
     --font-size-lg: 30px;
     --font-size-xl: 36px;
 
-    --color-nav-bar-button-active-bg: #DEFAE7;
+    --color-nav-bar-button-active-bg: var(--color-accent);
 }
 
 .app-input {
@@ -51,8 +51,9 @@
     box-shadow: 0 0 0 .15rem color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
 
-.app-input.invalid {
-    border-color: var(--color-danger);
+.app-input.invalid,
+.receipt-upload-dropzone.invalid {
+    border: 1px solid var(--color-danger) !important;
 }
 
 .app-input__control {

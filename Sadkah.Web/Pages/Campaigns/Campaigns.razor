@@ -131,7 +131,8 @@
                           DaysLeft="@campaign.DaysLeft"
                           RaisedAmount="@campaign.RaisedAmount"
                           GoalAmount="@campaign.GoalAmount"
-                          IsVerified="@campaign.IsVerified" />
+                          IsVerified="@campaign.IsVerified"
+                          OnDonateClicked="() => DonateToCampaign(campaign.Id)" />
         }
 
         <PaginationControl CurrentPage="@CurrentPage"

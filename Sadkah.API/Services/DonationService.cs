@@ -4,11 +4,13 @@ namespace Sadkah.API.Services
     {
         private readonly IDonationRepository _donationRepository;
         private readonly ICampaignRepository _campaignRepository;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public DonationService(IDonationRepository donationRepository, ICampaignRepository campaignRepository)
+        public DonationService(IDonationRepository donationRepository, ICampaignRepository campaignRepository, ICloudinaryService cloudinaryService)
         {
             _donationRepository = donationRepository;
             _campaignRepository = campaignRepository;
+            _cloudinaryService = cloudinaryService;
         }
 
         public async Task<PagedResult<DonationDto>> GetAllDonationsAsync(QueryObject query)
@@ -41,6 +43,13 @@ namespace Sadkah.API.Services
             }
 
             var donation = createDto.ToDonationFromCreateDto();
+
+            var directory = $"sadkah/images/donation/receipt";
+            var upload = await _cloudinaryService.UploadImageAsync(createDto.ReceiptImageFile, directory);
+
+            donation.ReceiptImageUrl = upload.SecureUrl.ToString();
+            donation.ReceiptImagePublicId = upload.PublicId;
+            
             var createdDonation = await _donationRepository.CreateDonationAsync(donation);
 
             if (createdDonation == null)

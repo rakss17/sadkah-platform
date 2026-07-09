@@ -3,13 +3,17 @@
 @using Microsoft.AspNetCore.Components.Forms
 
 <div class="app-field @Class">
-    <label for="@Id">
-        @Label
-        @if (IsRequired)
-        {
-            <span> * </span>
-        }
-    </label>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label for="@Id">
+            @Label
+            @if (IsRequired)
+            {
+                <span> * </span>
+            }
+        </label>
+    }
+
     <CascadingValue Value="IsInvalid" Name="IsInvalid">
         @ChildContent
     </CascadingValue>
@@ -28,7 +32,7 @@
     public string Id { get; set; } = string.Empty;
 
     [Parameter]
-    public string Label { get; set; } = string.Empty;
+    public string? Label { get; set; }
 
     [Parameter]
     public Expression<Func<TValue>>? For { get; set; }

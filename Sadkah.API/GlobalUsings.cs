@@ -8,6 +8,7 @@ global using Sadkah.API.Mappers;
 global using Sadkah.API.Enums;
 global using Sadkah.API.Dtos.Campaign;
 global using Sadkah.API.Dtos.Donation;
+global using Sadkah.API.Dtos.Ocr;
 global using Sadkah.API.Helpers;
 global using Sadkah.API.Repository;
 global using Sadkah.API.Services;

@@ -17,6 +17,9 @@ namespace Sadkah.API.Models
         public decimal Amount { get; set; }
         public bool IsAnonymous { get; set; } = false;
         public string PaymentReference { get; set; } = string.Empty;
+        public string Method { get; set; } = string.Empty;
+        public string ReceiptImageUrl { get; set; } = string.Empty;
+        public string ReceiptImagePublicId { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? DeletedAt { get; set; }
     }

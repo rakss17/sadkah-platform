@@ -2,12 +2,12 @@
 
 <CheckAuth Mode="AuthGuardMode.RequireAuthenticated">
     <div class="page">
-        @if (CurrentPath != "campaigns/create")
+        @if (!HideNavMenu)
         {
             <NavMenu />
         }
         <main>
-            <article class="content px-4">
+            <article class="content">
                 @Body
             </article>
         </main>
@@ -25,4 +25,9 @@
     private NavigationManager Navigation { get; set; } = default!;
 
     private string CurrentPath => Navigation.ToBaseRelativePath(Navigation.Uri);
+
+    private bool HideNavMenu =>
+        CurrentPath.Equals("campaigns/create", StringComparison.OrdinalIgnoreCase) ||
+        (CurrentPath.StartsWith("campaigns/", StringComparison.OrdinalIgnoreCase) &&
+         CurrentPath.EndsWith("/donate", StringComparison.OrdinalIgnoreCase));
 }

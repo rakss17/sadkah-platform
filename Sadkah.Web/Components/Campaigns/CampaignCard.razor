@@ -33,7 +33,7 @@
 
         <div class="campaign-card__actions">
             <AppButton Variant="secondary" Size="md" FullWidth="true">Details</AppButton>
-            <AppButton Variant="primary" Size="md" FullWidth="true">Donate</AppButton>
+            <AppButton Variant="primary" Size="md" FullWidth="true" @onclick="OnDonateClicked">Donate</AppButton>
         </div>
     </div>
 </article>
@@ -61,6 +61,9 @@
 
     [Parameter]
     public bool IsVerified { get; set; }
+
+    [Parameter]
+    public EventCallback OnDonateClicked { get; set; }
 
     private int ProgressPercent => GoalAmount <= 0
         ? 0

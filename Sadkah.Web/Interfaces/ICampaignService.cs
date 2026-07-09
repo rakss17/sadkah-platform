@@ -11,6 +11,7 @@ namespace Sadkah.Web.Interfaces
             bool? isVerified = null,
             bool mineOnly = false);
         Task<ServiceResult<CampaignModel>> CreateCampaignAsync(CampaignModel campaign);
+        Task<ServiceResult<CampaignSummary>> GetCampaignByIdAsync(Guid campaignId);
         Task<ServiceResult<IEnumerable<CampaignCategoryModel>>> GetCampaignCategoriesAsync();
     }
 }
