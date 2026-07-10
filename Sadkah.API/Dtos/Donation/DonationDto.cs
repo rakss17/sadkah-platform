@@ -15,6 +15,7 @@ namespace Sadkah.API.Dtos.Donation
         public bool IsAnonymous { get; set; }
         public string PaymentReference { get; set; } = string.Empty;
         public string Method { get; set; } = string.Empty;
+        public string? Message { get; set; }
         public string ReceiptImageUrl { get; set; } = string.Empty;
         public string ReceiptPublicId { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }

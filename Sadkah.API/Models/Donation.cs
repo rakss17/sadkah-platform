@@ -18,6 +18,7 @@ namespace Sadkah.API.Models
         public bool IsAnonymous { get; set; } = false;
         public string PaymentReference { get; set; } = string.Empty;
         public string Method { get; set; } = string.Empty;
+        public string? Message { get; set; }
         public string ReceiptImageUrl { get; set; } = string.Empty;
         public string ReceiptImagePublicId { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
